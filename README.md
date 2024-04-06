@@ -36,7 +36,8 @@
 </p>
 
 ## ```Thanks To```
-- Chandra
-- Mr. Xoxo
-- COA 
-- Toxcar_Cyber_Team
+- `Mr.Heckers[]`
+- `Mr. Xoxo[]`
+- `COA[]`
+- `Toxcar_Cyber_Team[]`
+- `My Family[]`
