@@ -173,10 +173,22 @@ xhr.send();
         </div>
       </div>
       <!-- Project -->
-<center>
- <audio controls>
-  <source src="https://a.top4top.io/m_3018e5lqj0.mp3" type="audio/mpeg">
-</center>	   
+		   
+    <script>
+        function play() {
+            var audio = document.getElementById("music");
+            audio.play();
+        }
+
+        function pause() {
+            var audio = document.getElementById("music");
+            audio.pause();
+        }
+    </script>
+   <audio id="music" src="https://a.top4top.io/m_3018e5lqj0.mp3""></audio>
+
+    </div>
+	   </center>
     </div>
     <footer class="mt-auto]">
       <div class="text-center">
