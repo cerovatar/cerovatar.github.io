@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon"  type="image/png" sizes="500x500" href="img/icon.png">
+    <!-- Primary Meta Tags -->
+    <title>ZinXploit - Webpage</title>
+    <meta name="title" content="ZinXploit - Webpage">
+    <meta name="description" content="Hai, saya ZinXploit lulusan smk sejak smp aku sudah tertarik dalam dunia pemrograman.">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://metatags.io/">
+    <meta property="og:title" content="ZinXploit - Webpage">
+    <meta property="og:description" content="Hai, saya ZinXploit , Lulusan smk , saya belajar Html selama 3 thn lama nya">
+    <meta property="og:image" content="https://metatags.io/assets/meta-tags-16a33a6a8531e519cc0936fbba0ad904e52d35f34a46c97a2c9f6f7dd7d336f2.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+   <style> 
+   	@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@600&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css");
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@600&family=JetBrains+Mono:wght@300&family=PT+Mono&display=swap');
+body {
+	background-color: #121317;
+}
+img.rounded-circle{
+	border: 3px solid #7e3af2;
+}
+
+.card {
+	background-color: #1a1c23;
+}
+h1.title {
+	font-size: 23px;
+	font-family:  'IBM Plex Mono', monospace;
+	color: #fff;
+}
+p.title2 {
+	font-size: 11px;
+	font-family:  'IBM Plex Mono', monospace;
+	color: #fff;
+}
+.footer {
+  flex-shrink: 0;
+}
+.card-bio {
+	position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+
+}
+p.bio-body {
+	color: #fff;
+	font-family: 'JetBrains Mono', monospace;
+	font-size: 14px;
+}
+.text-center.icon {
+	color: #fff;
+	font-size: 22px;
+}
+
+span.myBadge{
+	color: #7e3af2;
+}
+h1.header {
+	font-size: 18px;
+	color: #fff;
+	font-family: 'IBM Plex Mono', monospace;
+}
+.progress-bar {
+	background-color: #7e3af2;
+}
+h2.title {
+  background: #7e3af2;
+  color: #ffffff;
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 12px;
+  letter-spacing: 1px;
+  margin: 0 0 30px;
+  padding: 10px 15px 8px;
+  text-transform: uppercase;
+}
+
+footer {
+	position:fixed;
+	bottom:0;
+	left:0;
+	width: 100%;
+	height: 24px;
+	background-color: #7e3af2;
+
+}
+p.footer-title {
+	font-size: 13px;
+	position: relative;
+	color: #fff;
+	font-family: 'IBM Plex Mono', monospace;
+
+}
+</style>
+<script>
+	var xhr = new XMLHttpRequest();
+xhr.open("GET", "https://api.countapi.xyz/hit/rezzaapr.my.id/visits");
+xhr.responseType = "json";
+xhr.onload = function() {
+  document.querySelector('.footer-title').innerHTML = 'Total Visitor : ' + this.response.value;
+}
+xhr.send();
+</script>
+</head>
+  <body class="d-flex flex-column min-vh-100">
+    <div class="container mt-4">
+      <!-- Bio Page -->
+      <div class="card">
+        <div class="card-body">
+          <div class="text-center">
+           <img class="rounded-circle" alt="100x100" src="https://i.ibb.co/LtTYrHB/images.jpg"
+          data-holder-rendered="true" width="150" height="150">
+
+          <h1 class="title mt-2">
+          <span class="myBadge">
+              <i class="bi bi-patch-check-fill"></i>
+            </span>Mario Adi Saputra</h1>
+          <p class="title2">Backend Developer</p>
+        </div>
+        <div class="card-bio">
+          <div class="card-body">
+              <p class="bio-body">
+                Hai, Nama saya Mario Adi Saputra, Usia 21 Th, Jurusan Administrasi Perkantoran /OTKP, Lulusan Smk Pelita IV, Saya tertarik dengan dunia pemrograman sejak saya masih smp.
+   </p>
+            </div>
+          </div>
+          	<p>
+            <a href="https://github.com/cerovatar"><img src="https://img.shields.io/badge/-GitHub-black?style=flat-square&logo=github" /> 
+           <a href="https://wa.me/6283869421851"><img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" />
+           <a href="https://instagram.com/marioadisaputra.off"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white"/>
+             </p>
+ </div>
+        </div>
+      </div>
+      <!-- Skils -->
+      <div class="card mt-2">
+        <div class="card-body">
+          <h2 class="title"> My Skils</h1>
+          <p class="bio-body mt-2">Html</p>
+          <div class="progress" style="height: 4px;">
+            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <p class="bio-body mt-4">Css</p>
+          <div class="progress" style="height: 4px;">
+            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <p class="bio-body mt-4">Javascript</p>
+          <div class="progress" style="height: 4px;">
+            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <p class="bio-body mt-4">Nodejs</p>
+          <div class="progress" style="height: 4px;">
+            <div class="progress-bar" role="progressbar" style="width: 58%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <p class="bio-body mt-4">Bootsrap</p>
+          <div class="progress mb-5" style="height: 4px;">
+            <div class="progress-bar" role="progressbar" style="width: 45%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Project -->
+    </div>
+    <footer class="mt-auto]">
+      <div class="text-center">
+      <p class="footer-title">© Copyright by ZinXploit</p>
+    </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  </body>
+</html>
