@@ -1,203 +1,344 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon"  type="image/png" sizes="500x500" href="img/icon.png">
-    <!-- Primary Meta Tags -->
-    <title>ZinXploit - Webpage</title>
-    <meta name="title" content="ZinXploit - Webpage">
-    <meta name="description" content="Hai, Saya ZinXploit, saya hanya Lulusan Smk.">
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://metatags.io/">
-    <meta property="og:title" content="ZinXploit - Webpage">
-    <meta property="og:description" content="Hai, saya ZinXploit Lulusan Smk Pelita IV , Belajar Html selama 3 thn lama nya">
-    <meta property="og:image" content="https://metatags.io/assets/meta-tags-16a33a6a8531e519cc0936fbba0ad904e52d35f34a46c97a2c9f6f7dd7d336f2.png">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
- 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
-   <style> 
-   	@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@600&display=swap');
-@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css");
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@600&family=JetBrains+Mono:wght@300&family=PT+Mono&display=swap');
-body {
-	background-color: #121317;
-}
-img.rounded-circle{
-	border: 3px solid #7e3af2;
-}
+<html class="no-js" lang="en">
 
-.card {
-	background-color: #1a1c23;
-}
-h1.title {
-	font-size: 23px;
-	font-family:  'IBM Plex Mono', monospace;
-	color: #fff;
-}
-p.title2 {
-	font-size: 11px;
-	font-family:  'IBM Plex Mono', monospace;
-	color: #fff;
-}
-.footer {
-  flex-shrink: 0;
-}
-.card-bio {
-	position: relative;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
+    <head>
+        <!-- meta data -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-}
-p.bio-body {
-	color: #fff;
-	font-family: 'JetBrains Mono', monospace;
-	font-size: 14px;
-}
-.text-center.icon {
-	color: #fff;
-	font-size: 22px;
-}
+        <!--font-family-->
+		<link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&amp;subset=devanagari,latin-ext" rel="stylesheet">
+        
+        <!-- title of site -->
+        <title>Welcome to My web Portofolio</title>
 
-span.myBadge{
-	color: #7e3af2;
-}
-h1.header {
-	font-size: 18px;
-	color: #fff;
-	font-family: 'IBM Plex Mono', monospace;
-}
-.progress-bar {
-	background-color: #7e3af2;
-}
-h2.title {
-  background: #7e3af2;
-  color: #ffffff;
-  display: inline-block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 12px;
-  letter-spacing: 1px;
-  margin: 0 0 30px;
-  padding: 10px 15px 8px;
-  text-transform: uppercase;
-}
+        <!-- For favicon png -->
+		<link rel="shortcut icon" type="image/icon" href="https://i.top4top.io/p_3207ch7t70.png"/>
+       
+        <!--font-awesome.min.css-->
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
 
-footer {
-	position:fixed;
-	bottom:0;
-	left:0;
-	width: 100%;
-	height: 24px;
-	background-color: #7e3af2;
+		<!--flat icon css-->
+		<link rel="stylesheet" href="assets/css/flaticon.css">
 
-}
-p.footer-title {
-	font-size: 13px;
-	position: relative;
-	color: #fff;
-	font-family: 'IBM Plex Mono', monospace;
+		<!--animate.css-->
+        <link rel="stylesheet" href="assets/css/animate.css">
 
-}
-</style>
-<script>
-	var xhr = new XMLHttpRequest();
-xhr.open("GET", "https://api.countapi.xyz/hit/rezzaapr.my.id/visits");
-xhr.responseType = "json";
-xhr.onload = function() {
-  document.querySelector('.footer-title').innerHTML = 'Total Visitor : ' + this.response.value;
-}
-xhr.send();
-</script>
-</head>
-  <body class="d-flex flex-column min-vh-100">
-    <div class="container mt-4">
-      <!-- Bio Page -->
-      <div class="card">
-        <div class="card-body">
-          <div class="text-center">
-           <img class="rounded-circle" alt="100x100" src="https://i.ibb.co/LtTYrHB/images.jpg"
-          data-holder-rendered="true" width="150" height="150">
+        <!--owl.carousel.css-->
+        <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+		<link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+		
+        <!--bootstrap.min.css-->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+		
+		<!-- bootsnav -->
+		<link rel="stylesheet" href="assets/css/bootsnav.css" >	
+        
+        <!--style.css-->
+        <link rel="stylesheet" href="assets/css/style.css">
+        
+        <!--responsive.css-->
+        <link rel="stylesheet" href="assets/css/responsive.css">
+        
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		
+        <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-          <h1 class="title mt-2">
-          <span class="myBadge">
-              <i class="bi bi-patch-check-fill"></i>
-            </span>ZinXploit</h1>
-          <p class="title2">Web Developer</p>
-        </div>
-        <div class="card-bio">
-          <div class="card-body">
-              <p class="bio-body">
-                Hai, Saya ZinXploit, Lulusan Smk, Saya tertarik dengan dunia pemrograman sejak saya masih smp.
-   </p>
-            </div>
-          </div>
-          	<p>
-            <a href="https://github.com/cerovatar"><img src="https://img.shields.io/badge/-GitHub-black?style=flat-square&logo=github" /></a>
-           <a href="https://wa.me/6283869421851"><img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" /></a>
-           <a href="https://instagram.com/marioadisaputra.off"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white"/></a>
-             </p>
- </div>
-        </div>
-      </div>
-      <!-- Skils -->
-      <div class="card mt-2">
-        <div class="card-body">
-          <h2 class="title"> My Skils</h1>
-          <p class="bio-body mt-2">Html</p>
-          <div class="progress" style="height: 4px;">
-            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <p class="bio-body mt-4">Css</p>
-          <div class="progress" style="height: 4px;">
-            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <p class="bio-body mt-4">Javascript</p>
-          <div class="progress" style="height: 4px;">
-            <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <p class="bio-body mt-4">Nodejs</p>
-          <div class="progress" style="height: 4px;">
-            <div class="progress-bar" role="progressbar" style="width: 58%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <p class="bio-body mt-4">Bootsrap</p>
-          <div class="progress mb-5" style="height: 4px;">
-            <div class="progress-bar" role="progressbar" style="width: 45%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Project -->
-		   <center>
-	<button type="button" class="btn" onclick="play()" style="background: silver; border-radius:10px; font-family:Iceberg;"> <font style="font-family:Iceberg; text-decoration:bold; text-shadow: 2px 0 1px red, 1px 2px 0 white;" color="black" size="6"> <b> PLAY MUSIC</b></font></button>    ||| <button type="button" class="btn" onclick="pause()" style="background: silver; border-radius:10px; font-family:iceberg;"> <font style="font-family:iceberg; text-decoration:bold; text-shadow: 2px 0 1px red, 1px 2px 0 white;" color="black" size="6"><b> PAUSE MUSIC</b></font></button>    </font>	   
-		   </center>
-        <script>
-        function play() {
-            var audio = document.getElementById("music");
-            audio.play();
-        }
+    </head>
+	
+	<body>
+		<!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+		
+		<!-- top-area Start -->
+		<header class="top-area">
+			<div class="header-area">
+				<!-- Start Navigation -->
+			    <nav class="navbar navbar-default bootsnav navbar-fixed dark no-background">
 
-        function pause() {
-            var audio = document.getElementById("music");
-            audio.pause();
-        }
-    </script>
-   <audio id="music" src="https://a.top4top.io/m_3018e5lqj0.mp3""></audio>
+			        <div class="container">
 
-    </div>
-	   </center>
-    </div>
-    <footer class="mt-auto]">
-      <div class="text-center">
-      <p class="footer-title">Copyright &copy; 2024 - Developed By ZinXploit</p>
-    </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+			            <!-- Start Header Navigation -->
+			            <div class="navbar-header">
+			                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+			                    <i class="fa fa-bars"></i>
+			                </button>
+			                <a class="navbar-brand" href="index.html">ZinXploit</a>
+			            </div><!--/.navbar-header-->
+			            <!-- End Header Navigation -->
 
-  </body>
-</html>
+			            <!-- Collect the nav links, forms, and other content for toggling -->
+			            <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
+			                <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
+			                <li class=" smooth-menu active">Menu</li>
+			                    <li class=" smooth-menu"><a href="./Csrf-online-by-ZinXploit.html">csrf</a></li>
+			                    <li class="smooth-menu"><a href="./ddos.html"> ddos</a></li>
+			                    <li class="smooth-menu"><a href="./Game.html"> game</a></li>
+			                    <li class="smooth-menu"><a href="./kalkulator.html">Kalkulator</a></li>
+			                </ul><!--/.nav -->
+			            </div><!-- /.navbar-collapse -->
+			        </div><!--/.container-->
+			    </nav><!--/nav-->
+			    <!-- End Navigation -->
+			</div><!--/.header-area-->
+
+		    <div class="clearfix"></div>
+
+		</header><!-- /.top-area-->
+		<!-- top-area End -->
+	
+		<!--welcome-hero start -->
+		<section id="welcome-hero" class="welcome-hero">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<div class="header-text">
+							<h2>hi <span>,</span> i am <br> ZinXploit<span>.</span>   </h2>
+							<p>ui/ux designer and web developer</p>
+						</div><!--/.header-text-->
+					</div><!--/.col-->
+				</div><!-- /.row-->
+			</div><!-- /.container-->
+
+		</section><!--/.welcome-hero-->
+		<!--welcome-hero end -->
+
+		<!--about start -->
+		<section id="about" class="about">
+			<div class="section-heading text-center">
+				<h2>about me</h2>
+			</div>
+			<div class="container">
+				<div class="about-content">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="single-about-txt">
+								<h3>
+								Hai, Saya ZinXploit, Lulusan Smk, Saya tertarik dengan dunia pemrograman sejak saya masih smp.
+            					</h3>
+								<p>
+									Sampai saat ini saya tetep belajar trus supaya lancar dalam pemrograman apapun itu. 
+								</p>
+								<div class="row">
+									<div class="col-sm-4">
+										<div class="single-about-add-info">
+											<h3>phone</h3>
+											<p>(+62)895-3700-18557</p>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="single-about-add-info">
+											<h3>email</h3>
+											<p>cerovatarzinakawara@gmail.com</p>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="single-about-add-info">
+											<h3>website</h3>
+											<p> - </p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-offset-1 col-sm-5">
+							<div class="single-about-img">
+								<img src="https://i.top4top.io/p_3207ch7t70.png" alt="profile_image">
+								<div class="about-list-icon">
+									<ul>
+										 <li>
+											<a href="#">
+												<i  class="fa fa-whatsapp" aria-hidden="true"></i>
+											</a>
+										</li><!-- / li -->
+										<li>
+											<a href="instagram.com/taring.off">
+												<i  class="fa fa-instagram" aria-hidden="true"></i>
+											</a>
+										</li><!-- / li -->
+										
+										
+									</ul><!-- / ul -->
+								</div><!-- /.about-list-icon -->
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</section><!--/.about-->
+		<!--about end -->
+		
+
+		<!--skills start -->
+		<section id="skills" class="skills">
+				<div class="skill-content">
+					<div class="section-heading text-center">
+						<h2>skills</h2>
+							</div>
+							<div class="col-md-6">
+								<div class="single-skill-content">
+									<div class="barWrapper">
+										<span class="progressText">html 5</span>
+										<div class="single-progress-txt">
+											<div class="progress ">
+												<div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="10" aria-valuemax="100" style="">
+													
+												</div>
+											</div>
+											<h3>90%</h3>	
+										</div>
+									</div><!-- /.barWrapper -->
+									<div class="barWrapper">
+										<span class="progressText">css 3 animation</span>
+										<div class="single-progress-txt">
+											<div class="progress ">
+											   <div class="progress-bar" role="progressbar" aria-valuenow="85" aria-valuemin="10" aria-valuemax="100" style="">
+												    
+											   </div>
+											</div>
+											<h3>85%</h3>	
+										</div>
+									</div><!-- /.barWrapper -->
+									<div class="barWrapper">
+										<span class="progressText">communication</span>
+										<div class="single-progress-txt">
+											<div class="progress ">
+											   <div class="progress-bar" role="progressbar" aria-valuenow="97" aria-valuemin="10" aria-valuemax="100" style="">
+												   
+											   </div>
+											</div>
+											<h3>97%</h3>	
+										</div>
+									</div><!-- /.barWrapper -->
+									<div class="barWrapper">
+										<span class="progressText"> creativity</span>
+										<div class="single-progress-txt">
+											<div class="progress ">
+											   <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="10" aria-valuemax="100" style="">
+												    
+											   </div>
+											</div>
+											<h3>90%</h3>	
+										</div>
+									</div><!-- /.barWrapper -->
+								</div>
+							</div>
+						</div><!-- /.row -->
+					</div>	<!-- /.container -->		
+				</div><!-- /.skill-content-->
+
+		</section><!--/.skills-->
+		<!--skills end -->
+				
+		<!--contact start -->
+		<section id="contact" class="contact">
+			<div class="section-heading text-center">
+				<h2>contact me</h2>
+			</div>
+						</div><!--/.single-contact-box-->
+						</div><!--/.col-->
+						<div class="col-md-offset-1 col-md-5 col-sm-6">
+							<div class="single-contact-box">
+								<div class="contact-adress">
+									<div class="contact-add-head">
+										<h3>ZinXploit</h3>
+										<p>Ui/Developer Web</p>
+									</div>
+									<div class="contact-add-info">
+										<div class="single-contact-add-info">
+											<h3>phone</h3>
+											<p>(+62)895-3700-18557</p>
+										</div>
+										<div class="single-contact-add-info">
+											<h3>email</h3>
+											<p>cerovatarzinakawara@gmail.com</p>
+										</div>
+										<div class="single-contact-add-info">
+											<h3>website</h3>
+											<p> - </p>
+										</div>
+									</div>
+								</div><!--/.contact-adress-->
+								<div class="hm-foot-icon">
+									<ul>
+								    	<li><a href="wa.me/62895370018557"><i class="fa fa-whatsapp"></i></a></li><!--/li-->
+										<li><a href="#"><i class="fa fa-instagram"></i></a></li><!--/li-->
+									</ul><!--/ul-->
+								</div><!--/.hm-foot-icon-->
+							</div><!--/.single-contact-box-->
+						</div><!--/.col-->
+					</div><!--/.row-->
+				</div><!--/.contact-content-->
+			</div><!--/.container-->
+
+		</section><!--/.contact-->
+		<!--contact end -->
+
+		<!--footer-copyright start-->
+		<footer id="footer-copyright" class="footer-copyright">
+			<div class="container">
+				<div class="hm-footer-copyright text-center">
+					<p>
+						&copy; copyright yourname. design and developed by <a href="https://www.themesine.com/">themesine</a>
+					</p><!--/p-->
+				</div><!--/.text-center-->
+			</div><!--/.container-->
+
+			<div id="scroll-Top">
+				<div class="return-to-top">
+					<i class="fa fa-angle-up " id="scroll-top" ></i>
+				</div>
+				
+			</div><!--/.scroll-Top-->
+			
+        </footer><!--/.footer-copyright-->
+		<!--footer-copyright end-->
+		
+		<!-- Include all js compiled plugins (below), or include individual files as needed -->
+
+		<script src="assets/js/jquery.js"></script>
+        
+        <!--modernizr.min.js-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+		
+		<!--bootstrap.min.js-->
+        <script src="assets/js/bootstrap.min.js"></script>
+		
+		<!-- bootsnav js -->
+		<script src="assets/js/bootsnav.js"></script>
+		
+		<!-- jquery.sticky.js -->
+		<script src="assets/js/jquery.sticky.js"></script>
+		
+		<!-- for progress bar start-->
+
+		<!-- progressbar js -->
+		<script src="assets/js/progressbar.js"></script>
+
+		<!-- appear js -->
+		<script src="assets/js/jquery.appear.js"></script>
+
+		<!-- for progress bar end -->
+
+		<!--owl.carousel.js-->
+        <script src="assets/js/owl.carousel.min.js"></script>
+
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+		
+        
+        <!--Custom JS-->
+        <script src="assets/js/custom.js"></script>
+        
+    </body>
+	
+										</html>
