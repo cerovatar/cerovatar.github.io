@@ -1,0 +1,771 @@
+  <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Chat Pribadi</title>
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Internal -->
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #343a40;
+            --background-color: #f4f7f6;
+            --text-color: #333;
+            --sent-message-color: #dcf8c6;
+            --received-message-color: #fff;
+            --sidebar-bg: #2c3e50;
+            --hover-bg: #34495e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Utility Classes */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .screen.active {
+            display: flex;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* Login & Register Screen */
+        #login-screen {
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .auth-container {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        .auth-container h1 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        .auth-container p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        .auth-form .input-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .auth-form .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .auth-form button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .auth-form button:hover {
+            background-color: #0056b3;
+        }
+        .auth-switch {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .auth-switch a {
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* Chat App */
+        .app-header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header-info h2 {
+            font-size: 1.5rem;
+        }
+        #logout-btn {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #logout-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .app-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--hover-bg);
+        }
+        .sidebar-header h3 {
+            font-size: 1.2rem;
+        }
+        #add-friend-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .friends-list {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .friend-item {
+            padding: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .friend-item:hover, .friend-item.active {
+            background-color: var(--hover-bg);
+        }
+        .friend-item .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #e5ddd5;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+        }
+        .chat-header {
+            padding: 1rem 1.5rem;
+            background-color: #f0f2f5;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        .messages-container {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message {
+            max-width: 60%;
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+        }
+        .message.sent {
+            background-color: var(--sent-message-color);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        .message.received {
+            background-color: var(--received-message-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .message p {
+            margin: 0;
+        }
+        .message .meta {
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .message.received .meta {
+            text-align: left;
+        }
+        
+        /* Media dalam Pesan */
+        .message img, .message video {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+        .message .file-attachment {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(0,0,0,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+        .message .file-attachment i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .message-form {
+            display: flex;
+            padding: 1rem;
+            background-color: #f0f2f5;
+            border-top: 1px solid #ddd;
+            align-items: center;
+            gap: 10px;
+        }
+        #message-input {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            outline: none;
+        }
+        #message-input:focus {
+            border-color: var(--primary-color);
+        }
+        #attach-file-btn, #send-btn {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        #attach-file-btn:hover, #send-btn:hover {
+            background-color: #0056b3;
+        }
+        #file-input {
+            display: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 2rem;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+        }
+        #add-friend-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #add-friend-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .error-text {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .app-body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: 40%;
+                order: 2;
+            }
+            .chat-area {
+                height: 60%;
+                order: 1;
+            }
+            .sidebar-header {
+                padding: 0.75rem;
+            }
+            .friend-item {
+                padding: 0.75rem;
+            }
+            .message {
+                max-width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Layar Login & Pendaftaran -->
+    <div id="login-screen" class="screen active">
+        <div class="auth-container">
+            <h1><i class="fa-solid fa-comments"></i> ChatKu</h1>
+            <p id="auth-form-title">Masuk untuk memulai obrolan</p>
+            
+            <!-- Form Login -->
+            <form id="login-form" class="auth-form">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="login-username-input" placeholder="Username" required>
+                </div>
+                <button type="submit">Masuk</button>
+            </form>
+
+            <!-- Form Pendaftaran -->
+            <form id="register-form" class="auth-form hidden">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="register-username-input" placeholder="Username Baru" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-id-card"></i>
+                    <input type="text" id="register-name-input" placeholder="Nama Lengkap" required>
+                </div>
+                <button type="submit">Daftar</button>
+            </form>
+
+            <div class="auth-switch">
+                <span id="switch-text">Belum punya akun? </span><a id="switch-link" href="#">Daftar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplikasi Chat Utama -->
+    <div id="chat-app" class="screen">
+        <header class="app-header">
+            <div class="header-info">
+                <h2><i class="fa-solid fa-comments"></i> ChatKu</h2>
+                <span id="current-user-display"></span>
+            </div>
+            <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+        </header>
+
+        <main class="app-body">
+            <!-- Sidebar untuk Daftar Teman -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Pesan</h3>
+                    <button id="add-friend-btn"><i class="fa-solid fa-user-plus"></i></button>
+                </div>
+                <ul id="friends-list" class="friends-list">
+                    <!-- Daftar teman akan dimuat di sini oleh JavaScript -->
+                </ul>
+            </aside>
+
+            <!-- Area Chat -->
+            <section class="chat-area">
+                <!-- Header Chat (Nama Teman) -->
+                <div id="chat-header" class="chat-header">
+                    <span>Pilih teman untuk memulai chat</span>
+                </div>
+
+                <!-- Container Pesan -->
+                <div id="messages-container" class="messages-container">
+                    <!-- Pesan akan dimuat di sini oleh JavaScript -->
+                </div>
+
+                <!-- Form Input Pesan -->
+                <form id="message-form" class="message-form">
+                    <button type="button" id="attach-file-btn" title="Lampirkan File">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </button>
+                    <input type="text" id="message-input" placeholder="Ketik pesan..." disabled>
+                    <input type="file" id="file-input" />
+                    <button type="submit" id="send-btn" title="Kirim Pesan" disabled>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Tambah Teman -->
+    <div id="add-friend-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Tambah Teman</h3>
+            <form id="add-friend-form">
+                <input type="text" id="friend-username-input" placeholder="Masukkan username teman" required>
+                <button type="submit">Tambah</button>
+            </form>
+            <p id="add-friend-error" class="error-text"></p>
+        </div>
+    </div>
+
+    <!-- JavaScript Internal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- ELEMEN DOM ---
+            const loginScreen = document.getElementById('login-screen');
+            const chatApp = document.getElementById('chat-app');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const loginUsernameInput = document.getElementById('login-username-input');
+            const registerUsernameInput = document.getElementById('register-username-input');
+            const registerNameInput = document.getElementById('register-name-input');
+            const authFormTitle = document.getElementById('auth-form-title');
+            const switchText = document.getElementById('switch-text');
+            const switchLink = document.getElementById('switch-link');
+            const currentUserDisplay = document.getElementById('current-user-display');
+            const logoutBtn = document.getElementById('logout-btn');
+            const friendsList = document.getElementById('friends-list');
+            const chatHeader = document.getElementById('chat-header');
+            const messagesContainer = document.getElementById('messages-container');
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            const sendBtn = document.getElementById('send-btn');
+            const attachFileBtn = document.getElementById('attach-file-btn');
+            const fileInput = document.getElementById('file-input');
+            const addFriendBtn = document.getElementById('add-friend-btn');
+            const addFriendModal = document.getElementById('add-friend-modal');
+            const addFriendForm = document.getElementById('add-friend-form');
+            const friendUsernameInput = document.getElementById('friend-username-input');
+            const addFriendError = document.getElementById('add-friend-error');
+            const closeBtn = document.querySelector('.close-btn');
+
+            // --- DATA & STATE ---
+            const DEFAULT_USERS = [
+                { id: 1, username: 'andi', name: 'Andi' },
+                { id: 2, username: 'budi', name: 'Budi' },
+                { id: 3, username: 'citra', name: 'Citra' },
+                { id: 4, username: 'doni', name: 'Doni' }
+            ];
+
+            let registeredUsers = [];
+            let currentUser = null;
+            let activeFriend = null;
+            const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+
+            // --- FUNGSI-FUNGSI UTAMA ---
+            const initializeUsers = () => {
+                const storedUsers = localStorage.getItem('registeredUsers');
+                if (storedUsers) {
+                    registeredUsers = JSON.parse(storedUsers);
+                } else {
+                    registeredUsers = [...DEFAULT_USERS];
+                    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                }
+            };
+
+            const register = (username, name) => {
+                if (registeredUsers.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                    alert('Username sudah terdaftar. Silakan gunakan username lain.');
+                    return;
+                }
+                const newUser = { id: Date.now(), username: username.toLowerCase(), name: name };
+                registeredUsers.push(newUser);
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                alert('Pendaftaran berhasil! Silakan masuk.');
+                showLoginForm();
+            };
+
+            const login = (username) => {
+                const user = registeredUsers.find(u => u.username.toLowerCase() === username.toLowerCase());
+                if (user) {
+                    currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    showChatApp();
+                } else {
+                    alert('Username tidak ditemukan.');
+                }
+            };
+
+            const logout = () => {
+                currentUser = null;
+                activeFriend = null;
+                localStorage.removeItem('currentUser');
+                showLoginScreen();
+            };
+
+            const showChatApp = () => {
+                loginScreen.classList.remove('active');
+                chatApp.classList.add('active');
+                currentUserDisplay.textContent = currentUser.name;
+                renderFriendsList();
+            };
+
+            const showLoginScreen = () => {
+                chatApp.classList.remove('active');
+                loginScreen.classList.add('active');
+                showLoginForm();
+            };
+            
+            const showLoginForm = () => {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                authFormTitle.textContent = 'Masuk untuk memulai obrolan';
+                switchText.innerHTML = 'Belum punya akun? ';
+                switchLink.textContent = 'Daftar';
+            };
+
+            const showRegisterForm = () => {
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                authFormTitle.textContent = 'Buat akun baru';
+                switchText.innerHTML = 'Sudah punya akun? ';
+                switchLink.textContent = 'Masuk';
+            };
+
+            const renderFriendsList = () => {
+                const friends = getFriends();
+                friendsList.innerHTML = '';
+                if (friends.length === 0) {
+                    friendsList.innerHTML = '<li class="friend-item">Belum ada teman</li>';
+                    return;
+                }
+                friends.forEach(friend => {
+                    const li = document.createElement('li');
+                    li.classList.add('friend-item');
+                    li.dataset.username = friend.username;
+                    li.innerHTML = `<div class="avatar">${friend.name.charAt(0).toUpperCase()}</div><span>${friend.name}</span>`;
+                    li.addEventListener('click', () => openChat(friend));
+                    friendsList.appendChild(li);
+                });
+            };
+
+            const getFriends = () => {
+                const friendsData = localStorage.getItem(`friends_${currentUser.username}`);
+                if (!friendsData) return [];
+                const friendUsernames = JSON.parse(friendsData);
+                return registeredUsers.filter(u => friendUsernames.includes(u.username));
+            };
+
+            const addFriend = (friendUsername) => {
+                const friendToAdd = registeredUsers.find(u => u.username.toLowerCase() === friendUsername.toLowerCase());
+                addFriendError.textContent = '';
+                if (!friendToAdd) { addFriendError.textContent = 'Username tidak ditemukan.'; return; }
+                if (friendToAdd.username === currentUser.username) { addFriendError.textContent = 'Tidak bisa menambahkan diri sendiri.'; return; }
+                const friends = getFriends();
+                if (friends.some(f => f.username === friendToAdd.username)) { addFriendError.textContent = 'Teman sudah ada di daftar.'; return; }
+                const updatedFriends = [...friends, friendToAdd].map(f => f.username);
+                localStorage.setItem(`friends_${currentUser.username}`, JSON.stringify(updatedFriends));
+                renderFriendsList();
+                addFriendModal.style.display = 'none';
+                addFriendForm.reset();
+            };
+            
+            const openChat = (friend) => {
+                activeFriend = friend;
+                chatHeader.innerHTML = `<span>${friend.name}</span>`;
+                document.querySelectorAll('.friend-item').forEach(item => item.classList.remove('active'));
+                document.querySelector(`.friend-item[data-username="${friend.username}"]`)?.classList.add('active');
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                attachFileBtn.disabled = false;
+                renderMessages();
+            };
+
+            const renderMessages = () => {
+                if (!activeFriend) return;
+                const chatKey = `chat_${currentUser.username}_${activeFriend.username}`;
+                const messages = JSON.parse(localStorage.getItem(chatKey)) || [];
+                messagesContainer.innerHTML = '';
+                messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message', msg.sender === currentUser.username ? 'sent' : 'received');
+                    
+                    let contentHTML = '';
+                    if (msg.type === 'file') {
+                        if (msg.mimeType.startsWith('image/')) {
+                            contentHTML = `<img src="${msg.data}" alt="${msg.fileName}">`;
+                        } else if (msg.mimeType.startsWith('video/')) {
+                            contentHTML = `<video controls><source src="${msg.data}" type="${msg.mimeType}"></video>`;
+                        } else {
+                            contentHTML = `<a href="${msg.data}" download="${msg.fileName}" class="file-attachment"><i class="fa-solid fa-file"></i><span>${msg.fileName}</span></a>`;
+                        }
+                    } else {
+                        // Fallback for old text messages or new ones
+                        contentHTML = `<p>${msg.text}</p>`;
+                    }
+
+                    messageDiv.innerHTML = contentHTML;
+                    const meta = document.createElement('div');
+                    meta.classList.add('meta');
+                    meta.textContent = new Date(msg.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    messageDiv.appendChild(meta);
+                    
+                    messagesContainer.appendChild(messageDiv);
+                });
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            };
+
+            const sendMessage = () => {
+                const text = messageInput.value.trim();
+                if (text === '' || !activeFriend) return;
+                const chatKey = `chat_${currentUser.username}_${activeFriend.username}`;
+                const messages = JSON.parse(localStorage.getItem(chatKey)) || [];
+                const newMessage = { sender: currentUser.username, text: text, timestamp: new Date().toISOString() };
+                messages.push(newMessage);
+                localStorage.setItem(chatKey, JSON.stringify(messages));
+                messageInput.value = '';
+                renderMessages();
+            };
+
+            const sendFile = (file) => {
+                if (!activeFriend) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const chatKey = `chat_${currentUser.username}_${activeFriend.username}`;
+                    const messages = JSON.parse(localStorage.getItem(chatKey)) || [];
+                    const newMessage = {
+                        type: 'file',
+                        sender: currentUser.username,
+                        mimeType: file.type,
+                        fileName: file.name,
+                        data: e.target.result, // Base64 string
+                        timestamp: new Date().toISOString()
+                    };
+                    messages.push(newMessage);
+                    localStorage.setItem(chatKey, JSON.stringify(messages));
+                    renderMessages();
+                };
+                reader.readAsDataURL(file);
+            };
+            
+            // --- EVENT LISTENERS ---
+            loginForm.addEventListener('submit', (e) => { e.preventDefault(); login(loginUsernameInput.value); });
+            registerForm.addEventListener('submit', (e) => { e.preventDefault(); register(registerUsernameInput.value, registerNameInput.value); });
+            switchLink.addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.contains('hidden') ? showLoginForm() : showRegisterForm(); });
+            logoutBtn.addEventListener('click', logout);
+            messageForm.addEventListener('submit', (e) => { e.preventDefault(); sendMessage(); });
+
+            attachFileBtn.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > MAX_FILE_SIZE) {
+                        alert(`Ukuran file terlalu besar. Maksimal ${MAX_FILE_SIZE / 1024 / 1024}MB.`);
+                        fileInput.value = ''; // Reset input
+                        return;
+                    }
+                    sendFile(file);
+                    fileInput.value = ''; // Reset input
+                }
+            });
+
+            addFriendBtn.addEventListener('click', () => { addFriendModal.style.display = 'block'; });
+            closeBtn.addEventListener('click', () => { addFriendModal.style.display = 'none'; });
+            window.addEventListener('click', (event) => { if (event.target == addFriendModal) { addFriendModal.style.display = 'none'; } });
+            addFriendForm.addEventListener('submit', (e) => { e.preventDefault(); addFriend(friendUsernameInput.value); });
+
+            // --- INISIALISASI ---
+            initializeUsers();
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                showChatApp();
+            } else {
+                showLoginScreen();
+            }
+        });
+    </script>
+</body>
+</html>
