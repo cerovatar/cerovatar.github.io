@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hitung Neptu Weton Primbon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0e6d6;
+            color: #333;
+            padding: 20px;
+            /* Tambah padding bawah agar footer tidak menutupi konten */
+            padding-bottom: 80px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #8b4513;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: #a0522d;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #d2b48c;
+            padding-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d2b48c;
+            border-radius: 8px;
+            background-color: #fff8f0;
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #8b4513;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #a0522d;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff8f0;
+            border-radius: 10px;
+            border: 1px solid #d2b48c;
+            display: none;
+        }
+
+        .result h3 {
+            color: #8b4513;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .result-item span {
+            font-weight: bold;
+            color: #a0522d;
+        }
+
+        .meaning {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f0e3;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .note {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        /* CSS Footer Baru */
+        footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            text-align: center;
+            color: #8b4513;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hitung Neptu Weton Primbon</h1>
+
+        <!-- Form Wanita -->
+        <div class="section">
+            <h2>Data Weton Wanita</h2>
+            <div class="form-group">
+                <label>Hari Saptawara:</label>
+                <select id="wanita-saptawara">
+                    <option value="5">Minggu (5)</option>
+                    <option value="4">Senin (4)</option>
+                    <option value="3">Selasa (3)</option>
+                    <option value="7">Rabu (7)</option>
+                    <option value="8">Kamis (8)</option>
+                    <option value="6">Jumat (6)</option>
+                    <option value="9">Sabtu (9)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Hari Pancawara:</label>
+                <select id="wanita-pancawara">
+                    <option value="9">Pahing (9)</option>
+                    <option value="7">Pon (7)</option>
+                    <option value="4">Wage (4)</option>
+                    <option value="8">Kliwon (8)</option>
+                    <option value="5">Legi (5)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Form Pria -->
+        <div class="section">
+            <h2>Data Weton Pria</h2>
+            <div class="form-group">
+                <label>Hari Saptawara:</label>
+                <select id="pria-saptawara">
+                    <option value="5">Minggu (5)</option>
+                    <option value="4">Senin (4)</option>
+                    <option value="3">Selasa (3)</option>
+                    <option value="7">Rabu (7)</option>
+                    <option value="8">Kamis (8)</option>
+                    <option value="6">Jumat (6)</option>
+                    <option value="9">Sabtu (9)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Hari Pancawara:</label>
+                <select id="pria-pancawara">
+                    <option value="9">Pahing (9)</option>
+                    <option value="7">Pon (7)</option>
+                    <option value="4">Wage (4)</option>
+                    <option value="8">Kliwon (8)</option>
+                    <option value="5">Legi (5)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tombol Hitung -->
+        <button id="hitung-btn">Hitung Neptu</button>
+
+        <!-- Hasil -->
+        <div class="result" id="result">
+            <h3>Hasil Perhitungan</h3>
+            <div class="result-item">Neptu Wanita: <span id="neptu-wanita"></span></div>
+            <div class="result-item">Neptu Pria: <span id="neptu-pria"></span></div>
+            <div class="result-item">Total Neptu Pasangan: <span id="total-neptu"></span></div>
+            <div class="result-item">Sisa Pembagian (dengan 7): <span id="sisa"></span></div>
+            <div class="result-item">Nama Klasifikasi: <span id="klasifikasi"></span></div>
+            <div class="meaning" id="makna">Makna: <span id="makna-teks"></span></div>
+        </div>
+
+        <!-- Catatan -->
+        <div class="note">
+            *Hasil hanya sebagai petunjuk tradisional. Keberhasilan rumah tangga tergantung komunikasi dan usaha bersama.
+        </div>
+    </div>
+
+    <!-- Footer Tambahan -->
+    <footer>
+        Created by ©ZinXploit
+    </footer>
+
+    <script>
+        // Data makna sisa pembagian
+        const maknaSisa = [
+            { sisa: 1, nama: "Wasesa Segara", makna: "Pasangan harmonis, rendah hati, dan penuh pengertian. Hidup rumah tangga damai dengan sedikit konflik." },
+            { sisa: 2, nama: "Tunggak Semi", makna: "Rezeki sedikit terbatas, tapi pasangan tetap sabar dan bekerja keras." },
+            { sisa: 3, nama: "Satriya Wibawa", makna: "Dapat kemuliaan dan keluhuran, dihormati oleh banyak orang." },
+            { sisa: 4, nama: "Sumur Sinaba", makna: "Banyak orang datang untuk mencari nasihat, pasangan menjadi contoh bagi orang lain." },
+            { sisa: 5, nama: "Satriya Wirang", makna: "Sering menghadapi kesulitan, mudah di-fitnah. Bisa ditangkal dengan memotong ayam saat ijab kabul." },
+            { sisa: 6, nama: "Bumi Kepeat", makna: "Hati sedikit gelap, tapi kuat menghadapi ujian. Bisa ditangkal dengan mengubur tanah saat ijab kabul." },
+            { sisa: 7, nama: "Lebu Ketupang Angin", makna: "Sering kesusahan, cita-cita sulit tercapai, sering pindah rumah. Perlu upaya extra dan doa untuk mengatasi." }
+        ];
+
+        // Elemen DOM
+        const hitungBtn = document.getElementById('hitung-btn');
+        const resultDiv = document.getElementById('result');
+
+        // Fungsi hitung neptu individu
+        function hitungNeptu(saptawaraVal, pancawaraVal) {
+            return parseInt(saptawaraVal) + parseInt(pancawaraVal);
+        }
+
+        // Event klik tombol hitung
+        hitungBtn.addEventListener('click', () => {
+            // Ambil nilai dari select
+            const wanitaSapta = document.getElementById('wanita-saptawara').value;
+            const wanitaPanca = document.getElementById('wanita-pancawara').value;
+            const priaSapta = document.getElementById('pria-saptawara').value;
+            const priaPanca = document.getElementById('pria-pancawara').value;
+
+            // Hitung neptu masing-masing
+            const neptuWanita = hitungNeptu(wanitaSapta, wanitaPanca);
+            const neptuPria = hitungNeptu(priaSapta, priaPanca);
+
+            // Hitung total dan sisa
+            const totalNeptu = neptuWanita + neptuPria;
+            const sisa = totalNeptu % 7 === 0 ? 7 : totalNeptu % 7;
+
+            // Dapatkan makna berdasarkan sisa
+            const dataMakna = maknaSisa.find(item => item.sisa === sisa);
+
+            // Tampilkan hasil
+            document.getElementById('neptu-wanita').textContent = neptuWanita;
+            document.getElementById('neptu-pria').textContent = neptuPria;
+            document.getElementById('total-neptu').textContent = totalNeptu;
+            document.getElementById('sisa').textContent = sisa;
+            document.getElementById('klasifikasi').textContent = dataMakna.nama;
+            document.getElementById('makna-teks').textContent = dataMakna.makna;
+
+            // Tampilkan div hasil
+            resultDiv.style.display = 'block';
+
+            // Gulir ke hasil (untuk ponsel)
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
