@@ -391,4 +391,231 @@
         table.appendChild(tr);
       });
     }
-    $('#productForm').addEventListener('submit', e=>{ e.preventDefault(); const name=$('#p_name').value.trim(); const price=Number($('#p_price').value); const stock=Number($('#p_stock').value); const unit=$('#p_unit').value.trim(); if(!name) return alert('Nama kosong'); DB.data.products.push({id:uid(),name,p
+$('#productForm').addEventListener('submit', e=>{ e.preventDefault(); const name=$('#p_name').value.trim(); const price=Number($('#p_price').value); const stock=Number($('#p_stock').value); const unit=$('#p_unit').value.trim(); if(!name) return alert('Nama kosong'); DB.data.products.push({id:uid(),name,price,stock,unit}); DB.save(); $('#productForm').reset(); renderProducts(); });
+    $('#quickAddForm').addEventListener('submit', e=>{ e.preventDefault(); const name=$('#q_name').value.trim(); const price=Number($('#q_price').value); const stock=Number($('#q_stock').value); if(!name) return; DB.data.products.push({id:uid(),name,price,stock,unit:'butir'}); DB.save(); $('#quickAddForm').reset(); renderProducts(); });
+
+    // === Cart ===
+    let cart = [];
+    function addToCart(pid){ const p = DB.data.products.find(x=>x.id===pid); if(!p) return alert('Produk tidak ditemukan'); if(p.stock<=0) return alert('Stok habis'); const item = cart.find(i=>i.id===pid); if(item){ if(item.qty+1>p.stock) return alert('Stok tidak cukup'); item.qty++; } else cart.push({id:pid,qty:1,price:p.price,name:p.name}); renderCart(); }
+    function renderCart(){ const tbody = $('#cartTable tbody'); tbody.innerHTML=''; let total=0; cart.forEach(i=>{ const sub = i.qty*i.price; total+=sub; const tr=document.createElement('tr'); tr.innerHTML = `<td>${i.name}</td><td><input type="number" min="1" value="${i.qty}" class="form-control form-control-sm qty" style="width:80px"/></td><td>${money(i.price)}</td><td>${money(sub)}</td><td><button class="btn btn-sm btn-danger rm">-</button></td>`; tr.querySelector('.rm').addEventListener('click', ()=>{ cart = cart.filter(x=>x.id!==i.id); renderCart(); }); tr.querySelector('.qty').addEventListener('change', (ev)=>{ const v=Number(ev.target.value); const prod = DB.data.products.find(p=>p.id===i.id); if(v>prod.stock){ alert('Stok tidak cukup'); ev.target.value=i.qty; return; } i.qty=v; renderCart(); }); tbody.appendChild(tr); }); $('#cartTotal').innerText = money(total); }
+    $('#clearCartBtn').addEventListener('click', ()=>{ cart=[]; renderCart(); });
+
+    // === Payment Modal Logic ===
+    const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+    const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
+    let currentSale = null;
+
+    $('#checkoutBtn').addEventListener('click', () => {
+      if(cart.length === 0) return alert('Keranjang kosong');
+      const total = cart.reduce((s,i)=>s+i.qty*i.price,0);
+      $('#modalTotal').innerText = money(total);
+      $('#cashAmount').value = '';
+      $('#cashChange').innerText = 'Rp 0';
+      
+      showPaymentDetails('cash');
+      paymentModal.show();
+    });
+
+    $$('input[name="paymentMethod"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        showPaymentDetails(radio.value);
+      });
+    });
+
+    function showPaymentDetails(method) {
+      $('#cashPaymentDetails').classList.add('d-none');
+      $('#qrisPaymentDetails').classList.add('d-none');
+      $('#transferPaymentDetails').classList.add('d-none');
+
+      if (method === 'cash') {
+        $('#cashPaymentDetails').classList.remove('d-none');
+      } else if (method === 'qris') {
+        $('#qrisPaymentDetails').classList.remove('d-none');
+        const qrisSrc = DB.data.settings.qris;
+        if (qrisSrc) {
+          $('#qrisModalImage').src = qrisSrc;
+        } else {
+          $('#qrisModalImage').alt = 'QRIS tidak diatur. Silakan atur di Pengaturan.';
+        }
+      } else if (method === 'transfer') {
+        $('#transferPaymentDetails').classList.remove('d-none');
+        $('#transferBankName').innerText = DB.data.settings.bankName || 'Belum diatur';
+        $('#transferBankAcc').innerText = DB.data.settings.bankAcc || 'Belum diatur';
+      }
+    }
+
+    $('#cashAmount').addEventListener('input', () => {
+      const total = cart.reduce((s,i)=>s+i.qty*i.price,0);
+      const amount = Number($('#cashAmount').value) || 0;
+      const change = amount - total;
+      $('#cashChange').innerText = money(change);
+    });
+
+    // === Confirm Payment and Generate Receipt ===
+    $('#confirmPaymentBtn').addEventListener('click', () => {
+      const total = cart.reduce((s,i)=>s+i.qty*i.price,0);
+      const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+      let amountPaid = total;
+
+      if (paymentMethod === 'cash') {
+        amountPaid = Number($('#cashAmount').value) || 0;
+        if (amountPaid < total) {
+          alert('Jumlah uang tidak cukup!');
+          return;
+        }
+      }
+
+      const items = cart.map(i=>({id:i.id,name:i.name,qty:i.qty,price:i.price}));
+      currentSale = {
+        id: uid(),
+        date: new Date().toISOString(),
+        items,
+        total,
+        paymentMethod,
+        amountPaid
+      };
+
+      DB.data.sales.push(currentSale);
+      items.forEach(it=>{ const p = DB.data.products.find(x=>x.id===it.id); if(p) p.stock = Math.max(0,p.stock - it.qty); });
+      DB.save();
+
+      cart = [];
+      renderCart();
+      renderProducts();
+      renderSales();
+      renderStats();
+      renderFinancialSummary();
+
+      paymentModal.hide();
+      displayReceipt(currentSale);
+      receiptModal.show();
+    });
+
+    function displayReceipt(sale) {
+      const items = sale.items.map(i => `${i.name.padEnd(20)} ${i.qty} x ${money(i.price).padStart(10)} = ${money(i.qty * i.price).padStart(12)}`).join('\n');
+      const change = sale.amountPaid - sale.total;
+      const paymentDetails = sale.paymentMethod === 'cash' ? `Uang Diterima: ${money(sale.amountPaid)}\nKembalian:     ${money(change)}` : `Metode: ${sale.paymentMethod.toUpperCase()}`;
+
+      const receiptText = `
+================================
+        Cilok Radja
+       Jl. Contoh No. 123
+    Telp: 0812-3456-7890
+================================
+Tanggal: ${new Date(sale.date).toLocaleString('id-ID')}
+No. Struk: ${sale.id}
+--------------------------------
+ ${items}
+--------------------------------
+Subtotal:      ${money(sale.total).padStart(12)}
+ ${paymentDetails.padEnd(25)}
+================================
+      Terima Kasih
+    Selamat Menikmati
+================================
+      `;
+      $('#receiptContent').innerText = receiptText;
+    }
+
+    // === Receipt Actions ===
+    $('#printReceiptBtn').addEventListener('click', () => window.print());
+    $('#sendWaReceiptBtn').addEventListener('click', () => {
+      const receiptText = $('#receiptContent').innerText;
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(receiptText)}`;
+      window.open(waUrl, '_blank');
+    });
+    $('#saveReceiptBtn').addEventListener('click', () => {
+      const receiptText = $('#receiptContent').innerText;
+      const blob = new Blob([receiptText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `struk_${currentSale.id}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+
+    // === Sales / Laporan ===
+    let salesChart = null;
+    function renderSales(filtered){
+      const arr = (filtered||DB.data.sales).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+      const tb = $('#salesTable tbody'); tb.innerHTML=''; arr.forEach(s=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${new Date(s.date).toLocaleString()}</td><td>${s.items.map(i=>i.name+' x'+i.qty).join(', ')}</td><td>${money(s.total)}</td><td>${s.paymentMethod}</td><td><button class="btn btn-sm btn-outline-light view">Lihat</button> <button class="btn btn-sm btn-danger del">Hapus</button></td>`;
+        tr.querySelector('.view').addEventListener('click', ()=>{ displayReceipt(s); receiptModal.show(); });
+        tr.querySelector('.del').addEventListener('click', ()=>{ if(confirm('Hapus transaksi?')){ DB.data.sales = DB.data.sales.filter(x=>x.id!==s.id); DB.save(); renderSales(); renderStats(); renderFinancialSummary(); } });
+        tb.appendChild(tr);
+      });
+
+      const labels = [];
+      const values = [];
+      const days = 14; for(let i=days-1;i>=0;i--){ const d = new Date(); d.setDate(d.getDate()-i); const key = d.toISOString().slice(0,10); labels.push(key); const sum = DB.data.sales.filter(sale=>sale.date.slice(0,10)===key).reduce((a,b)=>a+b.total,0); values.push(sum); }
+      if(salesChart) salesChart.destroy();
+      const ctx = document.getElementById('salesChart');
+      if(ctx) {
+        salesChart = new Chart(ctx,{ type:'bar', data:{labels:labels, datasets:[{label:'Penjualan (Rp)',data:values, backgroundColor: 'rgba(6,182,212,0.5)'}] }, options:{scales:{y:{ticks:{callback: v=> v.toLocaleString('id-ID')}}}} });
+      }
+    }
+
+    function renderStats(){
+      const total = DB.data.sales.reduce((s,x)=>s+x.total,0);
+      const qty = DB.data.sales.reduce((s,x)=> s + x.items.reduce((a,b)=>a+b.qty,0),0);
+      $('#summarySales').innerText = money(total);
+      $('#summaryQty').innerText = qty;
+    }
+    
+    function renderFinancialSummary() {
+      const totalSales = DB.data.sales.reduce((s, x) => s + x.total, 0);
+      const totalExpenses = DB.data.expenses.reduce((s, x) => s + x.amount, 0);
+      const netSetoran = totalSales - totalExpenses;
+      
+      $('#summaryExpenses').innerText = '- ' + money(totalExpenses);
+      $('#summaryNetSetoran').innerText = money(netSetoran);
+    }
+
+    // filter
+    $('#applyFilter').addEventListener('click', ()=>{
+      const from = $('#filterFrom').value; const to = $('#filterTo').value;
+      let arr = DB.data.sales;
+      if(from) arr = arr.filter(s=> s.date.slice(0,10) >= from);
+      if(to) arr = arr.filter(s=> s.date.slice(0,10) <= to);
+      renderSales(arr);
+    });
+
+    // === Setoran ===
+    function calcSetoran(){ const p=Number($('#s_price').value||0); const q=Number($('#s_qty').value||0); $('#s_total').value = p*q; }
+    $('#s_price').addEventListener('input', calcSetoran); $('#s_qty').addEventListener('input', calcSetoran);
+    $('#setoranForm').addEventListener('submit', e=>{ e.preventDefault(); const price=Number($('#s_price').value); const qty=Number($('#s_qty').value); const total=price*qty; const rec = {id:uid(),date:new Date().toISOString(),price,qty,total}; DB.data.setoran.push(rec); DB.save(); renderSetoran(); alert('Setoran tersimpan'); $('#setoranForm').reset(); $('#s_total').value=''; });
+    function renderSetoran(){ const tb = $('#setoranTable tbody'); tb.innerHTML=''; DB.data.setoran.slice().reverse().forEach(s=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${new Date(s.date).toLocaleString()}</td><td>${money(s.price)}</td><td>${s.qty}</td><td>${money(s.total)}</td><td><button class="btn btn-sm btn-danger del">Hapus</button></td>`; tr.querySelector('.del').addEventListener('click', ()=>{ if(confirm('Hapus setoran?')){ DB.data.setoran = DB.data.setoran.filter(x=>x.id!==s.id); DB.save(); renderSetoran(); } }); tb.appendChild(tr); }); }
+
+    // === Pengeluaran / expenses ===
+    $('#expenseForm').addEventListener('submit', e=>{ e.preventDefault(); const desc=$('#e_desc').value.trim(); const amount=Number($('#e_amount').value); const addStock=Number($('#e_qty').value||0); const rec={id:uid(),date:new Date().toISOString(),desc,amount,addStock}; DB.data.expenses.push(rec);
+      if(addStock>0 && DB.data.products.length>0){ DB.data.products[0].stock = Number(DB.data.products[0].stock) + addStock; }
+      DB.save(); renderExpenses(); renderProducts(); renderFinancialSummary(); alert('Pengeluaran tersimpan'); $('#expenseForm').reset(); });
+    function renderExpenses(){ const tb=$('#expenseTable tbody'); tb.innerHTML=''; DB.data.expenses.slice().reverse().forEach(x=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${new Date(x.date).toLocaleString()}</td><td>${x.desc}</td><td>${money(x.amount)}</td><td>${x.addStock||'-'}</td><td><button class="btn btn-sm btn-danger del">Hapus</button></td>`; tr.querySelector('.del').addEventListener('click', ()=>{ if(confirm('Hapus pengeluaran?')){ DB.data.expenses = DB.data.expenses.filter(y=>y.id!==x.id); DB.save(); renderExpenses(); renderFinancialSummary(); } }); tb.appendChild(tr); }); }
+
+    // === Settings (QRIS upload + bank) ===
+    $('#qrisUpload').addEventListener('change', e=>{
+      const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{ DB.data.settings.qris = r.result; $('#qrisPreview').src = r.result; $('#qrisPreview').style.display = 'block'; DB.save(); }; r.readAsDataURL(f);
+    });
+    $('#settingsForm').addEventListener('submit', e=>{ e.preventDefault(); DB.data.settings.bankName = $('#bankName').value; DB.data.settings.bankAcc = $('#bankAcc').value; DB.save(); alert('Pengaturan tersimpan'); });
+
+    // === Export / Reset ===
+    $('#exportBtn').addEventListener('click', ()=>{ const data = JSON.stringify(DB.data,null,2); const blob = new Blob([data],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='kasir_data.json'; a.click(); URL.revokeObjectURL(url); });
+    $('#resetBtn').addEventListener('click', ()=>{ if(confirm('Reset semua data?')){ localStorage.removeItem('kasir_data'); DB.load(); DB.save(); renderAll(); alert('Data direset'); } });
+
+    // === Initial render flow ===
+    function renderAll(){ renderProducts(); renderCart(); renderSales(); renderSetoran(); renderExpenses(); renderStats(); renderFinancialSummary();
+      if(DB.data.settings.qris) { $('#qrisPreview').src = DB.data.settings.qris; $('#qrisPreview').style.display = 'block'; }
+      $('#bankName').value = DB.data.settings.bankName || ''; $('#bankAcc').value = DB.data.settings.bankAcc || '';
+    }
+
+    // run
+    renderAll();
+    showView('kasir');
+  </script>
+</body>
+</html>
