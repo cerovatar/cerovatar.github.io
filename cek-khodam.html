@@ -1,1 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Khodam Primbon</title>
+    <style>
+        /* CSS untuk cek-khodam.html (sama dengan index.html) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        body {
+            background-color: #f0e6d6;
+            color: #333;
+            padding: 20px;
+            padding-bottom: 80px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Perbaikan Header dan Navbar */
+        header {
+            background-color: #8b4513;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        header nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        header nav a {
+            display: inline-block;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 8px;
+            background-color: #f0e6d6;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        header nav a:hover {
+            background-color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header nav a.active {
+            background-color: #fff;
+            color: #8b4513;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #e0d5c1;
+            border-radius: 10px;
+            background-color: #faf8f5;
+        }
+
+        .section h2 {
+            color: #a0522d;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #d2b48c;
+            padding-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d2b48c;
+            border-radius: 8px;
+            background-color: #fff8f0;
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #8b4513;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #a0522d;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff8f0;
+            border-radius: 10px;
+            border: 1px solid #d2b48c;
+            display: none;
+        }
+
+        .result h3 {
+            color: #8b4513;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .result-item span {
+            font-weight: bold;
+            color: #a0522d;
+        }
+
+        .meaning {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f0e3;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .note {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            text-align: center;
+            color: #8b4513;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cek Khodam Primbon</h1>
+            <nav>
+                <a href="neptu.html">Kalkulator Neptu</a>
+                <a href="cek-khodam.html" class="active">Cek Khodam</a>
+            </nav>
+        </header>
+
+        <div class="content">
+            <section class="section">
+                <h2>Cek Khodam Berdasarkan Weton</h2>
+                <div class="form-group">
+                    <label>Hari Saptawara:</label>
+                    <select id="khodam-saptawara">
+                        <option value="5">Minggu (5)</option>
+                        <option value="4">Senin (4)</option>
+                        <option value="3">Selasa (3)</option>
+                        <option value="7">Rabu (7)</option>
+                        <option value="8">Kamis (8)</option>
+                        <option value="6">Jumat (6)</option>
+                        <option value="9">Sabtu (9)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Hari Pancawara:</label>
+                    <select id="khodam-pancawara">
+                        <option value="9">Pahing (9)</option>
+                        <option value="7">Pon (7)</option>
+                        <option value="4">Wage (4)</option>
+                        <option value="8">Kliwon (8)</option>
+                        <option value="5">Legi (5)</option>
+                    </select>
+                </div>
+                <button id="cek-khodam-btn">Cek Khodam Saya</button>
+                <div class="result" id="hasil-khodam">
+                    <h3>Hasil Pencarian Khodam</h3>
+                    <div class="result-item">Weton Anda: <span id="weton-anda"></span></div>
+                    <div class="result-item">Khodam Anda: <span id="nama-khodam"></span></div>
+                    <div class="meaning" id="deskripsi-khodam">Deskripsi: <span id="deskripsi-teks"></span></div>
+                </div>
+            </section>
+
+            <div class="note">
+                *Khodam adalah bagian dari kepercayaan tradisional. Hasil ini hanya untuk hiburan dan tidak boleh dijadikan pegangan utama dalam hidup.
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Created by ©ZinXploit
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const khodamData = {
+                "Minggu Legi": { nama: "Kyai Semar", deskripsi: "Pembawa ketenangan, kebijaksanaan, dan selalu melindungi dari marabahaya." },
+                "Minggu Pahing": { nama: "Macan Putih", deskripsi: "Pemberani, memiliki wibawa tinggi, dan sanggup menjaga martabat keluarga." },
+                "Minggu Pon": { nama: "Naga Biru", deskripsi: "Pembawa rezeki yang melimpah dari berbagai arah, dan menjaga keharmonisan." },
+                "Minggu Wage": { nama: "Buto Ijo", deskripsi: "Penolong yang kuat, memberikan kekuatan fisik dan mental dalam menghadapi cobaan." },
+                "Minggu Kliwon": { nama: "Ratu Laut Kidul", deskripsi: "Pemberi petunjuk, kemuliaan, dan perlindungan dari energi negatif." },
+                "Senin Legi": { nama: "Eyang Jaya", deskripsi: "Pembawa kedamaian dan kesejukan dalam hati, menjauhkan dari perselisihan." },
+                "Senin Pahing": { nama: "Singa Barong", deskripsi: "Memberikan keberanian dan kekuatan untuk memimpin dan melindungi keluarga." },
+                "Senin Pon": { nama: "Harimau Putih", deskripsi: "Simbol keberanian dan keadilan, selalu membela yang benar." },
+                "Senin Wage": { nama: "Buta Ijo", deskripsi: "Penjaga gaib yang setia, melindungi rumah tangga dari gangguan jin jahat." },
+                "Senin Kliwon": { nama: "Dewi Lanjar", deskripsi: "Pembawa ketenteraman batin dan kebahagiaan dalam rumah tangga." },
+                "Selasa Legi": { nama: "Ratu Pantai Selatan", deskripsi: "Memberikan kekuatan spiritual dan kemampuan melihat hal gaib." },
+                "Selasa Pahing": { nama: "Macan Kuning", deskripsi: "Pemberi semangat, energi positif, dan kemudahan dalam mencari rezeki." },
+                "Selasa Pon": { nama: "Naga Geni", deskripsi: "Memberikan panas semangat, gairah hidup, dan kewibawaan." },
+                "Selasa Wage": { nama: "Brahala", deskripsi: "Pembawa kekuatan luar biasa, namun perlu menjaga agar tidak sombong." },
+                "Selasa Kliwon": { nama: "Dewi Sri", deskripsi: "Pembawa kemakmuran, kesuburan, dan kekayaan material." },
+                "Rabu Legi": { nama: "Kyai Blorong", deskripsi: "Pembawa kekayaan yang tak terduga dan kelancaran dalam bisnis." },
+                "Rabu Pahing": { nama: "Garuda", deskripsi: "Simbol kejayaan, ketinggian derajat, dan perlindungan dari atas." },
+                "Rabu Pon": { nama: "Kuda Sembrani", deskripsi: "Memberikan kecepatan dalam meraih cita-cita dan kesuksesan." },
+                "Rabu Wage": { nama: "Bajang", deskripsi: "Penjaga yang lincah, membantu mengatasi masalah dengan cepat." },
+                "Rabu Kliwon": { nama: "Nyi Roro Kidul", deskripsi: "Pemberi kecantikan, daya tarik, dan pengaruh yang besar." },
+                "Kamis Legi": { nama: "Kyai Balung", deskripsi: "Pembaga ilmu pengetahuan, kebijaksanaan, dan kewibawaan." },
+                "Kamis Pahing": { nama: "Gajah Mada", deskripsi: "Memberikan kekuatan, pengaruh, dan kemampuan memimpin banyak orang." },
+                "Kamis Pon": { nama: "Lembu Suro", deskripsi: "Pembawa ketabahan, kesabaran, dan kekuatan untuk menopang keluarga." },
+                "Kamis Wage": { nama: "Babi Ngepet", deskripsi: "Dikaitkan dengan kekayaan material, namun perlu iman yang kuat." },
+                "Kamis Kliwon": { nama: "Dewa Ruci", deskripsi: "Pembawa ilmu spiritual yang tinggi dan pemahaman hidup yang dalam." },
+                "Jumat Legi": { nama: "Ratu Kidul", deskripsi: "Pembawa kesejahteraan, ketenangan, dan kebahagiaan lahir batin." },
+                "Jumat Pahing": { nama: "Ular Sakti", deskripsi: "Memberikan daya pikat, kelancaran rejeki, dan kemudahan bergaul." },
+                "Jumat Pon": { nama: "Macan Tutul", deskripsi: "Pembawa keberuntungan, ketajaman intuisi, dan kemampuan beradaptasi." },
+                "Jumat Wage": { nama: "Kalowiso", deskripsi: "Pembawa kesabaran, keikhlasan, dan ketenangan dalam menghadapi ujian." },
+                "Jumat Kliwon": { nama: "Ratu Pantai", deskripsi: "Pemberi anugerah, kecantikan, dan kemudahan dalam segala urusan." },
+                "Sabtu Legi": { nama: "Sang Hyang Widhi", deskripsi: "Pembawa berkah, perlindungan sempurna, dan jalan hidup yang lurus." },
+                "Sabtu Pahing": { nama: "Brahma Kumbara", deskripsi: "Pembawa kekuatan, keberanian, dan kemampuan untuk melindungi orang tersayang." },
+                "Sabtu Pon": { nama: "Singa", deskripsi: "Simbol keberanian, kejayaan, dan kewibawaan di mata orang lain." },
+                "Sabtu Wage": { nama: "Buto Golo", deskripsi: "Pembawa nafsu makan yang besar, namun juga kekuatan fisik yang luar biasa." },
+                "Sabtu Kliwon": { nama: "Batara Kala", deskripsi: "Pembawa kekuatan magis, namun perlu menjaga perilaku agar tidak terpengaruh negatif." }
+            };
+            
+            const hariSaptawara = { '5': 'Minggu', '4': 'Senin', '3': 'Selasa', '7': 'Rabu', '8': 'Kamis', '6': 'Jumat', '9': 'Sabtu' };
+            const hariPancawara = { '9': 'Pahing', '7': 'Pon', '4': 'Wage', '8': 'Kliwon', '5': 'Legi' };
+
+            const cekKhodamBtn = document.getElementById('cek-khodam-btn');
+            const hasilKhodamDiv = document.getElementById('hasil-khodam');
+
+            cekKhodamBtn.addEventListener('click', () => {
+                const khodamSapta = document.getElementById('khodam-saptawara').value;
+                const khodamPanca = document.getElementById('khodam-pancawara').value;
+
+                const namaHariSapta = hariSaptawara[khodamSapta];
+                const namaHariPanca = hariPancawara[khodamPanca];
+                const wetonLengkap = `${namaHariSapta} ${namaHariPanca}`;
+
+                const khodamInfo = khodamData[wetonLengkap];
+
+                if (khodamInfo) {
+                    document.getElementById('weton-anda').textContent = wetonLengkap;
+                    document.getElementById('nama-khodam').textContent = khodamInfo.nama;
+                    document.getElementById('deskripsi-teks').textContent = khodamInfo.deskripsi;
+                    hasilKhodamDiv.style.display = 'block';
+                    hasilKhodamDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert("Khodam untuk weton ini tidak ditemukan.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
