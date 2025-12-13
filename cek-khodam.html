@@ -5,19 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cek Khodam Primbon</title>
     <style>
-        /* CSS untuk cek-khodam.html (sama dengan index.html) */
+        /* CSS Variables for Easy Theme Management */
+        :root {
+            --primary-color: #8b4513; /* SaddleBrown */
+            --secondary-color: #a0522d; /* Sienna */
+            --background-color: #f0e6d6; /* Beige */
+            --surface-color: #faf8f5; /* Light Beige */
+            --text-primary: #333;
+            --text-secondary: #666;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f0e6d6;
-            color: #333;
-            padding: 20px;
-            padding-bottom: 80px;
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
             position: relative;
             min-height: 100vh;
         }
@@ -29,15 +38,18 @@
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 80px; /* Ruang untuk footer */
         }
 
         /* Perbaikan Header dan Navbar */
         header {
-            background-color: #8b4513;
+            background-color: var(--primary-color);
             padding: 20px;
             text-align: center;
             border-radius: 15px 15px 0 0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative; /* Diperlukan untuk posisi hamburger menu */
         }
 
         header h1 {
@@ -46,37 +58,95 @@
             margin-bottom: 15px;
         }
         
-        header nav {
+        /* Hamburger Menu Styles */
+        .hamburger {
+            position: absolute;
+            top: 50%;
+            right: 25px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 1001;
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 25px;
+            height: 21px;
         }
 
-        header nav a {
-            display: inline-block;
-            color: #333;
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: white;
+            transition: all 0.3s ease-in-out;
+            transform-origin: 1px;
+        }
+
+        .menu-open .hamburger span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+
+        .menu-open .hamburger span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-open .hamburger span:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--primary-color);
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            transition: right 0.3s ease-in-out;
+            z-index: 1000;
+            padding-top: 60px;
+        }
+
+        .side-menu ul {
+            list-style-type: none;
+        }
+
+        .side-menu ul li a {
+            display: block;
+            padding: 18px 30px;
+            color: white;
             text-decoration: none;
-            font-weight: bold;
-            padding: 8px 15px;
-            border-radius: 8px;
-            background-color: #f0e6d6;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-        
-        header nav a:hover {
-            background-color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        header nav a.active {
-            background-color: #fff;
-            color: #8b4513;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
         }
 
+        .side-menu ul li a:hover, .side-menu ul li a.active {
+            background-color: var(--secondary-color);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .menu-open .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-open .side-menu {
+            right: 0;
+        }
+        
         .content {
             padding: 30px;
         }
@@ -86,11 +156,11 @@
             padding: 20px;
             border: 1px solid #e0d5c1;
             border-radius: 10px;
-            background-color: #faf8f5;
+            background-color: var(--surface-color);
         }
 
         .section h2 {
-            color: #a0522d;
+            color: var(--secondary-color);
             font-size: 1.3rem;
             margin-bottom: 15px;
             border-bottom: 2px solid #d2b48c;
@@ -114,14 +184,14 @@
             border-radius: 8px;
             background-color: #fff8f0;
             font-size: 1rem;
-            color: #333;
+            color: var(--text-primary);
             cursor: pointer;
         }
 
         button {
             width: 100%;
             padding: 15px;
-            background-color: #8b4513;
+            background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: 8px;
@@ -133,7 +203,7 @@
         }
 
         button:hover {
-            background-color: #a0522d;
+            background-color: var(--secondary-color);
         }
 
         .result {
@@ -146,7 +216,7 @@
         }
 
         .result h3 {
-            color: #8b4513;
+            color: var(--primary-color);
             margin-bottom: 15px;
             font-size: 1.2rem;
         }
@@ -158,7 +228,7 @@
 
         .result-item span {
             font-weight: bold;
-            color: #a0522d;
+            color: var(--secondary-color);
         }
 
         .meaning {
@@ -172,10 +242,11 @@
         .note {
             margin-top: 25px;
             font-size: 0.9rem;
-            color: #666;
+            color: var(--text-secondary);
             text-align: center;
         }
-
+        
+        /* Footer */
         footer {
             position: absolute;
             bottom: 0;
@@ -183,20 +254,33 @@
             width: 100%;
             padding: 15px 20px;
             text-align: center;
-            color: #8b4513;
+            color: var(--primary-color);
             font-weight: 500;
             font-size: 0.95rem;
         }
     </style>
 </head>
 <body>
+    <!-- Overlay untuk menutupi konten saat menu terbuka -->
+    <div class="overlay" onclick="closeMenu()"></div>
+
+    <!-- Samping Menu (Navigasi) -->
+    <nav class="side-menu">
+        <ul>
+            <li><a href="neptu.html">Kalkulator Neptu</a></li>
+            <li><a href="cek-khodam.html" class="active">Cek Khodam</a></li>
+            <li><a href="tafsirmimpi.html">Arti Mimpi</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
         <header>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <h1>Cek Khodam Primbon</h1>
-            <nav>
-                <a href="neptu.html">Kalkulator Neptu</a>
-                <a href="cek-khodam.html" class="active">Cek Khodam</a>
-            </nav>
         </header>
 
         <div class="content">
@@ -229,7 +313,7 @@
                     <h3>Hasil Pencarian Khodam</h3>
                     <div class="result-item">Weton Anda: <span id="weton-anda"></span></div>
                     <div class="result-item">Khodam Anda: <span id="nama-khodam"></span></div>
-                    <div class="meaning" id="deskripsi-khodam">Deskripsi: <span id="deskripsi-teks"></span></div>
+                    <div class="meaning">Deskripsi: <span id="deskripsi-teks"></span></div>
                 </div>
             </section>
 
@@ -244,6 +328,16 @@
     </footer>
 
     <script>
+        // Fungsi untuk membuka dan menutup menu
+        function toggleMenu() {
+            document.body.classList.toggle('menu-open');
+        }
+
+        // Fungsi untuk menutup menu
+        function closeMenu() {
+            document.body.classList.remove('menu-open');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const khodamData = {
                 "Minggu Legi": { nama: "Kyai Semar", deskripsi: "Pembawa ketenangan, kebijaksanaan, dan selalu melindungi dari marabahaya." },
@@ -262,7 +356,7 @@
                 "Selasa Wage": { nama: "Brahala", deskripsi: "Pembawa kekuatan luar biasa, namun perlu menjaga agar tidak sombong." },
                 "Selasa Kliwon": { nama: "Dewi Sri", deskripsi: "Pembawa kemakmuran, kesuburan, dan kekayaan material." },
                 "Rabu Legi": { nama: "Kyai Blorong", deskripsi: "Pembawa kekayaan yang tak terduga dan kelancaran dalam bisnis." },
-                "Rabu Pahing": { nama: "Garuda", deskripsi: "Simbol kejayaan, ketinggian derajat, dan perlindungan dari atas." },
+                "Rabu Pahing": { nama: "Garuda", deskripsi: "Simbol kemenangan, ketinggian derajat, dan perlindungan dari atas." },
                 "Rabu Pon": { nama: "Kuda Sembrani", deskripsi: "Memberikan kecepatan dalam meraih cita-cita dan kesuksesan." },
                 "Rabu Wage": { nama: "Bajang", deskripsi: "Penjaga yang lincah, membantu mengatasi masalah dengan cepat." },
                 "Rabu Kliwon": { nama: "Nyi Roro Kidul", deskripsi: "Pemberi kecantikan, daya tarik, dan pengaruh yang besar." },
@@ -278,7 +372,7 @@
                 "Jumat Kliwon": { nama: "Ratu Pantai", deskripsi: "Pemberi anugerah, kecantikan, dan kemudahan dalam segala urusan." },
                 "Sabtu Legi": { nama: "Sang Hyang Widhi", deskripsi: "Pembawa berkah, perlindungan sempurna, dan jalan hidup yang lurus." },
                 "Sabtu Pahing": { nama: "Brahma Kumbara", deskripsi: "Pembawa kekuatan, keberanian, dan kemampuan untuk melindungi orang tersayang." },
-                "Sabtu Pon": { nama: "Singa", deskripsi: "Simbol keberanian, kejayaan, dan kewibawaan di mata orang lain." },
+                "Sabtu Pon": { nama: "Singa", deskripsi: "Simbol keberanian, kemenangan, dan kewibawaan di mata orang lain." },
                 "Sabtu Wage": { nama: "Buto Golo", deskripsi: "Pembawa nafsu makan yang besar, namun juga kekuatan fisik yang luar biasa." },
                 "Sabtu Kliwon": { nama: "Batara Kala", deskripsi: "Pembawa kekuatan magis, namun perlu menjaga perilaku agar tidak terpengaruh negatif." }
             };

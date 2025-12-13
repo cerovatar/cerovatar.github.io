@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arti Mimpi | Primbon, Islam & Psikologi</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS Variables for Easy Theme Management --- */
+        :root {
+            --primary-color: #6F4E37; /* Coffee Brown */
+            --secondary-color: #C7A17A; /* Light Brown */
+            --background-color: #EDE1D1; /* Beige */
+            --surface-color: #D2B48C; /* Tan (Light Brown) - Diubah dari warna gelap */
+            --on-surface-color: #FFFFFF; /* Text on dark surface (untuk menu) */
+            --text-primary: #333333; /* Text on light surface - Ditambahkan */
+            --error-color: #D9534F;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: var(--surface-color); /* Warna baru coklat muda */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            color: var(--text-primary); /* Teks menjadi gelap agar mudah dibaca */
+        }
+
+        header {
+            background-color: var(--primary-color);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            color: var(--on-surface-color); /* Teks header tetap putih */
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* --- Hamburger Menu --- */
+        .hamburger {
+            position: absolute;
+            top: 50%;
+            right: 25px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 25px;
+            height: 21px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: var(--on-surface-color);
+            transition: all 0.3s ease-in-out;
+            transform-origin: 1px;
+        }
+
+        .menu-open .hamburger span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+
+        .menu-open .hamburger span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-open .hamburger span:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: #3D2C1D; /* Menu samping tetap gelap untuk kontras */
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            padding-top: 80px;
+        }
+
+        .side-menu ul {
+            list-style-type: none;
+        }
+
+        .side-menu ul li a {
+            display: block;
+            padding: 18px 30px;
+            color: var(--on-surface-color); /* Teks menu samping tetap putih */
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .side-menu ul li a:hover, .side-menu ul li a.active {
+            background-color: var(--primary-color);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .menu-open .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-open .side-menu {
+            right: 0;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        /* --- Tab Styling --- */
+        .tab-container {
+            display: flex;
+            margin-bottom: 30px;
+            background-color: rgba(0, 0, 0, 0.05); /* Sedikit gelap untuk kontras */
+            border-radius: 15px;
+            padding: 5px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            background-color: transparent;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color); /* Teks tab default menjadi gelap */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: var(--on-surface-color); /* Teks tab aktif menjadi putih */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* --- Tab Content & Search Styling --- */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 15px 20px;
+            border: 1px solid rgba(0, 0, 0, 0.1); /* Border lebih gelap */
+            border-radius: 12px;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.7); /* Background lebih terang */
+            color: var(--text-primary); /* Teks input menjadi gelap */
+            transition: all 0.3s ease;
+        }
+        
+        .search-input::placeholder {
+            color: #777; /* Placeholder abu-abu */
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #FFFFFF; /* Menjadi putih saat fokus */
+        }
+
+        .search-button {
+            padding: 15px 30px;
+            background-color: var(--secondary-color);
+            color: var(--on-surface-color);
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            white-space: nowrap; /* Mencegah teks tombol pecah */
+        }
+
+        .search-button:hover {
+            background-color: #b8936f;
+            transform: translateY(-2px);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        /* --- Result & Note Styling --- */
+        .result-container {
+            margin-top: 20px;
+            padding: 25px;
+            background-color: #FFFFFF; /* Background putih untuk kontras */
+            border-radius: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            display: none;
+            color: var(--text-primary); /* Teks hasil menjadi gelap */
+        }
+
+        .result-container h3 {
+            color: var(--primary-color); /* Judul hasil menjadi coklat gelap */
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .result-keyword {
+            font-weight: 700;
+            color: var(--primary-color); /* Kata kunci hasil menjadi coklat gelap */
+        }
+
+        .result-text {
+            margin-top: 10px;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        .note {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #FFF3E0; /* Warna oranye muda untuk menonjol */
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #E65100; /* Warna oranye tua untuk teks */
+            text-align: center;
+            border: 1px solid #FFCC02;
+        }
+        
+        /* --- Footer --- */
+        footer {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            color: var(--on-surface-color); /* Teks footer tetap putih */
+            font-weight: 500;
+            font-size: 0.95rem;
+            background-color: var(--primary-color);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px auto;
+                border-radius: 15px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .search-group {
+                flex-direction: column; /* Menyusun elemen secara vertikal */
+                gap: 15px;
+            }
+
+            .search-button {
+                width: 100%; /* Tombol memenuhi lebar penuh */
+            }
+
+            .tab-button {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay -->
+    <div class="overlay" onclick="closeMenu()"></div>
+
+    <!-- Side Menu (Navigasi) -->
+    <nav class="side-menu">
+        <ul>
+            <li><a href="arti-mimpi.html" class="active">Arti Mimpi</a></li>
+            <li><a href="neptu.html">Kalkulator Neptu</a></li>
+            <li><a href="cek-khodam.html">Cek Khodam</a></li>
+            <li><a href="#">Tentang</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <header>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <h1>Tafsir Arti Mimpi</h1>
+            <p>Jelajahi makna di balik mimpi Anda</p>
+        </header>
+
+        <div class="content">
+            <!-- Tab Navigasi -->
+            <div class="tab-container">
+                <button class="tab-button active" onclick="switchTab('primbon', this)">Primbon</button>
+                <button class="tab-button" onclick="switchTab('islam', this)">Islam</button>
+                <button class="tab-button" onclick="switchTab('psikologi', this)">Psikologi</button>
+            </div>
+
+            <!-- Konten Tab Primbon -->
+            <div id="primbon" class="tab-content active">
+                <div class="search-container">
+                    <div class="search-group">
+                        <input type="text" id="search-primbon" class="search-input" placeholder="Ketik mimpi Anda (contoh: hantu, gunung, telanjang)">
+                        <button class="search-button" onclick="searchDream('primbon')">Cari</button>
+                    </div>
+                </div>
+                <div id="result-primbon" class="result-container">
+                    <h3>Arti Mimpi: <span class="result-keyword"></span></h3>
+                    <p class="result-text"></p>
+                </div>
+            </div>
+
+            <!-- Konten Tab Islam -->
+            <div id="islam" class="tab-content">
+                <div class="search-container">
+                    <div class="search-group">
+                        <input type="text" id="search-islam" class="search-input" placeholder="Ketik mimpi Anda (contoh: hantu, gunung, telanjang)">
+                        <button class="search-button" onclick="searchDream('islam')">Cari</button>
+                    </div>
+                </div>
+                <div id="result-islam" class="result-container">
+                    <h3>Arti Mimpi: <span class="result-keyword"></span></h3>
+                    <p class="result-text"></p>
+                </div>
+            </div>
+
+            <!-- Konten Tab Psikologi -->
+            <div id="psikologi" class="tab-content">
+                <div class="search-container">
+                    <div class="search-group">
+                        <input type="text" id="search-psikologi" class="search-input" placeholder="Ketik mimpi Anda (contoh: hantu, gunung, telanjang)">
+                        <button class="search-button" onclick="searchDream('psikologi')">Cari</button>
+                    </div>
+                </div>
+                <div id="result-psikologi" class="result-container">
+                    <h3>Arti Mimpi: <span class="result-keyword"></span></h3>
+                    <p class="result-text"></p>
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>Catatan:</strong> Arti mimpi hanyalah sebuah tafsiran dan tidak selalu 100% benar. Jadikan ini sebagai referensi dan introspeksi diri. Keputusan dan takdir ada di tangan Tuhan.
+            </div>
+        </div>
+        
+        <footer>
+            Created by ©ZinXploit
+        </footer>
+    </div>
+
+    <script>
+        // Fungsi untuk membuka dan menutup menu
+        function toggleMenu() {
+            document.body.classList.toggle('menu-open');
+        }
+
+        // Fungsi untuk menutup menu
+        function closeMenu() {
+            document.body.classList.remove('menu-open');
+        }
+
+        // Database Mimpi yang Lengkap
+        const mimpiData = [
+            // Hewan
+            {
+                keyword: 'ular',
+                primbon: 'Mimpi melihat ular sering dikaitkan dengan akan bertemu jodoh, namun bisa juga pertanda adanya musuh yang menyamar. Jika ularnya besar, bisa jadi pertanda rezeki yang besar.',
+                islam: 'Dalam Islam, ular bisa melambangkan setan atau musuh. Mimpi ini bisa menjadi peringatan untuk waspada terhadap godaan dan fitnah dari orang-orang di sekitar.',
+                psikologi: 'Ular adalah simbol transformasi, penyembuhan, atau ketakutan primordial. Mimpi ini bisa mencerminkan emosi yang terpendam, kecemasan, atau proses perubahan besar dalam hidup Anda.'
+            },
+            {
+                keyword: 'kucing',
+                primbon: 'Kucing hitam sering dianggap pertanda buruk atau akan ada pengkhianatan dari teman. Namun, jika kucingnya jinak, bisa jadi pertanda akan ada teman baru yang setia.',
+                islam: 'Kucing bisa melambangkan seorang pencuri atau wanita yang jahat. Mimpi ini adalah peringatan untuk berhati-hati dalam pergaulan dan menjaga harta benda.',
+                psikologi: 'Kucing melambangkan sisi feminin, kemandirian, kreativitas, dan intuisi. Mimpi ini bisa mencerminkan hubungan Anda dengan aspek-aspek tersebut atau dengan sosok perempuan dalam hidup Anda.'
+            },
+            {
+                keyword: 'anjing',
+                primbon: 'Anjing yang menggigit pertanda akan ada fitnah atau serangan dari musuh. Jika anjingnya jinak, bisa jadi pertanda akan ada teman yang setia dan melindungi.',
+                islam: 'Anjing bisa melambangkan musuh yang rendahan atau musuh yang tampaknya lemah. Mimpi ini adalah peringatan untuk waspada terhadap ancaman yang mungkin Anda remehkan.',
+                psikologi: 'Anjing melambangkan loyalitas, persahabatan, dan perlindungan. Mimpi ini bisa mencerminkan perasaan Anda tentang persahabatan atau rasa aman. Anjing yang galak bisa melambangkan konflik internal atau eksternal.'
+            },
+            {
+                keyword: 'buaya',
+                primbon: 'Pertanda akan ada musuh yang sangat berbahaya dan licik. Anda harus berhati-hati dalam mengambil keputusan dan mempercayai orang lain.',
+                islam: 'Buaya adalah simbol dari polisi atau penguasa yang zalim. Mimpi ini bisa menjadi peringatan untuk taat pada aturan dan waspada terhadap penyalahgunaan kekuasaan.',
+                psikologi: 'Buaya melambangkan ancaman yang tersembunyi, pengkhianatan, atau emosi primitif yang kuat dan berbahaya. Mimpi ini menunjukkan adanya bahaya yang Anda sadari atau tidak sadari.'
+            },
+            {
+                keyword: 'burung',
+                primbon: 'Burung yang terbang bebas pertanda baik, akan ada kabar gembira atau keinginan yang terkabul. Menangkap burung bisa berarti akan mendapatkan kekayaan atau jodoh.',
+                islam: 'Burung melambangkan kebebasan, harapan, dan kabar gembama. Mimpi melihat burung bisa jadi pertanda akan datangnya kemudahan dan rahmat dari Allah.',
+                psikologi: 'Burung melambangkan pikiran, aspirasi, dan spiritualitas. Mimpi ini bisa mencerminkan keinginan untuk bebas, mencapai tujuan tinggi, atau menyampaikan pesan penting.'
+            },
+            {
+                keyword: 'ikan',
+                primbon: 'Mimpi melihat ikan banyak di air jernih pertanda akan mendapatkan rezeki yang melimpah. Menangkap ikan besar berarti akan mendapatkan keberuntungan besar.',
+                islam: 'Ikan melambangkan rezeki dan keberkahan. Mimpi ini adalah pertanda baik bahwa Anda akan diberi kemudahan dalam mencari nafkah dan kehidupan yang sejahtera.',
+                psikologi: 'Ikan melambangkan emosi bawah sadar, pengetahuan, dan transformasi spiritual. Mimpi ini bisa mencerminkan wawasan baru atau koneksi yang lebih dalam dengan intuisi Anda.'
+            },
+            {
+                keyword: 'macan',
+                primbon: 'Macan melambangkan musuh yang berkuasa dan berbahaya. Mimpi ini adalah peringatan untuk waspada terhadap ancaman yang bisa datang kapan saja.',
+                islam: 'Macan adalah simbol dari musuh yang zalim dan tiran. Mimpi ini adalah peringatan untuk memohon perlindungan Allah dari kejahatan orang-orang yang berkuasa.',
+                psikologi: 'Macan melambangkan agresi, kekuatan, dan hasrat yang tidak terkendali. Mimpi ini bisa mencerminkan perasaan marah, situasi yang mengancam, atau kekuatan pribadi yang perlu dikendalikan.'
+            },
+            // Benda & Tempat
+            {
+                keyword: 'rumah',
+                primbon: 'Rumah melambangkan diri sendiri. Mimpi rumah yang indah dan bersih pertanda ketenangan batin. Rumah yang rusak atau kotor menandakan ada masalah dalam kehidupan pribadi.',
+                islam: 'Rumah adalah simbol kehidupan pribadi, keluarga, dan ketenangan. Mimpi rumah baru bisa berarti akan memulai fase kehidupan baru. Rumah yang roboh bisa jadi peringatan tentang keutuhan keluarga.',
+                psikologi: 'Rumah mewakili "diri" atau jiwa. Setiap ruang bisa melambangkan aspek berbeda dari psikologi Anda (misalnya, loteng untuk pikiran, ruang bawah tanah untuk bawah sadar). Kondisi rumah mencerminkan kondisi batin Anda.'
+            },
+            {
+                keyword: 'mobil',
+                primbon: 'Mobil melambangkan perjalanan hidup. Mengendarai mobil dengan lancar pertanda kehidupan yang teratur. Jika mogok, bisa jadi ada rintangan dalam meraih tujuan.',
+                islam: 'Mobil bisa diartikan sebagai alat untuk mencapai tujuan. Jika dikendarai dengan baik, berarti usaha Anda akan berhasil. Jika hilang kendali, waspadalah terhadap godaan yang bisa membuat Anda menyimpang dari jalan yang benar.',
+                psikologi: 'Mobil mewakili cara Anda mengendalikan hidup Anda. Mimpi ini bisa mencerminkan ambisi, kekuatan, dan seberapa besar Anda merasa memiliki kontrol atas jalan hidup Anda.'
+            },
+            {
+                keyword: 'gunung',
+                primbon: 'Mimpi mendaki gunung adalah pertanda sangat baik. Anda akan mencapai kesuksesan, kehormatan, dan posisi tinggi. Semakin tinggi gunungnya, semakin besar kesuksesannya.',
+                islam: 'Gunung melambangkan tujuan spiritual yang tinggi, ilmu pengetahuan, atau seorang pemimpin. Mendakinya berarti berjuang untuk meraih cita-cita dan kedekatan dengan Allah.',
+                psikologi: 'Gunung melambangkan tantangan besar, tujuan hidup, atau rintangan yang harus diatasi. Mendakinya menunjukkan ambisi dan determinasi Anda untuk mencapai puncak kesuksesan.'
+            },
+            {
+                keyword: 'pisau',
+                primbon: 'Pisau yang tajam dan bersih pertanda kekuatan dan keberanian. Jika pisaunya tumpul atau berkarat, bisa jadi pertanda kelemahan atau akan ada perselisihan.',
+                islam: 'Pisau bisa melambangkan kekuasaan, lisan, atau pertolongan. Jika digunakan untuk hal baik, itu pertanda kebaikan. Jika untuk melukai, itu adalah peringatan tentang bahaya lisan atau tindakan.',
+                psikologi: 'Pisau melambangkan konflik, agresi, keputusan, atau kekuatan untuk memotong sesuatu (hubungan, masalah). Mimpi ini bisa mencerminkan kemarahan atau kebutuhan untuk mengambil tindakan tegas.'
+            },
+            {
+                keyword: 'pohon',
+                primbon: 'Pohon yang rindang dan tinggi pertanda kehidupan yang panjang, sejahtera, dan dihormati banyak orang. Pohon yang kering atau tumbang pertanda akan ada kesulitan.',
+                islam: 'Pohon melambangkan kehidupan, iman, dan kekuatan. Akarnya adalah dasar keimanan, batangnya adalah keislaman, dan buahnya adalah amal shaleh. Mimpi ini menunjukkan kondisi spiritual Anda.',
+                psikologi: 'Pohon melambangkan pertumbuhan pribadi, akar, dan tujuan hidup. Kondisi pohon (sehat, sakit, tumbang) bisa mencerminkan perasaan Anda tentang perkembangan diri dan fondasi hidup Anda.'
+            },
+            {
+                keyword: 'cermin',
+                primbon: 'Bermimpi melihat cermin yang jernih pertanda akan mendapatkan jodoh yang baik. Jika bayangan Anda terlihat buram atau jelek, waspadalah terhadap fitnah.',
+                islam: 'Cermin melambangkan hati. Jika Anda melihatnya bersih, itu pertanda hati yang baik. Jika kotor, itu adalah peringatan untuk membersihkan hati dari dosa dan niat buruk.',
+                psikologi: 'Cermin melambangkan introspeksi, citra diri, dan bagaimana Anda melihat diri sendiri. Mimpi ini bisa mencerminkan kepercayaan diri, kekhawatiran tentang penampilan, atau kebutuhan untuk mengevaluasi diri.'
+            },
+            // Peristiwa & Kondisi
+            {
+                keyword: 'hujan',
+                primbon: 'Hujan deras pertanda rezeki yang melimpah ruah. Namun, jika hujan disertai badai atau angin kencang, bisa jadi pertanda akan ada masalah besar.',
+                islam: 'Hujan adalah rahmat dari Allah. Mimpi hujan bisa menjadi pertanda akan datangnya kemudahan, berkah, dan terhapusnya dosa-dosa kecil.',
+                psikologi: 'Hujan melambangkan pelepasan emosi, pembersihan, dan pembaharuan. Mimpi ini bisa menandakan bahwa Anda sedang membiakkan perasaan sedih atau bahwa periode sulit akan segera berakhir dan membawa kesegaran baru.'
+            },
+            {
+                keyword: 'gigi copot',
+                primbon: 'Ini adalah mimpi yang sering ditakuti. Diartikan sebagai pertanda akan ada keluarga atau kerabat dekat yang meninggal, atau akan mengalami kesedihan yang mendalam.',
+                islam: 'Sebaliknya dalam tafsir Islam, mimpi gigi copot bisa jadi pertanda baik. Ini diartikan sebagai akan terbebas dari kesulitan, beban hidup berkurang, atau bahkan pertanda panjang umur.',
+                psikologi: 'Gigi melambangkan kekuatan, kepercayaan diri, dan kemampuan berkomunikasi. Mimpi gigi copot sering terkait dengan perasaan tidak berdaya, kecemasan tentang penampilan, atau ketakutan kehilangan pengaruh.'
+            },
+            {
+                keyword: 'terbang',
+                primbon: 'Mimpi terbang atau melayang diartikan sebagai pertanda bahwa cita-cita dan keinginan Anda akan tercapai. Anda akan meraih kesuksesan dan posisi yang tinggi.',
+                islam: 'Mimpi terbang bisa memiliki dua arti. Jika terbangnya rendah dan menyenangkan, bisa jadi pertanda kebaikan. Jika terbangnya tinggi dan menakutkan, bisa jadi pertanggungjawaban yang besar di akhirat.',
+                psikologi: 'Mimpi terbang sering terkait dengan perasaan bebas, berkuasa, dan mampu mengatasi masalah. Ini bisa juga mencerminkan keinginan untuk melarikan diri dari tekanan atau keterbatasan dalam kehidupan nyata.'
+            },
+            {
+                keyword: 'jatuh',
+                primbon: 'Mimpi jatuh sering dianggap buruk, pertanda akan mengalami kegagalan, kehilangan status, atau sakit keras.',
+                islam: 'Mimpi jatuh bisa menjadi peringatan agar tidak sombong dan selalu rendah hati, karena kejayaan dan kedudukan bisa sirna kapan saja.',
+                psikologi: 'Ini adalah mimpi yang sangat umum dan sering terkait dengan perasaan gagal, kehilangan kontrol, atau kecemasan tentang status sosial dan karir. Sering terjadi saat merasa tidak mampu menghadapi tantangan.'
+            },
+            {
+                keyword: 'dikejar',
+                primbon: 'Mimpi dikejar seseorang atau sesuatu diartikan bahwa Anda sedang diincar oleh musuh yang tidak terlihat atau akan ada orang yang mencelakai Anda.',
+                islam: 'Mimpi ini bisa menjadi peringatan dari setan untuk menjauhkan Anda dari kebaikan. Ini adalah ajakan untuk bertaubat dan mendekatkan diri kepada Allah.',
+                psikologi: 'Ini adalah mimpi yang sangat umum dan sering terkait dengan kecemasan. "Pengejar" bisa mewakili masalah, emosi (seperti kemarahan atau rasa bersalah), atau situasi dalam hidup yang Anda coba hindari.'
+            },
+            {
+                keyword: 'telanjang',
+                primbon: 'Pertanda aib atau rahasia Anda akan terbuka ke publik, menyebabkan rasa malu. Ini adalah peringatan untuk lebih berhati-hati dalam bertindak dan berbicara.',
+                islam: 'Mimpi ini melambangkan terbukinya aib, rasa malu, atau hilangnya kehormatan. Ini adalah peringatan keras untuk bertaubat, menutupi aurat, dan menjaga kehormatan diri.',
+                psikologi: 'Mimpi telanjang adalah mimpi cemas umum yang terkait dengan rasa rentan, takut dinilai, atau merasa tidak siap menghadapi suatu situasi. Ini menunjukkan ketidakamanan sosial atau ketakutan akan "diekspos".'
+            },
+            {
+                keyword: 'berkelahi',
+                primbon: 'Berkelahi dan menang pertanda Anda akan mengatasi musuh atau rintangan. Jika kalah, Anda akan mengalami kegagalan atau kerugian.',
+                islam: 'Berkelahi bisa melambangkan pertikaian dengan musuh atau perjuangan melawan hawa nafsu. Jika Anda menang dalam mimpi, itu pertanda baik bahwa Anda akan menang dalam perselisihan atau berhasil mengendalikan hawa nafsu.',
+                psikologi: 'Berkelahi melambangkan konflik internal atau eksternal. Anda mungkin sedang berjuang dengan keputusan sulit, perasaan yang bertentangan, atau konflik dengan orang lain dalam kehidupan nyata.'
+            },
+            {
+                keyword: 'menangis',
+                primbon: 'Menangis dalam mimpi sering diartikan sebagai pertanda kebahagiaan yang akan datang. Kesedihan Anda akan berubah menjadi kegembiraan.',
+                islam: 'Menangis karena takut kepada Allah atau karena penyesalan adalah pertanda baik, menunjukkan keimanan dan akan mendapatkan rahmat. Menangis karena duka adalah bagian dari ujian.',
+                psikologi: 'Menangis dalam mimpi adalah cara melepaskan emosi yang tertahan. Ini bisa menjadi pertanda bahwa Anda sedang memproses kesedihan, stres, atau kekecewaan dan siap untuk melanjutkan hidup.'
+            },
+            {
+                keyword: 'tertawa',
+                primbon: 'Tertawa dalam mimpi bisa diartikan sebagai pertanda Anda akan mendapatkan kejutan yang tidak menyenangkan atau menjadi bahan cemoohan orang lain.',
+                islam: 'Tertawa dalam mimpi bisa berarti akan menyesal di akhirat. Namun, jika tertawa karena kekaguman pada kebesaran Allah, itu adalah pertanda keimanan.',
+                psikologi: 'Tertawa bisa melambangkan kelegaan, kebahagiaan, atau mekanisme pertahanan untuk menyembunyikan perasaan yang sebenarnya (seperti cemas atau sedih).'
+            },
+            {
+                keyword: 'melahirkan',
+                primbon: 'Pertanda sangat baik. Anda akan mendapatkan rezeki yang besar, kebahagiaan, atau sebuah proyek baru yang akan membawa kesuksesan.',
+                islam: 'Melahirkan anak adalah anugerah terbesar. Mimpi ini bisa berarti akan diberi kemudahan, keberkahan, dan kebaikan dalam hidup, serta bebas dari kesulitan.',
+                psikologi: 'Melahirkan melambangkan awal baru, kreativitas, dan kelahiran ide atau proyek baru. Ini menandakan periode pertumbuhan pribadi dan penciptaan sesuatu yang baru dalam hidup Anda.'
+            },
+            // Manusia & Sosial
+            {
+                keyword: 'menikah',
+                primbon: 'Mimpi menikah pertanda baik, akan mendapatkan keberuntungan, kebahagiaan, dan kemakmuran dalam hidup. Bagi yang lajang, bisa jadi pertanda akan segera menemukan jodoh.',
+                islam: 'Mimpi menikah bisa diartikan sebagai akan mendapatkan kebaikan dan kemuliaan. Jika menikah dengan orang yang tidak dikenal, bisa jadi simbol dari persatuan yang baik antara diri dan spiritualitas.',
+                psikologi: 'Menikah melambangkan penyatuan, komitmen, atau perubahan besar dalam hidup. Mimpi ini bisa mencerminkan keinginan akan stabilitas, kemitraan, atau penyatuan aspek-aspek yang berbeda dalam kepribadian Anda.'
+            },
+            {
+                keyword: 'bayi',
+                primbon: 'Mimpi melihat atau menggendong bayi pertanda baik, akan mendapatkan kebahagiaan, keberuntungan, dan rezeki yang tidak terduga.',
+                islam: 'Bayi adalah simbol kemurnian, kepolosan, dan anugerah. Mimpi ini bisa menjadi pertanda keberkahan, awal yang baru dalam kehidupan, atau sebuah amanah yang akan Anda terima.',
+                psikologi: 'Bayi melambangkan potensi baru, kemurnian, awal yang segar, dan tanggung jawab. Mimpi ini bisa mencerminkan proyek baru, sisi rentan dari diri Anda, atau kebutuhan akan perawatan dan kasih sayang.'
+            },
+            {
+                keyword: 'orang mati',
+                primbon: 'Mimpi melihat orang yang sudah meninggal dunia dianggap sebagai "sowan" atau kunjungan dari alam lain. Bisa jadi pertanda akan ada warisan atau pesan tersembunyi.',
+                islam: 'Mimpi melihat orang mati dalam keadaan baik adalah pertanda baik, karena mereka adalah orang-orang shaleh. Jika dalam keadaan buruk, bisa jadi peringatan untuk memperbanyak doa dan sedekah untuk mereka.',
+                psikologi: 'Mimpi ini adalah cara alam bawah sadar untuk memproses duka, rindu, atau kenangan tentang orang yang telah tiada. Ini bisa menjadi bagian dari proses berduka yang sehat.'
+            },
+            {
+                keyword: 'raja',
+                primbon: 'Mimpi bertemu raja pertanda sangat baik. Anda akan mendapatkan kehormatan, kekayaan, atau naik pangkat.',
+                islam: 'Raja melambangkan kekuasaan, penguasa, atau Allah SWT. Mimpi bertemu raja bisa berarti akan mendapatkan kedudukan atau, jika diartikan sebagai Allah, menunjukkan kebutuhan untuk mendekatkan diri kepada-Nya.',
+                psikologi: 'Raja melambangkan otoritas, kekuasaan, dan figur ayah. Mimpi ini bisa mencerminkan perasaan Anda tentang kekuasaan, ambisi, atau hubungan Anda dengan figur otoritas dalam hidup Anda.'
+            },
+            // Alam & Abstrak
+            {
+                keyword: 'api',
+                primbon: 'Api yang menyala terang bisa bermakna akan mendapatkan kejayaan dan semangat hidup. Namun, jika api membakar sesuatu, bisa menjadi pertanda bencana atau kemarahan.',
+                islam: 'Api bisa melambangkan cobaan, amarah, atau godaan syaitan. Mimpi ini bisa menjadi peringatan untuk mengendalikan amarah dan menjaga diri dari perbuatan yang dapat membakar amal kebaikan.',
+                psikologi: 'Api mewakili transformasi, passion, energi, dan penghancuran. Mimpi ini bisa menunjukkan hasrat yang kuat, kemarahan yang membara, atau proses "pembersihan" dari hal-hal yang tidak lagi diperlukan dalam hidup.'
+            },
+            {
+                keyword: 'air',
+                primbon: 'Air yang jernih melambangkan rezeki yang lancar dan kebahagiaan. Sementara air yang keruh atau banjir bisa menjadi pertanda akan ada masalah atau kesulitan yang datang.',
+                islam: 'Air adalah simbol kehidupan dan ilmu pengetahuan. Mimpi tentang air, teritama air yang mengalir, bisa diartikan sebagai akan mendapatkan ilmu yang bermanfaat atau rezeki yang halal.',
+                psikologi: 'Air mewakili emosi. Air yang tenang dan jernih mencerminkan perasaan yang damai. Air yang keruh, bergelombang, atau banjir bisa menandakan emosi yang tidak stabil, stres, atau perasaan kewalahan.'
+            },
+            {
+                keyword: 'uang',
+                primbon: 'Mimpi mendapat uang adalah pertanda akan mendapatkan rezeki. Namun, jika uangnya banyak sekali, waspadalah karena bisa jadi pertanda kesulitan atau godaan.',
+                islam: 'Uang adalah simbol rezeki dan ujian. Mimpi mendapatkan uang bisa berarti akan diberi kemudahan rezeki oleh Allah. Namun, ini juga ujian untuk bersyukur dan menggunakannya di jalan yang benar.',
+                psikologi: 'Uang melambangkan nilai diri, kekuasaan, dan energi. Mimpi tentang uang bisa mencerminkan perasaan Anda tentang kepercayaan diri, keberhasilan, atau kekhawatiran tentang keamanan finansial.'
+            },
+            {
+                keyword: 'buah',
+                primbon: 'Mimpi memakan buah yang manis dan segar pertanda baik, akan mendapatkan kebahagiaan dan rezeki yang melimpah. Jika buahnya masam, bisa jadi pertanda kekecewaan.',
+                islam: 'Buah melambangkan hasil dari usaha atau perbuatan. Mimpi memetik buah yang baik bisa berarti akan memperoleh hasil dari amal shaleh. Buah busuk bisa jadi peringatan dari perbuatan buruk.',
+                psikologi: 'Buah adalah simbol dari hasil, kesuburan, dan hasrat. Mimpi ini bisa mencerminkan rasa puas atas pencapaian, potensi baru, atau kebutuhan akan nutrisi (baik fisik maupun emosional).'
+            },
+            {
+                keyword: 'gempa bumi',
+                primbon: 'Pertanda akan ada perubahan besar dalam hidup. Bisa jadi perubahan pekerjaan, tempat tinggal, atau pergolakan dalam masyarakat.',
+                islam: 'Gempa adalah salah satu tanda kekuasaan Allah. Mimpi ini bisa menjadi peringatan akan datangnya ujian besar atau perubahan drastis yang akan menguji iman.',
+                psikologi: 'Gempa melambangkan fondasi hidup yang goyah. Ini bisa mencerminkan rasa tidak aman, ketakutan akan kehilangan kontrol, atau perubahan besar yang mengguncang dunia Anda.'
+            },
+            {
+                keyword: 'petir',
+                primbon: 'Mendengar atau melihat petir pertanda akan ada ancaman atau bahaya yang datang tiba-tiba. Waspadalah terhadap lingkungan sekitar.',
+                islam: 'Petir bisa melambangkan azab atau kekuasaan Allah yang dahsyat. Mimpi ini bisa menjadi peringatan untuk segera bertaubat dan takut kepada Allah.',
+                psikologi: 'Petir melambangkan kejutan yang tiba-tiba, inspirasi, atau pemahaman yang tiba-tiba muncul. Ini juga bisa menandakan ketakutan akan kekuatan yang tidak terkendali.'
+            },
+            {
+                keyword: 'matahari',
+                primbon: 'Matahari bersinar terang pertanda kejayaan, kekayaan, dan kebahagiaan. Matahari terbenam bisa jadi pertanda akhir dari sebuah masalah.',
+                islam: 'Matahari adalah simbol kekuasaan dan cahaya. Dalam Islam, mimpi tentang matahari bisa berkaitan dengan pemimpin atau kekuasaan Allah. Cahayanya yang hangat adalah rahmat.',
+                psikologi: 'Matahari melambangkan kesadaran, energi maskulin, vitalitas, dan sumber kehidupan. Mimpi ini bisa mencerminkan kejelasan, optimisme, atau fokus pada tujuan hidup.'
+            },
+            {
+                keyword: 'bulan',
+                primbon: 'Bulan purnama yang terang pertanda keindahan, kebahagiaan, dan keberuntungan dalam cinta. Bulan sabit bisa jadi pertanda awal yang baik.',
+                islam: 'Bulan melambangkan keindahan, keagungan, dan waktu. Mimpi melihat bulan bisa berkaitan dengan spiritualitas, keindahan Islam, atau pertanda kebaikan.',
+                psikologi: 'Bulan melambangkan sisi feminin, intuisi, siklus emosional, dan yang tidak sadar. Mimpi ini bisa mencerminkan perasaan Anda, kreativitas, dan koneksi dengan emosi batin.'
+            },
+            // Aksi Spesifik
+            {
+                keyword: 'di kejar macan',
+                primbon: 'Mimpi dikejar macan adalah pertanda bahwa Anda akan menghadapi ancaman dari musuh yang sangat berkuasa atau memiliki kedudukan tinggi. Ini juga bisa melambangkan rintangan besar yang akan datang dalam hidup Anda.',
+                islam: 'Macan bisa melambangkan musuh yang zalim atau tiran. Mimpi ini adalah peringatan untuk waspada dan memohon perlindungan kepada Allah dari orang-orang yang memiliki niat buruk dan kekuatan untuk menyakiti Anda.',
+                psikologi: 'Macan adalah simbol dari emosi yang kuat seperti amarah, agresi, atau hasrat yang tidak terkendali. Mimpi ini menunjukkan bahwa Anda sedang lari dari perasaan yang sangat kuat atau dari situasi di kehidupan nyata yang Anda anggap menakutkan dan mengancam.'
+            },
+            {
+                keyword: 'mengalahkan hantu',
+                primbon: 'Mimpi mengalahkan hantu adalah pertanda sangat baik. Anda memiliki kekuatan spiritual untuk mengatasi gangguan gaib, ilmu hitam, atau pengaruh negatif dari orang lain. Ini juga berarti Anda akan berhasil mengatasi rasa takut terdalam Anda.',
+                islam: 'Hantu atau jin adalah makhluk Allah. Mengalahkannya dalam mimpi bisa diartikan sebagai kemenangan atas godaan setan dan bisikan-bisikan jahat (waswas). Ini menandakan iman yang kuat dan kemampuan untuk mengendalikan hawa nafsu.',
+                psikologi: 'Hantu sering melambangkan masalah atau trauma dari masa lalu yang "menghantui" Anda. Mengalahkannya adalah simbol bahwa Anda akhirnya siap untuk menghadapi dan menyembuhkan luka lama, membebaskan diri dari beban masa lalu, dan meraih kedamaian batin.'
+            },
+            {
+                keyword: 'mengalahkan monster',
+                primbon: 'Pertanda kemenangan besar atas musuh atau rintangan yang sangat berat. Anda akan mendapatkan keberuntungan, kehormatan, dan naik pangkat. Ini adalah simbol dari kekuatan dan keberanian Anda dalam menghadapi cobaan.',
+                islam: 'Melambangkan kemenangan atas ujian besar dari Allah atau berhasil mengalahkan hawa nafsu yang sangat kuat. Ini adalah tanda kekuatan iman dan akan mendapat pahala yang besar karena kesabaran dan kejujuran Anda.',
+                psikologi: 'Monster adalah simbol dari masalah besar, ketakutan yang sangat dalam, atau sisi gelap dari diri Anda (shadow self). Mengalahkannya menandakan bahwa Anda sedang dalam proses mengatasi trauma, mengendalikan sifat negatif, dan mencapai pertumbuhan pribadi yang luar biasa.'
+            },
+            {
+                keyword: 'di terkam macan',
+                primbon: 'Pertanda buruk. Anda akan mengalami bencana atau kesialan yang datang secara tiba-tiba. Bisa jadi serangan dari musuh yang sangat merugikan, kehilangan harta, atau sakit parah. Waspadalah terhadap lingkungan sekitar.',
+                islam: 'Merupakan peringatan keras akan datangnya cobaan yang sangat berat atau serangan dari musuh yang kejam dan tidak terduga. Ini adalah ajakan untuk segera bertaubat, memohon perlindungan Allah, dan meningkatkan kewaspadaan dalam segala hal.',
+                psikologi: 'Mencerminkan perasaan kewalahan, terancam, dan tidak berdaya. Anda mungkin sedang dihadapkan pada situasi yang sangat agresif dan destruktif dalam kehidupan nyata, atau sedang berjuang dengan emosi yang sangat kuat seperti amarah atau kecemasan yang meluap-luap.'
+            },
+            {
+                keyword: 'memakamkan jenazah kawan',
+                primbon: 'Bisa memiliki dua arti. Pertama, Anda akan diberi amanah atau tanggung jawab untuk menyelesaikan urusan terakhir seorang teman. Kedua, bisa juga pertanda berakhirnya persahabatan atau adanya pengkhianatan dari orang yang Anda anggap teman.',
+                islam: 'Merupakan mimpi yang sangat mulia. Ini menandakan Anda memiliki iman yang kuat, rasa tanggung jawab, dan kasih sayang yang besar pada sesama. Ini bisa berarti Anda akan membantu teman Anda dalam kesulitan besar atau mendapat pahala karena menutupi aibnya.',
+                psikologi: 'Ini adalah bagian penting dari proses berduka. Mimpi ini menunjukkan bahwa Anda sedang secara aktif berusaha untuk menerima kenyataan kehilangan teman Anda, menyelesaikan urusan emosional yang tersisa, dan siap untuk melanjutkan hidup.'
+            },
+            // --- DATABASE TERBARU ---
+            {
+                keyword: 'melihat hantu',
+                primbon: 'Pertanda buruk. Anda akan terganggu oleh makhluk halus atau ada energi negatif di sekitar Anda. Bisa juga berarti Anda akan mendapat kabar duka atau ada orang yang berniat jahat kepada Anda.',
+                islam: 'Hantu sering dianggap sebagai jin. Mimpi ini adalah peringatan untuk menjauhi praktik-praktik yang berhubungan dengan jin dan selalu memohon perlindungan kepada Allah dari godaan mereka. Perbanyaklah doa dan membaca Al-Qur\'an.',
+                psikologi: 'Hantu adalah simbol dari masalah, trauma, atau penyesalan dari masa lalu yang belum terselesaikan dan terus "menghantui" batin Anda. Mimpi ini adalah ajakan untuk menghadapi dan menyembuhkan luka lama agar Anda bisa melanjutkan hidup dengan lebih damai.'
+            }
+        ];
+
+        // Fungsi untuk berpindah tab
+        function switchTab(tabName, buttonElement) {
+            // Sembunyikan semua konten tab
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            // Hapus kelas 'active' dari semua tombol tab
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+
+            // Tampilkan konten tab yang dipilih
+            document.getElementById(tabName).classList.add('active');
+            // Tandai tombol tab yang dipilih
+            buttonElement.classList.add('active');
+        }
+
+        // Fungsi untuk mencari mimpi
+        function searchDream(perspective) {
+            const searchInput = document.getElementById(`search-${perspective}`);
+            const keyword = searchInput.value.toLowerCase().trim();
+            const resultContainer = document.getElementById(`result-${perspective}`);
+            const resultKeyword = resultContainer.querySelector('.result-keyword');
+            const resultText = resultContainer.querySelector('.result-text');
+
+            // Sembunyikan hasil sebelumnya
+            resultContainer.style.display = 'none';
+            resultKeyword.textContent = '';
+            resultText.textContent = '';
+
+            if (keyword === '') {
+                alert('Silakan masukkan kata kunci mimpi.');
+                return;
+            }
+
+            // Cari mimpi dalam database
+            const foundDream = mimpiData.find(item => item.keyword.includes(keyword));
+
+            if (foundDream) {
+                resultKeyword.textContent = foundDream.keyword.charAt(0).toUpperCase() + foundDream.keyword.slice(1);
+                resultText.textContent = foundDream[perspective];
+                resultContainer.style.display = 'block';
+            } else {
+                resultKeyword.textContent = keyword.charAt(0).toUpperCase() + keyword.slice(1);
+                resultText.textContent = 'Maaf, arti mimpi untuk kata kunci ini belum tersedia dalam database kami. Coba kata kunci lain seperti "hantu", "gunung", atau "telanjang".';
+                resultContainer.style.display = 'block';
+            }
+        }
+
+        // Event listener untuk menekan 'Enter' pada input field
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = ['primbon', 'islam', 'psikologi'];
+            inputs.forEach(id => {
+                const inputElement = document.getElementById(`search-${id}`);
+                inputElement.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        searchDream(id);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

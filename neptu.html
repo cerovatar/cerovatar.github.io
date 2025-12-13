@@ -5,29 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hitung Neptu Weton Primbon</title>
     <style>
+        /* CSS Variables for Easy Theme Management */
+        :root {
+            --primary-color: #8b4513; /* SaddleBrown */
+            --secondary-color: #a0522d; /* Sienna */
+            --background-color: #f0e6d6; /* Beige */
+            --surface-color: #faf8f5; /* Light Beige */
+            --text-primary: #333;
+            --text-secondary: #666;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f0e6d6;
-            color: #333;
-            padding: 20px;
-            padding-bottom: 80px;
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
             position: relative;
             min-height: 100vh;
         }
 
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 80px; /* Ruang untuk footer */
+        }
+
         /* Perbaikan Header dan Navbar */
         header {
-            background-color: #8b4513;
+            background-color: var(--primary-color);
             padding: 20px;
             text-align: center;
             border-radius: 15px 15px 0 0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative; /* Diperlukan untuk posisi hamburger menu */
         }
 
         header h1 {
@@ -36,52 +57,101 @@
             margin-bottom: 15px;
         }
         
-        header nav {
+        /* Hamburger Menu Styles */
+        .hamburger {
+            position: absolute;
+            top: 50%;
+            right: 25px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 1001;
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 25px;
+            height: 21px;
         }
 
-        header nav a {
-            display: inline-block;
-            color: #333;
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: white;
+            transition: all 0.3s ease-in-out;
+            transform-origin: 1px;
+        }
+
+        .menu-open .hamburger span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+
+        .menu-open .hamburger span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-open .hamburger span:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--primary-color);
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            transition: right 0.3s ease-in-out;
+            z-index: 1000;
+            padding-top: 60px;
+        }
+
+        .side-menu ul {
+            list-style-type: none;
+        }
+
+        .side-menu ul li a {
+            display: block;
+            padding: 18px 30px;
+            color: white;
             text-decoration: none;
-            font-weight: bold;
-            padding: 8px 15px;
-            border-radius: 8px;
-            background-color: #f0e6d6;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
         }
-        
-        header nav a:hover {
-            background-color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        .side-menu ul li a:hover, .side-menu ul li a.active {
+            background-color: var(--secondary-color);
         }
-        
-        header nav a.active {
-            background-color: #fff;
-            color: #8b4513;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .menu-open .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-open .side-menu {
+            right: 0;
         }
         
         .content {
             padding: 30px;
         }
         
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
         h1 {
-            color: #8b4513;
+            color: var(--primary-color);
             text-align: center;
             margin-bottom: 30px;
             font-size: 1.8rem;
@@ -92,7 +162,7 @@
         }
 
         .section h2 {
-            color: #a0522d;
+            color: var(--secondary-color);
             font-size: 1.3rem;
             margin-bottom: 15px;
             border-bottom: 2px solid #d2b48c;
@@ -123,7 +193,7 @@
         button {
             width: 100%;
             padding: 15px;
-            background-color: #8b4513;
+            background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: 8px;
@@ -134,7 +204,7 @@
         }
 
         button:hover {
-            background-color: #a0522d;
+            background-color: var(--secondary-color);
         }
 
         .result {
@@ -147,7 +217,7 @@
         }
 
         .result h3 {
-            color: #8b4513;
+            color: var(--primary-color);
             margin-bottom: 15px;
             font-size: 1.2rem;
         }
@@ -159,7 +229,7 @@
 
         .result-item span {
             font-weight: bold;
-            color: #a0522d;
+            color: var(--secondary-color);
         }
 
         .meaning {
@@ -173,10 +243,11 @@
         .note {
             margin-top: 25px;
             font-size: 0.9rem;
-            color: #666;
+            color: var(--text-secondary);
             text-align: center;
         }
 
+        /* Tab Container */
         .tab-container {
             display: flex;
             margin-bottom: 20px;
@@ -191,12 +262,12 @@
             border-bottom: 3px solid transparent;
             cursor: pointer;
             font-weight: bold;
-            color: #8b4513;
+            color: var(--primary-color);
             transition: all 0.3s;
         }
 
         .tab-button.active {
-            border-bottom: 3px solid #8b4513;
+            border-bottom: 3px solid var(--primary-color);
         }
 
         .tab-content {
@@ -239,7 +310,7 @@
             background-color: #f8f0e3;
             border: 1px solid #d2b48c;
         }
-
+        
         /* CSS Footer Baru */
         footer {
             position: absolute;
@@ -248,27 +319,40 @@
             width: 100%;
             padding: 15px 20px;
             text-align: center;
-            color: #8b4513;
+            color: var(--primary-color);
             font-weight: 500;
             font-size: 0.95rem;
         }
     </style>
 </head>
 <body>
+    <!-- Overlay untuk menutupi konten saat menu terbuka -->
+    <div class="overlay" onclick="closeMenu()"></div>
+
+    <!-- Samping Menu (Navigasi) -->
+    <nav class="side-menu">
+        <ul>
+            <li><a href="neptu.html" class="active">Kalkulator Neptu</a></li>
+            <li><a href="cek-khodam.html">Cek Khodam</a></li>
+            <li><a href="tafsirmimpi.html">Arti Mimpi</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
         <header>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <h1>Hitung Neptu Weton Primbon</h1>
-            <nav>
-                <a href="neptu.html" class="active">Kalkulator Neptu</a>
-                <a href="cek-khodam.html">Cek Khodam</a>
-            </nav>
         </header>
 
         <div class="content">
             <!-- Tab Container -->
             <div class="tab-container">
-                <button class="tab-button active" onclick="switchTab('compatibility')">Kecocokan Pasangan</button>
-                <button class="tab-button" onclick="switchTab('wedding-date')">Tanggal Pernikahan</button>
+                <button class="tab-button active" onclick="switchTab('compatibility', this)">Kecocokan Pasangan</button>
+                <button class="tab-button" onclick="switchTab('wedding-date', this)">Tanggal Pernikahan</button>
             </div>
 
             <!-- Tab Content: Compatibility -->
@@ -380,19 +464,28 @@
                 </div>
             </div>
 
-            <!-- Catatan -->
             <div class="note">
                 *Hasil hanya sebagai petunjuk tradisional. Keberhasilan rumah tangga tergantung komunikasi dan usaha bersama.
             </div>
         </div>
     </div>
-
+    
     <!-- Footer Tambahan -->
     <footer>
         Created by ©ZinXploit
     </footer>
 
     <script>
+        // Fungsi untuk membuka dan menutup menu
+        function toggleMenu() {
+            document.body.classList.toggle('menu-open');
+        }
+
+        // Fungsi untuk menutup menu
+        function closeMenu() {
+            document.body.classList.remove('menu-open');
+        }
+
         // Data makna sisa pembagian
         const maknaSisa = [
             { sisa: 1, nama: "Wasesa Segara", makna: "Pasangan harmonis, rendah hati, dan penuh pengertian. Hidup rumah tangga damai dengan sedikit konflik.", kategori: "baik" },
@@ -431,23 +524,21 @@
         const dateResultDiv = document.getElementById('date-result');
         const recommendedDatesDiv = document.getElementById('recommended-dates');
 
-        // Fungsi untuk switch tab
-        function switchTab(tabName) {
-            // Hide all tab contents
+        // Fungsi untuk berpindah tab
+        function switchTab(tabName, buttonElement) {
+            // Sembunyikan semua konten tab
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
-            // Remove active class from all tab buttons
+            // Hapus kelas 'active' dari semua tombol tab
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
-            // Show selected tab content
+
+            // Tampilkan konten tab yang dipilih
             document.getElementById(`${tabName}-tab`).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
+            // Tandai tombol tab yang dipilih
+            buttonElement.classList.add('active');
         }
 
         // Fungsi untuk menghitung weton dari tanggal
@@ -464,7 +555,6 @@
             const m = date.getMonth() + 1;
             const y = date.getFullYear();
             
-            // Algoritma untuk menentukan pasaran
             const a = Math.floor((y - 1900) % 100);
             const b = Math.floor((y - 1900) / 100);
             const c = Math.floor((a + b) / 4);
@@ -544,7 +634,7 @@
             document.getElementById('kategori-tanggal').textContent = dataMakna.nama;
             document.getElementById('makna-teks-tanggal').textContent = dataMakna.makna;
             
-                     // Atur kelas berdasarkan kategori
+            // Atur kelas berdasarkan kategori
             dateResultDiv.className = 'date-result';
             if (dataMakna.kategori === 'baik') {
                 dateResultDiv.classList.add('good');
