@@ -6,223 +6,223 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalender Jawa</title>
     <style>
+        :root {
+            --primary-bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #6c757d;
+            --accent-orange: #FF8C00;
+            --accent-dark: #1a1a1a;
+            --holiday-color: #dc3545;
+            --puasa-color: #198754;
+            --today-bg: #e3f2fd;
+            --today-border: #2196F3;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-            color: #343a40;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        /* Style untuk kotak kalender */
-        .calendar-box {
-            background-color: #000;
-            /* Warna oranye kehitaman */
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+        .app-container {
             width: 95%;
-            max-width: 600px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-sizing: border-box;
-            color: red;
-            /* Warna teks di dalam kotak */
+            max-width: 700px;
+            margin: 20px auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border-top: 6px solid var(--accent-orange);
         }
 
-        /* Style untuk judul di atas kotak */
-        .calendar-title-box {
-            background-color: #FF8C00;
-            /* Warna oranye kehitaman */
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            margin-bottom: 15px;
-            text-align: center;
+        header {
+            background-color: var(--accent-dark);
             color: white;
-            /* Warna teks di dalam kotak */
-        }
-
-        .calendar-title {
-            font-size: 2rem;
-            color: white; /* Warna teks putih */
+            padding: 20px;
             text-align: center;
         }
 
-        .calendar {
-            width: 100%;
-        }
+        header h1 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
+        header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8; color: var(--accent-orange); }
 
-        .header {
+        .controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .header button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 0.9rem;
+        .nav-btn {
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
             cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-
-        .header button:hover {
-            background-color: #0056b3;
-        }
-
-        #monthYear {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .select-container {
+            font-size: 1.2rem;
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--text-main);
         }
+
+        .nav-btn:hover { background-color: var(--accent-orange); color: white; border-color: var(--accent-orange); }
+
+        .current-date-label {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: capitalize;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .select-group { display: flex; gap: 8px; }
 
         select {
-            padding: 8px;
-            margin: 0 5px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
             font-size: 0.9rem;
-            color: #495057;
-            background-color: #fff;
+            background: #fff;
             cursor: pointer;
+            outline: none;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th,
-        td {
-            text-align: center;
-            padding: 8px;
-            border: 1px solid #dee2e6;
-            word-break: break-word;
+        .btn-today {
+            background-color: var(--accent-orange);
             color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 500;
         }
+        
+        .calendar-wrapper { padding: 20px; overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
         th {
-            background-color: #e9ecef;
-            font-weight: 500;
+            color: var(--text-muted);
+            font-weight: 600;
             font-size: 0.9rem;
+            padding: 10px 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         td {
+            vertical-align: top;
+            height: 90px;
+            padding: 5px;
+            border: 1px solid #f0f0f0;
+            transition: background 0.2s;
+            cursor: default;
+            position: relative;
+        }
+
+        .day-number { font-size: 1.1rem; font-weight: 600; display: block; margin-bottom: 4px; }
+        
+        .pasaran-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .pasaran-name { font-weight: 500; }
+
+        .neptu-value {
+            font-size: 0.7rem;
+            background: #eee;
+            border-radius: 4px;
+            width: fit-content;
+            padding: 1px 4px;
+            margin-top: 2px;
+        }
+
+        /* Badge Event */
+        .event-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .badge-holiday { background-color: #f8d7da; color: var(--holiday-color); border: 1px solid #f5c6cb; }
+        .badge-puasa { background-color: #d1e7dd; color: var(--puasa-color); border: 1px solid #badbcc; }
+        
+        /* Styling Khusus */
+        td.holiday .day-number, td.sunday .day-number { color: var(--holiday-color); }
+        td.puasa .day-number { color: var(--puasa-color); }
+        td.today { background-color: var(--today-bg); border: 2px solid var(--today-border); }
+        td.empty { background-color: #fcfcfc; cursor: default; }
+
+        footer {
+            margin-top: auto;
+            background-color: var(--accent-dark);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            width: 100%;
             font-size: 0.9rem;
         }
 
-        td[data-tanggal] {
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        td[data-tanggal]:hover {
-            background-color: #f1f1f1;
-        }
-
-        td small {
-            display: block;
-            margin-top: 3px;
-            font-size: 0.7rem;
-            color: #6c757d;
-        }
-
-        /* Style untuk tanggal merah */
-        td.holiday {
-            color: red;
-            font-weight: bold;
-        }
-
-        footer {
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            border-radius: 0;
-            position: absolute;
-            bottom: 0;
-        }
-
-        /* Media query untuk layar yang lebih kecil */
-        @media (max-width: 576px) {
-            .calendar-box {
-                padding: 15px;
-            }
-
-            .calendar-title-box {
-                padding: 8px;
-            }
-
-            .calendar-title {
-                font-size: 1.75rem;
-            }
-
-            h1 {
-                font-size: 1.75rem;
-            }
-
-            .header button {
-                font-size: 0.8rem;
-                padding: 6px 12px;
-            }
-
-            #monthYear {
-                font-size: 1.25rem;
-            }
-
-            th,
-            td {
-                padding: 6px;
-                font-size: 0.8rem;
-            }
-
-            td small {
-                font-size: 0.6rem;
-            }
+        @media (max-width: 600px) {
+            .app-container { width: 100%; border-radius: 0; margin: 0; box-shadow: none; }
+            .controls { flex-direction: column; align-items: stretch; gap: 15px; }
+            .header-nav { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+            .select-group { justify-content: center; width: 100%; }
+            td { height: 70px; }
+            .neptu-value { display: none; }
+            .event-badge { font-size: 0.6rem; line-height: 1.1; }
         }
     </style>
 </head>
 
 <body>
-    <div class="calendar-title-box">
-        <div class="calendar-title">Kalender Jawa</div>
-    </div>
-    <div class="calendar-box">
-        <div class="select-container">
-            <select id="monthSelect"></select>
-            <select id="yearSelect"></select>
-        </div>
-        <div class="calendar">
-            <div class="header">
-                <button id="prevBtn">&lt;</button>
-                <h2 id="monthYear"></h2>
-                <button id="nextBtn">&gt;</button>
+
+    <div class="app-container">
+        <header>
+            <h1>Kalender Jawa</h1>
+            <p>Penanggalan Jawa, Weton & Ramadhan</p>
+        </header>
+
+        <div class="controls">
+            <div class="header-nav">
+                <button class="nav-btn" id="prevBtn">&lt;</button>
+                <button class="btn-today" id="todayBtn">Hari Ini</button>
+                <button class="nav-btn" id="nextBtn">&gt;</button>
             </div>
-            <table id="calendarBody">
+            
+            <div class="current-date-label" id="monthYearDisplay"></div>
+            <div class="select-group">
+                <select id="monthSelect"></select>
+                <select id="yearSelect"></select>
+            </div>
+        </div>
+
+        <div class="calendar-wrapper">
+            <table id="calendarTable">
                 <thead>
                     <tr>
                         <th>Min</th>
@@ -234,205 +234,262 @@
                         <th>Sab</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody id="calendarBody"></tbody>
             </table>
         </div>
+        
+        <div style="padding: 0 20px 20px; font-size: 0.8rem; color: #666;">
+            <span style="color: var(--holiday-color); font-weight:bold;">● Merah:</span> Libur Nasional &nbsp; 
+            <span style="color: var(--puasa-color); font-weight:bold;">● Hijau:</span> Puasa (Ramadhan/Senin Kamis)
+        </div>
     </div>
+
     <footer>
-        <p>Created by ©ZinXploit</p>
+        <p>Created by &copy; <span>ZinXploit</span></p>
     </footer>
 
     <script>
-        const monthYear = document.getElementById('monthYear');
+        // --- KONFIGURASI ---
+        const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const namaPasaran = ["Legi", "Pahing", "Pon", "Wage", "Kliwon"];
+        const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        const monthYearDisplay = document.getElementById('monthYearDisplay');
         const calendarBody = document.getElementById('calendarBody');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
         const monthSelect = document.getElementById('monthSelect');
         const yearSelect = document.getElementById('yearSelect');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const todayBtn = document.getElementById('todayBtn');
 
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
-
-        const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        const namaPasaran = ["Wage", "Kliwon", "Legi", "Pahing", "Pon"];
-        const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-
-        // Data hari libur (format: MM-DD)
+        
+        // --- DATA LIBUR NASIONAL ---
         const holidays = {
-            2024: ["01-01", "02-12", "02-14", "03-11", "03-29", "04-10", "04-11", "05-01", "05-09", "05-10", "05-20", "06-17", "07-07", "08-17", "09-16", "12-25", "12-26", "04-10", "04-11"], // Lebaran 2024: 10-11 April
-            2025: ["01-01", "01-29", "03-31", "04-01", "04-04", "05-01", "05-19", "05-29", "06-16", "08-05", "08-17", "10-06", "12-25", "03-31", "04-01"], // Lebaran 2025: 31 Maret - 1 April
-            // Tambahkan data hari libur untuk tahun-tahun lainnya
+            2024: ["01-01", "02-10", "03-11", "03-12", "04-01", "04-09", "04-10", "04-11", "05-01", "05-09", "05-20", "06-01", "06-17", "06-18", "07-07", "08-17", "12-25"],
+            2025: ["01-01", "01-28", "01-29", "03-30", "03-31", "04-01", "05-01", "06-01", "06-07", "08-17", "12-25"],
+            2026: ["01-01", "02-17", "03-19", "03-20", "04-14", "05-01", "08-17", "12-25"]
         };
 
-        // Fungsi untuk mengisi pilihan bulan
-        function populateMonthSelect() {
-            for (let i = 0; i < namaBulan.length; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.text = namaBulan[i];
-                monthSelect.add(option);
+        // --- DATA PUASA ---
+        // Fungsi Helper untuk membuat rentang tanggal Ramadhan
+        function generateRamadhanDates(year, startMonth, startDay, duration) {
+            let dates = [];
+            let d = new Date(year, startMonth - 1, startDay);
+            for (let i = 0; i < duration; i++) {
+                let m = String(d.getMonth() + 1).padStart(2, '0');
+                let day = String(d.getDate()).padStart(2, '0');
+                dates.push(`${m}-${day}`);
+                d.setDate(d.getDate() + 1);
             }
-            monthSelect.value = currentMonth;
+            return dates;
         }
 
-        // Fungsi untuk mengisi pilihan tahun
-        function populateYearSelect() {
-            let startYear = currentYear - 50;
-            let endYear = currentYear + 50;
+        const puasaDays = {
+            // Tahun 2024: Ramadhan mulai 11 Maret (perkiraan umum), durasi 30 hari
+            2024: generateRamadhanDates(2024, 3, 11, 30), 
+            
+            // Tahun 2025: Ramadhan mulai 28 Februari (perkiraan), durasi 30 hari
+            2025: generateRamadhanDates(2025, 2, 28, 30),
+            
+            // Tahun 2026: Ramadhan mulai 17 Februari (perkiraan), durasi 30 hari
+            2026: generateRamadhanDates(2026, 2, 17, 30),
+            
+            // Bisa tambahkan tahun berikutnya di sini dengan pola yang sama
+        };
 
-            for (let i = startYear; i <= endYear; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.text = i;
-                yearSelect.add(option);
+        // --- FUNGSI UTILITY ---
+
+        function getPasaran(date) {
+            const refDate = new Date(2024, 0, 1); // Senin Pahing
+            const diffTime = date - refDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            let pasaranIndex = (1 + diffDays) % 5;
+            if (pasaranIndex < 0) pasaranIndex += 5;
+            return namaPasaran[pasaranIndex];
+        }
+
+        function getNeptu(hariIndex, pasaranIndex) {
+            const neptuHari = [5, 4, 3, 7, 8, 6, 9];
+            const neptuPasaran = [5, 9, 7, 4, 8];
+            return neptuHari[hariIndex] + neptuPasaran[pasaranIndex];
+        }
+
+        function isHoliday(month, day, year) {
+            const mStr = String(month + 1).padStart(2, '0');
+            const dStr = String(day).padStart(2, '0');
+            const key = `${mStr}-${dStr}`;
+            return holidays[year] ? holidays[year].includes(key) : false;
+        }
+
+        function isPuasa(month, day, year, dayIndex) {
+            const mStr = String(month + 1).padStart(2, '0');
+            const dStr = String(day).padStart(2, '0');
+            const key = `${mStr}-${dStr}`;
+            
+            // Cek apakah tanggal ini ada di data Ramadhan/Statis
+            const isStaticPuasa = puasaDays[year] ? puasaDays[year].includes(key) : false;
+
+            // Cek Puasa Sunnah Senin Kamis
+            let isSeninKamis = (dayIndex === 1 || dayIndex === 4); 
+
+            // Jika hari ini Libur Nasional, maka bukan hari puasa Sunnah Senin Kamis
+            // (Kecuali bulan Ramadhan yang memang wajib)
+            if (isHoliday(month, day, year)) {
+                if (!isStaticPuasa) isSeninKamis = false;
             }
+
+            return isStaticPuasa || isSeninKamis;
+        }
+
+        // --- RENDER ---
+
+        function populateSelects() {
+            namaBulan.forEach((bulan, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.text = bulan;
+                monthSelect.appendChild(opt);
+            });
+            const startYear = currentYear - 50;
+            const endYear = currentYear + 50;
+            for (let i = startYear; i <= endYear; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.text = i;
+                yearSelect.appendChild(opt);
+            }
+            monthSelect.value = currentMonth;
             yearSelect.value = currentYear;
         }
 
-        // Fungsi untuk memeriksa apakah suatu tanggal adalah hari libur
-        function isHoliday(month, day, year) {
-            const monthStr = String(month + 1).padStart(2, '0');
-            const dayStr = String(day).padStart(2, '0');
-            const dateStr = `${monthStr}-${dayStr}`;
-            return holidays[year] && holidays[year].includes(dateStr);
-        }
+        function renderCalendar(month, year) {
+            monthYearDisplay.textContent = `${namaBulan[month]} ${year}`;
+            calendarBody.innerHTML = "";
 
-        function updateCalendar(month, year) {
-            monthYear.textContent = `${new Intl.DateTimeFormat('id-ID', {
-                month: 'long',
-                year: 'numeric'
-            }).format(new Date(year, month))}`;
-
-            let firstDay = new Date(year, month, 1);
-            let lastDay = new Date(year, month + 1, 0);
-            let daysInMonth = lastDay.getDate();
-            let startingDay = firstDay.getDay();
-
-            let tableBody = '';
-            let dayCounter = 1;
+            const firstDayOfMonth = new Date(year, month, 1);
+            const lastDayOfMonth = new Date(year, month + 1, 0);
+            const daysInMonth = lastDayOfMonth.getDate();
+            let startDay = firstDayOfMonth.getDay(); 
+            let date = 1;
 
             for (let i = 0; i < 6; i++) {
-                let row = '<tr>';
+                const row = document.createElement('tr');
+                let hasDays = false; 
+
                 for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < startingDay) {
-                        row += '<td></td>';
-                    } else if (dayCounter <= daysInMonth) {
-                        let tanggal = dayCounter;
-                        let hari = namaHari[(startingDay + tanggal - 1) % 7];
-                        let pasaran = namaPasaran[((startingDay + tanggal - 1) % 5)];
-                        let weton = `${hari} ${pasaran}`;
-                        let neptu = getNeptu(hari, pasaran);
+                    const cell = document.createElement('td');
 
-                        // Tandai hari Minggu sebagai hari libur
-                        let isSunday = hari === "Minggu";
-                        let isTodayHoliday = isHoliday(month, tanggal, year) || isSunday;
-                        let tdClass = isTodayHoliday ? 'holiday' : '';
-
-                        row += `<td data-tanggal="${tanggal}" data-hari="${hari}" data-pasaran="${pasaran}" class="${tdClass}">
-                                    ${tanggal}<br>
-                                    <small>${weton} (${neptu})</small>
-                                </td>`;
-                        dayCounter++;
+                    if (i === 0 && j < startDay) {
+                        cell.classList.add('empty');
+                    } else if (date > daysInMonth) {
+                        cell.classList.add('empty');
                     } else {
-                        row += '<td></td>';
+                        hasDays = true;
+                        const dateObj = new Date(year, month, date);
+                        const dayIndex = dateObj.getDay(); 
+                        const hariName = namaHari[dayIndex];
+                        const pasaranName = getPasaran(dateObj);
+                        const pasaranIndex = namaPasaran.indexOf(pasaranName);
+                        const neptu = getNeptu(dayIndex, pasaranIndex);
+
+                        // Cek Status
+                        const isSunday = (dayIndex === 0);
+                        const isNatHoliday = isHoliday(month, date, year);
+                        const isToday = (date === currentDate.getDate() && month === currentDate.getMonth() && year === currentDate.getFullYear());
+                        const isFastingDay = isPuasa(month, date, year, dayIndex);
+
+                        // Set Kelas CSS
+                        let className = "";
+                        if (isToday) className += " today";
+                        if (isSunday || isNatHoliday) className += " holiday"; 
+                        if (isFastingDay && !isNatHoliday) className += " puasa"; 
+
+                        if (className) cell.className = className.trim();
+
+                        // Konten HTML
+                        let content = `<span class="day-number">${date}</span>`;
+                        content += `<div class="pasaran-info">
+                                        <span class="pasaran-name">${pasaranName}</span>
+                                        <span class="neptu-value">${neptu}</span>
+                                     </div>`;
+                        
+                        // Badge Event
+                        let badgeHtml = "";
+                        
+                        if (isNatHoliday) {
+                            badgeHtml = `<div class="event-badge badge-holiday">Libur</div>`;
+                        } else if (isFastingDay) {
+                            let labelPuasa = "Puasa";
+                            if (dayIndex === 1) labelPuasa = "Senin";
+                            else if (dayIndex === 4) labelPuasa = "Kamis";
+                            
+                            // Cek khusus apakah ini bulan Ramadhan dengan mengecek array
+                            const mStr = String(month + 1).padStart(2, '0');
+                            const dStr = String(date).padStart(2, '0');
+                            const key = `${mStr}-${dStr}`;
+                            const isRamadhan = puasaDays[year] && puasaDays[year].includes(key);
+
+                            if (isRamadhan) labelPuasa = "Ramadhan";
+                            
+                            badgeHtml = `<div class="event-badge badge-puasa">${labelPuasa}</div>`;
+                        }
+
+                        cell.innerHTML = content + badgeHtml;
+                        date++;
                     }
+                    row.appendChild(cell);
                 }
-                row += '</tr>';
-                tableBody += row;
-            }
 
-            calendarBody.innerHTML = tableBody;
+                if (!hasDays && i > 0) break;
+                calendarBody.appendChild(row);
+            }
         }
 
-        function getNeptu(day, pasaran) {
-            let neptuHari = 0;
-            let neptuPasaran = 0;
-
-            switch (day) {
-                case "Minggu":
-                    neptuHari = 5;
-                    break;
-                case "Senin":
-                    neptuHari = 4;
-                    break;
-                case "Selasa":
-                    neptuHari = 3;
-                    break;
-                case "Rabu":
-                    neptuHari = 7;
-                    break;
-                case "Kamis":
-                    neptuHari = 8;
-                    break;
-                case "Jumat":
-                    neptuHari = 6;
-                    break;
-                case "Sabtu":
-                    neptuHari = 9;
-                    break;
-            }
-
-            switch (pasaran) {
-                case "Wage":
-                    neptuPasaran = 4;
-                    break;
-                case "Kliwon":
-                    neptuPasaran = 8;
-                    break;
-                case "Legi":
-                    neptuPasaran = 5;
-                    break;
-                case "Pahing":
-                    neptuPasaran = 9;
-                    break;
-                case "Pon":
-                    neptuPasaran = 7;
-                    break;
-            }
-
-            return neptuHari + neptuPasaran;
-        }
+        // --- EVENT LISTENERS ---
 
         prevBtn.addEventListener('click', () => {
             currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            monthSelect.value = currentMonth;
-            yearSelect.value = currentYear;
-            updateCalendar(currentMonth, currentYear);
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            updateControlsAndRender();
         });
 
         nextBtn.addEventListener('click', () => {
             currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            updateControlsAndRender();
+        });
+
+        monthSelect.addEventListener('change', (e) => {
+            currentMonth = parseInt(e.target.value);
+            renderCalendar(currentMonth, currentYear);
+        });
+
+        yearSelect.addEventListener('change', (e) => {
+            currentYear = parseInt(e.target.value);
+            renderCalendar(currentMonth, currentYear);
+        });
+
+        todayBtn.addEventListener('click', () => {
+            const now = new Date();
+            currentMonth = now.getMonth();
+            currentYear = now.getFullYear();
+            currentDate = now; 
+            updateControlsAndRender();
+        });
+
+        function updateControlsAndRender() {
             monthSelect.value = currentMonth;
             yearSelect.value = currentYear;
-            updateCalendar(currentMonth, currentYear);
-        });
+            renderCalendar(currentMonth, currentYear);
+        }
 
-        monthSelect.addEventListener('change', () => {
-            currentMonth = parseInt(monthSelect.value);
-            updateCalendar(currentMonth, currentYear);
-        });
+        populateSelects();
+        renderCalendar(currentMonth, currentYear);
 
-        yearSelect.addEventListener('change', () => {
-            currentYear = parseInt(yearSelect.value);
-            updateCalendar(currentMonth, currentYear);
-        });
-
-        populateMonthSelect();
-        populateYearSelect();
-        updateCalendar(currentMonth, currentYear);
     </script>
 </body>
 
 </html>
-
-
