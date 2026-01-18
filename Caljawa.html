@@ -31,6 +31,70 @@
             min-height: 100vh;
         }
 
+        /* --- HEADER & HAMBURGER MENU --- */
+        .app-header {
+            width: 100%;
+            background-color: var(--accent-dark);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .header-title h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; }
+        .header-title p { margin: 2px 0 0; font-size: 0.75rem; opacity: 0.8; color: var(--accent-orange); }
+
+        /* Tombol Hamburger */
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+
+        /* Menu Overlay Mobile */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            right: -100%; /* Sembunyi di kanan */
+            width: 70%;
+            height: 100vh;
+            background: var(--accent-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: right 0.3s ease-in-out;
+            z-index: 999;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+        }
+
+        .nav-overlay.active {
+            right: 0;
+        }
+
+        .nav-overlay a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-overlay a:hover {
+            color: var(--accent-orange);
+        }
+
+        /* Kontainer Utama */
         .app-container {
             width: 95%;
             max-width: 700px;
@@ -41,16 +105,6 @@
             overflow: hidden;
             border-top: 6px solid var(--accent-orange);
         }
-
-        header {
-            background-color: var(--accent-dark);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        header h1 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
-        header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8; color: var(--accent-orange); }
 
         .controls {
             display: flex;
@@ -188,6 +242,9 @@
         }
 
         @media (max-width: 600px) {
+            /* Tampilkan hamburger di HP */
+            .hamburger { display: block; }
+            
             .app-container { width: 100%; border-radius: 0; margin: 0; box-shadow: none; }
             .controls { flex-direction: column; align-items: stretch; gap: 15px; }
             .header-nav { display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -201,12 +258,26 @@
 
 <body>
 
-    <div class="app-container">
-        <header>
+    <!-- Header & Hamburger Menu -->
+    <div class="app-header">
+        <div class="header-title">
             <h1>Kalender Jawa</h1>
             <p>Penanggalan Jawa, Weton & Ramadhan</p>
-        </header>
+        </div>
+        <!-- Tombol Hamburger -->
+        <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+    </div>
 
+    <!-- Menu Overlay (Navigasi Samping) -->
+    <div class="nav-overlay" id="navOverlay">
+        <a href="home.html">Home</a>
+        <a href="neptu.html">Neptu</a>
+        <a href="Caljawa.html">Kalender Jawa</a>
+        <a href="game.html">Game</a>
+        <a href="porto.html">Portofolio</a>
+    </div>
+
+    <div class="app-container">
         <div class="controls">
             <div class="header-nav">
                 <button class="nav-btn" id="prevBtn">&lt;</button>
@@ -248,8 +319,17 @@
         <p>Created by &copy; <span>ZinXploit</span></p>
     </footer>
 
+    <!-- Tambahkan Font Awesome agar icon muncul -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <script>
-        // --- KONFIGURASI ---
+        // --- SCRIPT MENU HAMBURGER ---
+        function toggleMenu() {
+            const nav = document.getElementById('navOverlay');
+            nav.classList.toggle('active');
+        }
+
+        // --- KONFIGURASI KALENDER ---
         const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         const namaPasaran = ["Legi", "Pahing", "Pon", "Wage", "Kliwon"];
         const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
