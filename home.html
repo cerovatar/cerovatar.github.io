@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Selamat Datang — Mario Adi Saputra</title>
   <!-- Font Google -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;500&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -14,8 +14,10 @@
     :root {
       --primary: #d63031; /* Merah Gelap ala Demon Slayer */
       --accent: #ffffff;
+      --neon-blue: #00f3ff; /* Warna Cyan Neon */
       --font-title: 'Cinzel', serif;
       --font-body: 'Poppins', sans-serif;
+      --font-digital: 'Orbitron', sans-serif; /* Font Digital */
     }
 
     * {
@@ -36,7 +38,7 @@
       position: relative;
     }
 
-    /* --- BACKGROUND DEMON SLAYER (CUSTOM) --- */
+    /* --- BACKGROUND DEMON SLAYER --- */
     .background-wrapper {
       position: fixed;
       top: 0;
@@ -50,15 +52,11 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      /* Link gambar yang Anda berikan */
       content: url('https://w0.peakpx.com/wallpaper/943/193/HD-wallpaper-demon-slayer-anime-demon-slayer-thumbnail.jpg');
-      
-      /* Filter agar teks tetap terbaca: Gelapkan & Blur sedikit */
       filter: brightness(0.4) blur(2px);
-      transform: scale(1.1); /* Zoom sedikit biar tidak gepeng */
+      transform: scale(1.1);
     }
 
-    /* Overlay Gradasi Merah (Efek Atmosfer) */
     .overlay {
       position: absolute;
       top: 0;
@@ -70,11 +68,56 @@
       pointer-events: none;
     }
 
+    /* --- WIDGET JAM DIGITAL (POSISI TENGAH ATAS) --- */
+    .digital-clock {
+      position: fixed;
+      top: 15%; /* Letak di 15% dari atas layar */
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      text-align: center;
+      
+      /* Styling Background Kaca */
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 30px;
+      border-radius: 50px;
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+      
+      /* Animasi Masuk */
+      opacity: 0;
+      animation: fadeInDown 1s ease 0.5s forwards;
+    }
+
+    .time {
+      font-family: var(--font-digital);
+      font-size: 1.8rem;
+      color: var(--neon-blue);
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.8);
+      line-height: 1.2;
+    }
+
+    .date {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: #eee;
+      margin-top: 2px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
     /* --- KONTEN UTAMA --- */
     .intro-content {
       text-align: center;
       z-index: 10;
       padding: 20px;
+      position: absolute;
+      top: 55%; /* Geser sedikit ke bawah agar tidak nabrak jam */
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     .greeting {
@@ -89,17 +132,17 @@
 
     h1 {
       font-family: var(--font-title);
-      font-size: 4rem; /* Ukuran lebih besar */
+      font-size: 3.5rem;
       color: var(--accent);
       margin-bottom: 15px;
-      text-shadow: 0 0 20px rgba(214, 48, 49, 0.8); /* Efek Glow Merah */
+      text-shadow: 0 0 20px rgba(214, 48, 49, 0.8);
       opacity: 0;
       animation: slideUp 1s ease 0.5s forwards;
     }
 
     .subtitle {
       font-size: 1.1rem;
-      color: #ffcccc; /* Merah muda lembut */
+      color: #ffcccc;
       font-weight: 500;
       margin-bottom: 60px;
       text-transform: uppercase;
@@ -108,7 +151,7 @@
       animation: fadeIn 1s ease 1s forwards;
     }
 
-    /* --- KOTAK MASUK (TOMBOL) --- */
+    /* --- KOTAK MASUK --- */
     .enter-box {
       position: relative;
       display: inline-block;
@@ -125,7 +168,7 @@
       font-size: 1.3rem;
       padding: 15px 45px;
       border: 2px solid var(--primary);
-      border-radius: 4px; /* Lebih kotak ala pedang */
+      border-radius: 4px;
       text-decoration: none;
       transition: all 0.4s ease;
       position: relative;
@@ -134,7 +177,6 @@
       letter-spacing: 1px;
     }
 
-    /* Efek Hover Slide */
     .enter-btn::before {
       content: '';
       position: absolute;
@@ -182,8 +224,10 @@
     }
 
     /* --- ANIMASI --- */
-    @keyframes fadeIn {
-      to { opacity: 1; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translate(-50%, -20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
     }
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(40px); }
@@ -201,61 +245,82 @@
     @media (max-width: 768px) {
       h1 { font-size: 2.5rem; }
       .enter-btn { font-size: 1rem; padding: 12px 30px; }
-      .bg-img { filter: brightness(0.3) blur(1px); } /* Di HP blur dikurangi biar tajam */
+      .bg-img { filter: brightness(0.3) blur(1px); }
+      .intro-content { top: 58%; } /* Geser konten bawah dikit di HP */
     }
   </style>
 </head>
 <body>
 
-  <!-- Background dengan Link yang Diberikan -->
+  <!-- Background -->
   <div class="background-wrapper">
     <div class="bg-img"></div>
   </div>
-  
-  <!-- Overlay Red Atmosphere -->
   <div class="overlay"></div>
+
+  <!-- WIDGET JAM DIGITAL (DI TENGAH) -->
+  <div class="digital-clock">
+    <div class="time" id="clock">00:00:00</div>
+    <div class="date" id="date">Senin, 1 Januari 2025</div>
+  </div>
 
   <!-- Main Content -->
   <main class="intro-content">
     <div class="greeting">Welcome to My World</div>
     <h1>MARIO ADI SAPUTRA</h1>
-    <div class="subtitle">Demon Slayer Style Portfolio</div>
+    <div class="subtitle"></div>
 
-    <!-- Kotak Masuk -->
     <div class="enter-box" onclick="enterSite()">
       <span class="enter-btn">MASUK KE PORTOFOLIO</span>
     </div>
   </main>
 
-  <!-- Music Toggle Icon -->
+  <!-- Music Toggle -->
   <div class="music-toggle" onclick="toggleMusic()" title="Play/Pause">
     <i class="fas fa-music" id="musicIcon"></i>
   </div>
 
-  <!-- Audio Element (Lagu Anime Vibe) -->
+  <!-- Audio -->
   <audio id="bgm" loop>
     <source src="Kimetsu no Yaiba OST [Go Shinna ft Nami Nakagawa - Kamado Tanjirou no Uta] Lirik & Terjemahan.mp3" type="audio/mpeg">
   </audio>
 
   <script>
+    // --- SCRIPT JAM DIGITAL ---
+    function updateClock() {
+      const now = new Date();
+      
+      // Format Jam (HH:MM:SS)
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds}`;
+
+      // Format Tanggal (Hari, Tanggal Bulan Tahun)
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateString = now.toLocaleDateString('id-ID', options);
+      document.getElementById('date').innerText = dateString;
+    }
+
+    // Update jam setiap 1 detik
+    setInterval(updateClock, 1000);
+    updateClock(); // Jalankan langsung saat load
+
+    // --- SCRIPT NAVIGASI & MUSIK ---
     const bgm = document.getElementById("bgm");
     const musicIcon = document.getElementById("musicIcon");
     let isPlaying = false;
 
     bgm.volume = 0.4;
 
-    // 1. Fungsi Masuk ke Halaman Utama
     function enterSite() {
       const body = document.body;
       body.style.animation = "fadeOutPage 1.5s ease forwards";
-      
       setTimeout(() => {
-        // Pastikan nama file portofolio utama Anda adalah 'home.html'
         window.location.href = "porto.html"; 
       }, 1500);
     }
 
-    // 2. Kontrol Musik
     function toggleMusic() {
       if (isPlaying) {
         bgm.pause();
@@ -269,7 +334,7 @@
       isPlaying = !isPlaying;
     }
 
-    // 3. Autoplay pada klik pertama (bypass browser block)
+    // Autoplay music helper
     document.addEventListener('click', function enableAudio() {
       if (!isPlaying) {
         bgm.play();
