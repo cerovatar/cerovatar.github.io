@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selamat Datang — Mario Adi Saputra</title>
+  <!-- Font Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    /* --- CSS VARIABLES --- */
+    :root {
+      --primary: #d63031; /* Merah Gelap ala Demon Slayer */
+      --accent: #ffffff;
+      --font-title: 'Cinzel', serif;
+      --font-body: 'Poppins', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #050505;
+      color: var(--accent);
+      font-family: var(--font-body);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* --- BACKGROUND DEMON SLAYER (CUSTOM) --- */
+    .background-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+
+    .bg-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* Link gambar yang Anda berikan */
+      content: url('https://w0.peakpx.com/wallpaper/943/193/HD-wallpaper-demon-slayer-anime-demon-slayer-thumbnail.jpg');
+      
+      /* Filter agar teks tetap terbaca: Gelapkan & Blur sedikit */
+      filter: brightness(0.4) blur(2px);
+      transform: scale(1.1); /* Zoom sedikit biar tidak gepeng */
+    }
+
+    /* Overlay Gradasi Merah (Efek Atmosfer) */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, transparent 20%, #000 90%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* --- KONTEN UTAMA --- */
+    .intro-content {
+      text-align: center;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    .greeting {
+      font-size: 1.2rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 15px;
+      opacity: 0;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    h1 {
+      font-family: var(--font-title);
+      font-size: 4rem; /* Ukuran lebih besar */
+      color: var(--accent);
+      margin-bottom: 15px;
+      text-shadow: 0 0 20px rgba(214, 48, 49, 0.8); /* Efek Glow Merah */
+      opacity: 0;
+      animation: slideUp 1s ease 0.5s forwards;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #ffcccc; /* Merah muda lembut */
+      font-weight: 500;
+      margin-bottom: 60px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0;
+      animation: fadeIn 1s ease 1s forwards;
+    }
+
+    /* --- KOTAK MASUK (TOMBOL) --- */
+    .enter-box {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      opacity: 0;
+      animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s forwards;
+    }
+
+    .enter-btn {
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      color: var(--primary);
+      font-family: var(--font-title);
+      font-size: 1.3rem;
+      padding: 15px 45px;
+      border: 2px solid var(--primary);
+      border-radius: 4px; /* Lebih kotak ala pedang */
+      text-decoration: none;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      letter-spacing: 1px;
+    }
+
+    /* Efek Hover Slide */
+    .enter-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--primary);
+      transition: all 0.4s ease;
+      z-index: -1;
+    }
+
+    .enter-box:hover .enter-btn {
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 40px rgba(214, 48, 49, 0.6);
+      transform: translateY(-3px);
+    }
+
+    .enter-box:hover .enter-btn::before {
+      left: 0;
+    }
+
+    /* --- KONTROL MUSIK --- */
+    .music-toggle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      color: rgba(255,255,255,0.5);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 20;
+      background: rgba(0,0,0,0.3);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .music-toggle:hover { 
+      color: var(--primary); 
+      background: rgba(214, 48, 49, 0.2); 
+    }
+
+    /* --- ANIMASI --- */
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeOutPage {
+      to { opacity: 0; transform: scale(1.1); filter: blur(10px); }
+    }
+
+    /* Responsif Mobile */
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      .enter-btn { font-size: 1rem; padding: 12px 30px; }
+      .bg-img { filter: brightness(0.3) blur(1px); } /* Di HP blur dikurangi biar tajam */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background dengan Link yang Diberikan -->
+  <div class="background-wrapper">
+    <div class="bg-img"></div>
+  </div>
+  
+  <!-- Overlay Red Atmosphere -->
+  <div class="overlay"></div>
+
+  <!-- Main Content -->
+  <main class="intro-content">
+    <div class="greeting">Welcome to My World</div>
+    <h1>MARIO ADI SAPUTRA</h1>
+    <div class="subtitle">Demon Slayer Style Portfolio</div>
+
+    <!-- Kotak Masuk -->
+    <div class="enter-box" onclick="enterSite()">
+      <span class="enter-btn">MASUK KE PORTOFOLIO</span>
+    </div>
+  </main>
+
+  <!-- Music Toggle Icon -->
+  <div class="music-toggle" onclick="toggleMusic()" title="Play/Pause">
+    <i class="fas fa-music" id="musicIcon"></i>
+  </div>
+
+  <!-- Audio Element (Lagu Anime Vibe) -->
+  <audio id="bgm" loop>
+    <source src="Kimetsu no Yaiba OST [Go Shinna ft Nami Nakagawa - Kamado Tanjirou no Uta] Lirik & Terjemahan.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const bgm = document.getElementById("bgm");
+    const musicIcon = document.getElementById("musicIcon");
+    let isPlaying = false;
+
+    bgm.volume = 0.4;
+
+    // 1. Fungsi Masuk ke Halaman Utama
+    function enterSite() {
+      const body = document.body;
+      body.style.animation = "fadeOutPage 1.5s ease forwards";
+      
+      setTimeout(() => {
+        // Pastikan nama file portofolio utama Anda adalah 'home.html'
+        window.location.href = "porto.html"; 
+      }, 1500);
+    }
+
+    // 2. Kontrol Musik
+    function toggleMusic() {
+      if (isPlaying) {
+        bgm.pause();
+        musicIcon.className = "fas fa-music";
+        musicIcon.style.color = "rgba(255,255,255,0.5)";
+      } else {
+        bgm.play();
+        musicIcon.className = "fas fa-compact-disc fa-spin";
+        musicIcon.style.color = "var(--primary)";
+      }
+      isPlaying = !isPlaying;
+    }
+
+    // 3. Autoplay pada klik pertama (bypass browser block)
+    document.addEventListener('click', function enableAudio() {
+      if (!isPlaying) {
+        bgm.play();
+        isPlaying = true;
+        musicIcon.className = "fas fa-compact-disc fa-spin";
+        musicIcon.style.color = "var(--primary)";
+        document.removeEventListener('click', enableAudio);
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>
