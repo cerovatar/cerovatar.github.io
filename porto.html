@@ -95,7 +95,6 @@
       align-items:center;
       text-align:center;
       position:relative;
-      /* Background Pattern ala Anime */
       background: radial-gradient(circle at top, #2d1415 0%, #0a0a0a 70%);
       padding:20px;
     }
@@ -176,6 +175,44 @@
       transition: transform 0.3s;
     }
     .about-card:hover {transform: translateY(-5px); border-color: var(--primary);}
+
+    /* --- SKILLS SECTION (BARU) --- */
+    .skills-container {
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .skill-item {
+      margin-bottom: 25px;
+    }
+
+    .skill-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .progress-bg {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #ff6b6b);
+      border-radius: 10px;
+      width: 0; /* Awal 0 untuk animasi */
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
 
     /* --- PROJECTS GRID --- */
     .projects{
@@ -338,10 +375,10 @@
   <h1>Mario<span>.Dev</span></h1>
   <span class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></span>
   <nav id="menuNav">
-    <a href="home.html" onclick="toggleMenu()">home</a>
-    <a href="neptu.html" onclick="toggleMenu()">neptu</a>
-    <a href="Caljawa.html" onclick="toggleMenu()">kalender jawa</a>
-    <a href="game.html" onclick="toggleMenu()">game</a>
+    <a href="home.html" onclick="toggleMenu()">Home</a>
+    <a href="neptu.html" onclick="toggleMenu()">Neptu</a>
+    <a href="Caljawa.html" onclick="toggleMenu()">Kalender Jawa</a>
+    <a href="game.html" onclick="toggleMenu()">Game</a>
     <a href="#about" onclick="toggleMenu()">Tentang</a>
     <a href="#projects" onclick="toggleMenu()">Proyek</a>
     <a href="#contact" onclick="toggleMenu()">Kontak</a>
@@ -366,6 +403,49 @@
       <p style="font-size: 1.1rem; max-width: 800px; margin: 0 auto;">
         Saya adalah seorang profesional di bidang web development yang berfokus pada pembuatan website modern, responsif, dan fungsional. Saya memiliki passion dalam mengubah ide menjadi kenyataan digital. Siap membantu Anda membangun identitas digital yang kuat dan menarik.
       </p>
+    </div>
+  </section>
+
+  <br><br><br>
+
+  <!-- SKILLS SECTION (BARU) -->
+  <section id="skills">
+    <h2 class="section-title">Keahlian Teknis</h2>
+    <div class="skills-container">
+      
+      <!-- Skill 1: HTML -->
+      <div class="skill-item">
+        <div class="skill-info">
+          <span><i class="fab fa-html5" style="color: #e34c26;"></i> HTML5</span>
+          <span>100%</span>
+        </div>
+        <div class="progress-bg">
+          <div class="progress-bar" data-width="95%"></div>
+        </div>
+      </div>
+
+      <!-- Skill 2: CSS -->
+      <div class="skill-item">
+        <div class="skill-info">
+          <span><i class="fab fa-css3-alt" style="color: #264de4;"></i> CSS3</span>
+          <span>97%</span>
+        </div>
+        <div class="progress-bg">
+          <div class="progress-bar" data-width="90%"></div>
+        </div>
+      </div>
+
+      <!-- Skill 3: JavaScript -->
+      <div class="skill-item">
+        <div class="skill-info">
+          <span><i class="fab fa-js" style="color: #f7df1e;"></i> JavaScript</span>
+          <span>90%</span>
+        </div>
+        <div class="progress-bg">
+          <div class="progress-bar" data-width="80%"></div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -420,9 +500,9 @@
         <div class="project-info">
           <span class="tag">Utility</span>
           <h3>Aplikasi Kalender Jawa</h3>
-          <p>aplikasi tanggal Masehi Jawa dengan detail hari pasaran, wuku, perhitungan hari baik dan ramadhan.</p>
-          <p> Link download nya</p><a href="https://files.appsgeyser.com/Kalender%20Jawa_19452331.apk?_gl=1*uu3dub*_ga*MTExODcxMzEwOS4xNzY4NTU3OTA0*_ga_WRFFFBGC4Z*czE3Njg3MTkzMjIkbzIkZzEkdDE3Njg3MTk0NjAkajUyJGwwJGgwJGQ2VGVuOHRjNG1qd0VzS0Z3LW13QWdmX084WFExR1hLT3JB" download class="btn-download">Unduh Sekarang</a>
-
+          <p>Aplikasi tanggal Masehi Jawa dengan detail hari pasaran, wuku, perhitungan hari baik dan ramadhan.</p>
+          <p>Link download:</p>
+          <a href="https://files.appsgeyser.com/Kalender%20Jawa_19452331.apk?_gl=1*uu3dub*_ga*MTExODcxMzEwOS4xNzY4NTU3OTA0*_ga_WRFFFBGC4Z*czE3Njg3MTkzMjIkbzIkZzEkdDE3Njg3MTk0NjAkajUyJGwwJGgwJGQ2VGVuOHRjNG1qd0VzS0Z3LW13QWdmX084WFExR1hLT3JB" download class="btn-download">Unduh Sekarang</a>
         </div>
       </div>
 
@@ -466,51 +546,51 @@
 </div>
 
 <!-- Audio Element -->
-<!-- Default: Gurenge (Kimetsu no Yaiba OP 1) -->
+<!-- Menggunakan Link Online agar musik bisa diputar otomatis -->
 <audio id="bgm" loop>
   <source src="Kimetsu no Yaiba OST [Go Shinna ft Nami Nakagawa - Kamado Tanjirou no Uta] Lirik & Terjemahan.mp3" type="audio/mpeg">
-  <!-- Catatan: Link di atas adalah placeholder legal. 
-       Gunakan link direct MP3 pribadi Anda untuk hasil terbaik.
-  -->
 </audio>
 
 <script>
-  // DAFTAR LAGU (PLAYLIST)
-  // Pilih indeks lagu yang ingin diputar:
-  // 0 = Gurenge (Default)
-  // 1 = Homura
-  // 2 = Akeboshi
-  // 3 = Zankyou Sanka
+  // --- ANIMASI SKILL BAR ---
+  // Menggunakan IntersectionObserver agar animasi jalan saat di-scroll
+  const skillsSection = document.querySelector('.skills-container');
+  const progressBars = document.querySelectorAll('.progress-bar');
   
-  const playList = [
-    "Kimetsu no Yaiba OST [Go Shinna ft Nami Nakagawa - Kamado Tanjirou no Uta] Lirik & Terjemahan.mp3"
-  ];
-
-  // Mengatur lagu pertama
-  const bgm = document.getElementById("bgm");
-  bgm.src = playList[0]; 
-  bgm.volume = 0.3; // Volume 30% agar tidak terlalu keras
-
-  // Menu Mobile
-  function toggleMenu(){
-    document.getElementById('menuNav').classList.toggle('show');
+  const showProgress = () => {
+    progressBars.forEach(progressBar => {
+      const value = progressBar.getAttribute('data-width');
+      progressBar.style.width = value;
+    });
   }
 
+  const hideProgress = () => {
+    progressBars.forEach(progressBar => {
+      progressBar.style.width = '0';
+    });
+  }
+
+  const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        showProgress();
+      } else {
+        hideProgress();
+      }
+    });
+  }, { threshold: 0.2 });
+
+  if(skillsSection) skillObserver.observe(skillsSection);
+
+  // --- SCRIPT LAINNYA ---
+  
   // Music Control
-  let isPlaying = false;
+  const bgm = document.getElementById("bgm");
   const musicBtn = document.getElementById("musicBtn");
   const musicIcon = document.getElementById("musicIcon");
+  let isPlaying = false;
 
-  // Mencoba Autoplay saat halaman dimuat (diperlukan interaksi di beberapa browser)
-  document.body.addEventListener('click', function initAudio() {
-    if (!isPlaying) {
-      bgm.play().then(() => {
-        isPlaying = true;
-        musicIcon.className = "fas fa-pause";
-      }).catch(e => console.log("Autoplay dicegah browser, silakan klik tombol musik."));
-      document.body.removeEventListener('click', initAudio);
-    }
-  }, { once: true });
+  bgm.volume = 0.3;
 
   function toggleMusic() {
     if (isPlaying) {
@@ -523,6 +603,11 @@
       musicBtn.style.animation = "pulse 2s infinite"; 
     }
     isPlaying = !isPlaying;
+  }
+
+  // Menu Mobile
+  function toggleMenu(){
+    document.getElementById('menuNav').classList.toggle('show');
   }
 
   // Scroll Animation
