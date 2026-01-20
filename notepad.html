@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Note Cool Notepad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --container-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --toolbar-bg: #ffffff;
+            --header-dev-bg: #111827; 
+            --header-app-bg: #4f46e5;
+            --header-text: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            --primary-color: #6366f1;
+            --bg-color: #000000;
+            --container-bg: #1f2937;
+            --text-color: #e5e7eb;
+            --border-color: #374151;
+            --toolbar-bg: #1f2937;
+            --header-dev-bg: #000000;
+            --header-app-bg: #312e81; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            transition: 0.3s;
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            width: 100%;
+            max-width: 850px;
+            height: 90vh; 
+            margin: 20px;
+            border-radius: 0 0 16px 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-top: none;
+        }
+
+        /* --- HEADER 1: MARIO.DEV --- */
+        .header-dev {
+            background-color: var(--header-dev-bg);
+            color: var(--header-text);
+            padding: 8px 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .dev-brand {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dev-brand span {
+            opacity: 0.7;
+            font-weight: 400;
+        }
+
+        /* Tombol Portofolio di Header Mario.dev */
+        .btn-porto {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .btn-porto:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* --- HEADER 2: MY NOTES --- */
+        .header-app {
+            background-color: var(--header-app-bg);
+            color: var(--header-text);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Hamburger Menu Utama */
+        .hamburger {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+        
+        /* Dropdown Menu Utama */
+        .menu-dropdown {
+            position: absolute; 
+            top: 100px; 
+            right: calc(50% - 425px); 
+            background-color: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 200px;
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .menu-dropdown.active {
+            display: flex;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            transition: 0.2s;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:hover { background-color: var(--bg-color); color: var(--primary-color); }
+
+        /* --- EDITOR AREA --- */
+        .editor-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #filename-display {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888;
+            padding: 5px;
+            border-bottom: 1px dashed var(--border-color);
+            font-style: italic;
+            background-color: var(--toolbar-bg);
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            outline: none;
+            resize: none;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            background-color: var(--toolbar-bg);
+            padding: 10px 20px;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #6b7280;
+        }
+        
+        body.dark-mode .footer { color: #9ca3af; }
+
+        .creator {
+            font-weight: 600;
+            color: var(--primary-color);
+            letter-spacing: 0.5px;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--container-bg);
+            width: 90%; max-width: 500px;
+            border-radius: 12px; padding: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+            max-height: 80vh; display: flex; flex-direction: column;
+        }
+        
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
+        .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888; }
+        
+        .file-list { overflow-y: auto; flex-grow: 1; }
+        .file-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; border-bottom: 1px solid var(--border-color);
+            cursor: pointer; border-radius: 6px;
+        }
+        .file-item:hover { background-color: rgba(79, 70, 229, 0.1); }
+        .file-info strong { display: block; font-size: 1rem; color: var(--text-color); }
+        .file-info span { font-size: 0.8rem; color: #888; }
+        .btn-delete-mini { background: none; border: none; color: #ef4444; padding: 5px; cursor: pointer; }
+        
+        .input-group { margin-top: 15px; }
+        .input-group input {
+            width: 100%; padding: 10px; border: 1px solid var(--border-color);
+            border-radius: 6px; background: var(--bg-color); color: var(--text-color);
+        }
+        .modal-footer { margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px; }
+
+        /* --- MOBILE --- */
+        @media (max-width: 600px) {
+            body { padding: 0; align-items: flex-start; }
+            .container { height: 100vh; border-radius: 0; margin: 0; max-width: 100%; }
+            .header-dev, .header-app { border-radius: 0; }
+            .menu-dropdown { right: 20px; top: 80px; } 
+            .footer { flex-direction: column; gap: 5px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER 1: MARIO.DEV -->
+        <div class="header-dev">
+            <div class="dev-brand">
+                Mario.dev <span>| Premium Apps</span>
+            </div>
+            
+            <!-- TOMBOL BARU: HUBUNGKAN KE PORTO.HTML -->
+            <a href="porto.html" class="btn-porto">
+                <i class="fas fa-user-circle"></i> Portofolio
+            </a>
+        </div>
+
+        <!-- HEADER 2: MY NOTES -->
+        <div class="header-app">
+            <div class="app-title">
+                <i class="fas fa-book-open"></i> My Notes
+            </div>
+            
+            <!-- Hamburger Menu Utama -->
+            <button class="hamburger" id="hamburger-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Dropdown Menu Utama -->
+        <div class="menu-dropdown" id="menu-dropdown">
+            <div class="menu-item" id="btn-new">
+                <i class="fas fa-plus-circle"></i> Catatan Baru
+            </div>
+            <div class="menu-item" id="btn-save-modal">
+                <i class="fas fa-save"></i> Simpan Catatan
+            </div>
+            <div class="menu-item" id="btn-open-modal">
+                <i class="fas fa-folder-open"></i> Buka Catatan
+            </div>
+            <div class="menu-item" id="btn-theme">
+                <i class="fas fa-adjust"></i> Ganti Tema
+            </div>
+        </div>
+
+        <!-- Editor -->
+        <div class="editor-wrapper">
+            <div id="filename-display">Tanpa Judul (Belum disimpan)</div>
+            <textarea id="editor" placeholder="Mulai menulis..."></textarea>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span id="stats">0 Kata | 0 Karakter</span>
+            <span class="creator">Created by ZinXploit</span>
+        </div>
+    </div>
+
+    <!-- MODAL OPEN -->
+    <div class="modal" id="modal-open">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Pilih Catatan</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="file-list" id="file-list-container">
+                <p style="text-align:center; color:#888; padding:20px;">Belum ada catatan tersimpan.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SAVE -->
+    <div class="modal" id="modal-save">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Simpan Catatan</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="input-group">
+                <input type="text" id="save-filename" placeholder="Nama File...">
+            </div>
+            <div class="modal-footer">
+                <button class="close-modal" style="border:1px solid #ddd; background:none;">Batal</button>
+                <button class="btn-save" id="confirm-save" style="padding:8px 16px; border:none; background:var(--primary-color); color:white; border-radius:6px; cursor:pointer;">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- REFERENSI DOM ---
+        const editor = document.getElementById('editor');
+        const filenameDisplay = document.getElementById('filename-display');
+        const statsEl = document.getElementById('stats');
+        
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const menuDropdown = document.getElementById('menu-dropdown');
+        
+        const modalOpen = document.getElementById('modal-open');
+        const modalSave = document.getElementById('modal-save');
+        const fileListContainer = document.getElementById('file-list-container');
+        const saveFilenameInput = document.getElementById('save-filename');
+        
+        let currentFileId = null;
+
+        // --- 1. HAMBURGER MENU LOGIC ---
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuDropdown.classList.toggle('active');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!menuDropdown.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                menuDropdown.classList.remove('active');
+            }
+        });
+
+        // --- 2. UTAMA ---
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            editor.focus();
+        });
+
+        editor.addEventListener('input', () => {
+            const text = editor.value;
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            statsEl.textContent = `${words} Kata | ${text.length} Karakter`;
+        });
+
+        // --- 3. ACTIONS ---
+        document.getElementById('btn-new').addEventListener('click', () => {
+            menuDropdown.classList.remove('active');
+            if(confirm("Mulai catatan baru? Perubahan belum disimpan akan hilang.")){
+                editor.value = '';
+                currentFileId = null;
+                filenameDisplay.textContent = "Tanpa Judul (Catatan Baru)";
+                statsEl.textContent = "0 Kata | 0 Karakter";
+                editor.focus();
+            }
+        });
+
+        document.getElementById('btn-open-modal').addEventListener('click', () => {
+            menuDropdown.classList.remove('active');
+            renderFileList();
+            modalOpen.classList.add('active');
+        });
+
+        document.getElementById('btn-save-modal').addEventListener('click', () => {
+            menuDropdown.classList.remove('active');
+            if (currentFileId) {
+                saveFile(currentFileId, getFileNameById(currentFileId));
+            } else {
+                saveFilenameInput.value = '';
+                modalSave.classList.add('active');
+                saveFilenameInput.focus();
+            }
+        });
+
+        document.getElementById('btn-theme').addEventListener('click', () => {
+            menuDropdown.classList.remove('active');
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('coolNotepadTheme', isDark ? 'dark' : 'light');
+        });
+
+        // --- 4. LOGIKA SAVE/OPEN ---
+        document.getElementById('confirm-save').addEventListener('click', () => {
+            const name = saveFilenameInput.value.trim();
+            if (name) {
+                const id = Date.now().toString();
+                saveFile(id, name);
+                modalSave.classList.remove('active');
+            } else {
+                alert("Nama file tidak boleh kosong!");
+            }
+        });
+
+        function saveFile(id, name) {
+            const content = editor.value;
+            const timestamp = new Date().toLocaleString('id-ID');
+            let allNotes = JSON.parse(localStorage.getItem('coolNotepadFiles') || '{}');
+            
+            allNotes[id] = { id, name, content, date: timestamp };
+            localStorage.setItem('coolNotepadFiles', JSON.stringify(allNotes));
+            
+            currentFileId = id;
+            filenameDisplay.textContent = name;
+            showToast(`"${name}" tersimpan!`);
+        }
+
+        function openFile(id) {
+            const allNotes = JSON.parse(localStorage.getItem('coolNotepadFiles') || '{}');
+            if (allNotes[id]) {
+                const note = allNotes[id];
+                editor.value = note.content;
+                currentFileId = note.id;
+                filenameDisplay.textContent = note.name;
+                modalOpen.classList.remove('active');
+                editor.dispatchEvent(new Event('input'));
+            }
+        }
+
+        function deleteFile(e, id) {
+            e.stopPropagation();
+            if(confirm("Hapus catatan ini?")) {
+                let allNotes = JSON.parse(localStorage.getItem('coolNotepadFiles') || '{}');
+                delete allNotes[id];
+                localStorage.setItem('coolNotepadFiles', JSON.stringify(allNotes));
+                if (currentFileId === id) {
+                    currentFileId = null;
+                    filenameDisplay.textContent = "Dihapus";
+                    editor.value = "";
+                    editor.dispatchEvent(new Event('input'));
+                }
+                renderFileList();
+            }
+        }
+
+        function renderFileList() {
+            const allNotes = JSON.parse(localStorage.getItem('coolNotepadFiles') || '{}');
+            fileListContainer.innerHTML = '';
+            const keys = Object.keys(allNotes).reverse();
+
+            if (keys.length === 0) {
+                fileListContainer.innerHTML = '<p style="text-align:center; padding:20px; color:#888;">Kosong.</p>';
+                return;
+            }
+            keys.forEach(id => {
+                const note = allNotes[id];
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-info" onclick="openFile('${id}')">
+                        <strong>${note.name}</strong>
+                        <span>${note.date}</span>
+                    </div>
+                    <button class="btn-delete-mini" onclick="deleteFile(event, '${id}')"><i class="fas fa-trash"></i></button>
+                `;
+                fileListContainer.appendChild(item);
+            });
+        }
+
+        function getFileNameById(id) {
+            const allNotes = JSON.parse(localStorage.getItem('coolNotepadFiles') || '{}');
+            return allNotes[id] ? allNotes[id].name : "Untitled";
+        }
+
+        // --- UTILS ---
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                modalOpen.classList.remove('active');
+                modalSave.classList.remove('active');
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modalOpen) modalOpen.classList.remove('active');
+            if (e.target === modalSave) modalSave.classList.remove('active');
+        });
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('coolNotepadTheme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        function showToast(msg) {
+            const originalText = statsEl.textContent;
+            statsEl.textContent = msg;
+            statsEl.style.color = "var(--primary-color)";
+            setTimeout(() => {
+                statsEl.style.color = "inherit";
+                statsEl.textContent = `${editor.value.split(/\s+/).filter(w => w.length > 0).length} Kata | ${editor.value.length} Karakter`;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
