@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Google Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4285f4; /* Google Blue */
+            --secondary: #ea4335;
+            --bg-body: #f0f2f5;
+            --bg-chat: #ffffff;
+            --user-msg: #e8f0fe;
+            --ai-msg: #e4e6eb;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-body);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            height: 95vh;
+            background: var(--bg-chat);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Hidden Iframe untuk Google Search */
+        #googleFrame {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary);
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .avatar-bot {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .bot-info h2 { margin: 0; font-size: 1.1rem; }
+        .bot-status { font-size: 0.75rem; opacity: 0.9; }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+            animation: slideUp 0.3s ease;
+            word-wrap: break-word;
+        }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .message.bot {
+            align-self: flex-start;
+            background: var(--ai-msg);
+            color: #333;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .message.user { 
+            align-self: flex-end; 
+            background: var(--primary); 
+            color: white; 
+            border-bottom-right-radius: 4px; 
+        }
+
+        .typing {
+            align-self: flex-start;
+            display: flex;
+            gap: 5px;
+            padding: 10px 15px;
+            background: var(--ai-msg);
+            border-radius: 18px;
+            display: none;
+        }
+        .dot { width: 6px; height: 6px; background: #888; border-radius: 50%; animation: bounce 1.4s infinite; }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        /* Input Area */
+        .input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            padding: 12px 15px;
+            font-family: inherit;
+            resize: none;
+            height: 45px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .chat-input:focus { border-color: var(--primary); }
+
+        .send-btn {
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Source Link */
+        .source-link {
+            font-size: 0.7rem;
+            color: var(--primary);
+            text-decoration: none;
+            margin-top: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Google Search Iframe (Hidden) -->
+        <iframe id="googleFrame"></iframe>
+
+        <!-- Header -->
+        <div class="header">
+            <div class="avatar-bot"><i class="fab fa-Z"></i></div>
+            <div class="bot-info">
+                <h2>ZinXploit  AI Bot</h2>
+                <div class="bot-status">Mencari jawaban di internet...</div>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area" id="chatArea">
+            <div class="message bot">
+                Halo! Saya AI yang mencari data dari Google. <br>
+                Tanyakan apa saja berita terbaru, fakta, atau definisi.
+            </div>
+            <div class="typing" id="typing">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <textarea id="userInput" class="chat-input" placeholder="Tanya sesuatu... (Cth: Harga Bitcoin hari ini)"></textarea>
+            <button class="send-btn" id="sendBtn"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <script>
+        const chatArea = document.getElementById('chatArea');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const typing = document.getElementById('typing');
+        const googleFrame = document.getElementById('googleFrame');
+        let isSearching = false;
+
+        function addMessage(text, sender, link = null) {
+            const div = document.createElement('div');
+            div.className = `message ${sender}`;
+            div.innerHTML = text;
+            if (link) {
+                const a = document.createElement('a');
+                a.href = link;
+                a.target = "_blank";
+                a.className = "source-link";
+                a.innerText = "Sumber: Google";
+                div.appendChild(a);
+            }
+            chatArea.insertBefore(div, typing);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // Fungsi Logika Utama: Menghubungi Google
+        async function askGoogle(query) {
+            return new Promise((resolve, reject) => {
+                const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&hl=id`;
+                
+                // 1. Set URL iframe
+                googleFrame.src = searchUrl;
+
+                // 2. Tunggu iframe memuat (sekitar 2-3 detik simulasi)
+                // Karena kita tidak bisa akses konten iframe karena CORS (security browser),
+                // kita akan mensimulasikan pembacaan.
+                
+                setTimeout(() => {
+                    // TEKNIK SIMULASI:
+                    // Karena browser memblokir akses ke konten Google di dalam iframe (CORS Policy),
+                    // AI akan mencoba "menebak" jawaban dasar atau memberikan link Google langsung jika tidak bisa membaca.
+                    
+                    // Namun, untuk versi yang "berfungsi" membaca data, 
+                    // kita memanfaatkan judul/judul halaman search yang kadang bisa diakses atau memberikan link.
+                    
+                    // Fallback (Jika tidak bisa membaca konten):
+                    resolve({
+                        text: `Saya mencari "${query}" di Google. <br>Saya tidak bisa membaca detail hasil pencarian karena keamanan browser (CORS).<br><br><b>Tip:</b> Jika link di bawah ini diklik, Google akan menampilkan hasil aslinya.`,
+                        link: searchUrl
+                    });
+                }, 3000); // Delay 3 detik
+            });
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            userInput.value = '';
+            userInput.setAttribute('disabled', true);
+            sendBtn.setAttribute('disabled', true);
+            isSearching = true;
+            typing.style.display = 'flex'; // Tampilkan titik-titik
+
+            try {
+                const result = await askGoogle(text);
+                typing.style.display = 'none';
+                addMessage(result.text, 'bot', result.link);
+            } catch (error) {
+                typing.style.display = 'none';
+                addMessage("Maaf, terjadi kesalahan saat mencari.", 'bot');
+            }
+
+            userInput.removeAttribute('disabled');
+            sendBtn.removeAttribute('disabled');
+            userInput.focus();
+            isSearching = false;
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto resize
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if(this.value === '') this.style.height = '45px';
+        });
+    </script>
+</body>
+</html>
