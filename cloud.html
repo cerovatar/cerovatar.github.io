@@ -3,512 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZinXploit Cloud - Secure Storage</title>
-    <!-- Font Awesome untuk Ikon -->
+    <title>ZinXploit Cloud - Fixed</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            /* Warna Tema Baru: Lebih Gelap & Cyber */
-            --primary: #00d2d3; /* Cyan Neon */
-            --primary-dark: #00a8a9;
-            --bg-body: #1e272e; /* Dark Grey/Blue */
-            --bg-card: #2f3640; /* Card Color */
+            --primary: #00d2d3;
+            --bg-body: #1e272e;
+            --bg-card: rgba(47, 54, 64, 0.8);
             --text-main: #f5f6fa;
-            --text-light: #d2dae2;
-            --border: #576574;
-            --accent-delete: #ff4757;
+            --text-muted: #a4b0be;
+            --border: rgba(255, 255, 255, 0.1);
+            --danger: #ff4757;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; /* Font Monospace untuk kesan tech */ }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            overflow: hidden;
         }
 
-        /* --- Header --- */
+        /* Header */
         header {
-            background: rgba(31, 39, 46, 0.95);
-            padding: 15px 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            height: 70px;
+            background: rgba(30, 39, 46, 0.95);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--border);
+            padding: 0 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-shadow: 0 0 10px rgba(0, 210, 211, 0.5);
+        .brand {
+            font-size: 1.5rem; font-weight: 800; color: var(--primary);
+            display: flex; align-items: center; gap: 10px;
         }
 
-        .storage-info {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            border: 1px solid var(--primary);
-            padding: 5px 15px;
-            border-radius: 4px;
-            background: rgba(0, 210, 211, 0.1);
+        .storage-badge {
+            font-size: 0.85rem; color: var(--text-muted);
+            border: 1px solid var(--border); padding: 5px 15px; border-radius: 20px;
+            background: rgba(0,0,0,0.2);
         }
 
-        /* --- Main Upload Area --- */
+        /* Main */
         main {
-            flex: 1;
-            padding: 30px;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
+            flex: 1; padding: 30px; max-width: 1200px; width: 100%; margin: 0 auto; overflow-y: auto;
         }
 
+        /* Upload Zone */
         .upload-zone {
-            background: var(--bg-card);
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            transition: all 0.3s;
-            cursor: pointer;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
+            background: linear-gradient(145deg, rgba(47, 54, 64, 0.6), rgba(30, 39, 46, 0.9));
+            border: 2px dashed var(--border); border-radius: 16px; padding: 40px;
+            text-align: center; margin-bottom: 40px; transition: 0.3s; cursor: pointer;
         }
-
-        /* Efek glow saat hover */
-        .upload-zone:hover, .upload-zone.dragover {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 210, 211, 0.3);
-            background: rgba(0, 210, 211, 0.05);
+        .upload-zone:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(0, 210, 211, 0.2); }
+        .upload-icon { font-size: 4rem; color: var(--primary); margin-bottom: 15px; }
+        
+        .btn-upload {
+            background: var(--primary); color: #1e272e; padding: 10px 30px; border: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
+        .btn-upload:hover { background: #fff; }
 
-        .upload-icon {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .upload-btn {
-            background: var(--primary);
-            color: #000;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            display: inline-block;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(0, 210, 211, 0.4);
-            transition: 0.3s;
-        }
-
-        .upload-btn:hover {
-            background: #fff;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-        }
-
-        /* --- File List --- */
+        /* File Grid */
         .file-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;
         }
 
         .file-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-            position: relative;
-            cursor: pointer;
-            overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+            padding: 20px; text-align: center; transition: 0.3s; position: relative;
         }
+        .file-card:hover { transform: translateY(-5px); border-color: var(--primary); }
 
-        .file-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            border-color: var(--primary);
-        }
-
-        .file-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--text-light);
-        }
-
-        /* Warna ikon berdasarkan tipe */
-        .type-image .file-icon { color: #ff9ff3; }
-        .type-video .file-icon { color: #feca57; }
-        .type-pdf .file-icon { color: #ff6b6b; }
-        .type-code .file-icon { color: var(--primary); }
-
+        .file-icon { font-size: 3rem; color: var(--text-muted); margin-bottom: 10px; }
+        
         .file-name {
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--text-main);
-        }
-
-        .file-size {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            font-family: monospace;
+            font-size: 0.9rem; font-weight: 600; color: #fff; margin-bottom: 5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
         .file-actions {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
+            margin-top: 15px; display: flex; justify-content: center; gap: 10px;
         }
 
         .action-btn {
-            border: none;
-            background: none;
-            cursor: pointer;
-            color: var(--text-light);
-            transition: all 0.2s;
-            font-size: 1.1rem;
+            background: rgba(255,255,255,0.1); border: none; color: #fff;
+            width: 35px; height: 35px; border-radius: 50%; cursor: pointer; transition: 0.2s;
         }
+        .action-btn:hover { background: var(--primary); color: #1e272e; }
+        .action-btn.delete:hover { background: var(--danger); color: #fff; }
 
-        .action-btn.download:hover { color: var(--primary); transform: scale(1.2); }
-        .action-btn.delete:hover { color: var(--accent-delete); transform: scale(1.2); }
-
-        /* --- Progress Bar --- */
+        /* Progress Bar */
         .progress-container {
-            position: fixed;
-            top: 80px;
-            right: 30px;
-            background: var(--bg-card);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            width: 300px;
-            display: none;
-            z-index: 200;
+            position: fixed; bottom: 30px; right: 30px; background: var(--bg-card);
+            padding: 15px; border-radius: 10px; width: 300px; display: none;
+            border: 1px solid var(--border); z-index: 200;
         }
+        .progress-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
 
-        .progress-bar-bg {
-            height: 6px;
-            background: #000;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 5px;
+        /* Toast */
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: var(--bg-card); border: 1px solid var(--primary); padding: 10px 20px;
+            border-radius: 30px; color: #fff; z-index: 1000; transition: 0.3s;
         }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.2s;
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        /* --- Empty State --- */
-        .empty-state {
-            text-align: center;
-            color: var(--text-light);
-            margin-top: 50px;
-            display: none;
-        }
-        
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 15px;
-            color: var(--border);
-        }
-
+        .toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">
-            <i class="fa-solid fa-shield-halved"></i> ZinXploit Cloud
-        </div>
-        <div class="storage-info" id="storage-info">
-            [SYSTEM] Calculating storage...
-        </div>
+        <div class="brand"><i class="fa-solid fa-shield-halved"></i> ZinXploit Cloud</div>
+        <div class="storage-badge" id="storage-info">Menunggu Database...</div>
     </header>
 
     <main>
-        <!-- Area Upload -->
         <div class="upload-zone" id="drop-zone">
-            <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-            <h3>INITIATE UPLOAD SEQUENCE</h3>
-            <p style="color: #808e9b; margin-bottom: 15px;">Drag & drop file system or click below</p>
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <h3>Upload Files</h3>
+            <p style="color:var(--text-muted); margin:10px 0;">Drag & Drop atau Klik Tombol</p>
             <input type="file" id="file-input" hidden multiple>
-            <button class="upload-btn" onclick="document.getElementById('file-input').click()">SELECT FILE</button>
+            <button class="btn-upload" onclick="document.getElementById('file-input').click()">PILIH FILE</button>
         </div>
 
-        <!-- Area File -->
-        <h3 style="margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 10px;">DATABASE FILES</h3>
-        
-        <div class="file-grid" id="file-list">
-            <!-- File akan muncul di sini -->
-        </div>
-
-        <div class="empty-state" id="empty-state">
-            <i class="fa-solid fa-folder-open"></i>
-            <p>NO DATA FOUND IN LOCAL STORAGE.</p>
-        </div>
+        <h3 style="margin-bottom:20px; border-left:4px solid var(--primary); padding-left:10px;">File Anda</h3>
+        <div class="file-grid" id="file-list"></div>
+        <div id="empty-msg" style="text-align:center; color:var(--text-muted); margin-top:50px; display:none;">Belum ada file.</div>
     </main>
 
-    <!-- Progress Bar Upload -->
-    <div class="progress-container" id="progress-container">
-        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color: var(--text-light);">
-            <span id="progress-filename">Uploading...</span>
-            <span id="progress-percent">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progress-fill"></div>
-        </div>
+    <div class="progress-container" id="progress-box">
+        <div style="font-size:0.9rem;" id="prog-text">Uploading... 0%</div>
+        <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
     </div>
 
+    <div id="toast" class="toast">Notifikasi</div>
+
     <script>
-        // 1. Setup Database (IndexedDB)
-        const DB_NAME = 'ZinXploitDB';
+        // --- 1. KONEKSI DATABASE (IndexedDB) ---
+        const DB_NAME = 'ZinXploitDB_v2'; // Nama baru untuk fresh start jika perlu
         const DB_VERSION = 1;
         let db;
 
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        // Fungsi Buka Database
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-        request.onerror = (event) => {
-            console.error("DB Error: " + event.target.errorCode);
-        };
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+                    if (!db.objectStoreNames.contains('files')) {
+                        db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
 
-        request.onupgradeneeded = (event) => {
-            db = event.target.result;
-            if (!db.objectStoreNames.contains('files')) {
-                db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+                request.onsuccess = (e) => {
+                    db = e.target.result;
+                    resolve(db);
+                };
+
+                request.onerror = (e) => {
+                    reject("Gagal buka DB: " + e.target.error);
+                };
+            });
+        }
+
+        // --- 2. INISIALISASI SAAT HALAMAN DIMUAT ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await openDB();
+                console.log("Database siap.");
+                loadFiles(); // PENTING: Muat file saat pertama kali buka
+                updateStorage();
+            } catch (err) {
+                showToast("Error Database: " + err, true);
             }
-        };
+        });
 
-        request.onsuccess = (event) => {
-            db = event.target.result;
-            loadFiles();
-            updateStorageInfo();
-        };
-
-        // 2. Logika Upload File
+        // --- 3. HANDLE UPLOAD ---
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
-
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--primary)'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'var(--border)'; });
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropZone.classList.remove('dragover');
+            dropZone.style.borderColor = 'var(--border)';
             handleFiles(e.dataTransfer.files);
         });
 
         fileInput.addEventListener('change', (e) => {
-            handleFiles(e.files);
+            handleFiles(e.target.files);
         });
 
         function handleFiles(files) {
             if (!files.length) return;
-
-            const progressContainer = document.getElementById('progress-container');
-            const progressFill = document.getElementById('progress-fill');
-            const progressText = document.getElementById('progress-percent');
-            const fileNameText = document.getElementById('progress-filename');
-
-            progressContainer.style.display = 'block';
-            let currentFileIndex = 0;
-
-            function processNextFile() {
-                if (currentFileIndex >= files.length) {
-                    setTimeout(() => { progressContainer.style.display = 'none'; }, 1000);
-                    loadFiles();
-                    updateStorageInfo();
-                    return;
-                }
-
-                const file = files[currentFileIndex];
-                fileNameText.textContent = `UPLOADING: ${file.name}`;
-                progressFill.style.width = '0%';
-                progressText.textContent = '0%';
-
-                // Simulasi delay
+            
+            const pBox = document.getElementById('progress-box');
+            const pBar = document.getElementById('prog-bar');
+            const pText = document.getElementById('prog-text');
+            
+            pBox.style.display = 'block';
+            
+            // Loop upload satu per satu
+            Array.from(files).forEach((file, index) => {
+                // Simulasi progress visual
                 let progress = 0;
                 const interval = setInterval(() => {
-                    progress += 10;
-                    progressFill.style.width = `${progress}%`;
-                    progressText.textContent = `${progress}%`;
+                    progress += 5;
+                    pBar.style.width = progress + '%';
+                    pText.innerText = `Uploading ${file.name}... ${progress}%`;
 
                     if (progress >= 100) {
                         clearInterval(interval);
-                        saveFileToDB(file);
-                        currentFileIndex++;
-                        setTimeout(processNextFile, 500);
+                        saveToDB(file); // Simpan ke DB
                     }
-                }, 100);
-            }
+                }, 50);
 
-            processNextFile();
+                // Jika file terakhir, sembunyikan progress setelah jeda
+                if (index === files.length - 1) {
+                    setTimeout(() => {
+                        pBox.style.display = 'none';
+                        loadFiles(); // Refresh list
+                        updateStorage();
+                        showToast("Upload selesai!");
+                    }, 1000);
+                }
+            });
         }
 
-        function saveFileToDB(file) {
-            const transaction = db.transaction(['files'], 'readwrite');
-            const objectStore = transaction.objectStore('files');
-            
-            const fileRecord = {
+        function saveToDB(file) {
+            const tx = db.transaction(['files'], 'readwrite');
+            const store = tx.objectStore('files');
+            const record = {
                 name: file.name,
                 type: file.type,
                 size: file.size,
-                date: new Date().toLocaleDateString('id-ID'),
-                data: file 
+                date: new Date().toLocaleDateString(),
+                data: file
             };
-
-            const request = objectStore.add(fileRecord);
-            request.onsuccess = () => {
-                console.log(`[ZinXploit] ${file.name} saved.`);
-            };
+            store.add(record);
         }
 
-        // 3. Load & Tampilkan File
+        // --- 4. LOAD & RENDER FILES (FIXED) ---
         function loadFiles() {
-            const transaction = db.transaction(['files'], 'readonly');
-            const objectStore = transaction.objectStore('files');
-            const request = objectStore.getAll();
+            const tx = db.transaction(['files'], 'readonly');
+            const store = tx.objectStore('files');
+            const request = store.getAll();
 
             request.onsuccess = () => {
                 const files = request.result;
-                const fileListEl = document.getElementById('file-list');
-                const emptyState = document.getElementById('empty-state');
-
-                fileListEl.innerHTML = '';
+                const grid = document.getElementById('file-list');
+                const empty = document.getElementById('empty-msg');
+                
+                grid.innerHTML = ''; // Bersihkan grid
 
                 if (files.length === 0) {
-                    emptyState.style.display = 'block';
-                    return;
+                    empty.style.display = 'block';
+                } else {
+                    empty.style.display = 'none';
+                    // Urutkan terbaru dulu (reverse)
+                    files.reverse().forEach(file => {
+                        createFileCard(file, grid);
+                    });
                 }
-
-                emptyState.style.display = 'none';
-
-                files.reverse().forEach(file => {
-                    const card = document.createElement('div');
-                    card.className = `file-card ${getFileClass(file.type)}`;
-                    
-                    card.innerHTML = `
-                        <div class="file-icon"><i class="${getFileIcon(file.type, file.name)}"></i></div>
-                        <div class="file-name" title="${file.name}">${file.name}</div>
-                        <div class="file-size">${formatSize(file.size)}</div>
-                        <div class="file-actions">
-                            <button class="action-btn download" onclick="downloadFile(${file.id})" title="Download"><i class="fa-solid fa-download"></i></button>
-                            <button class="action-btn delete" onclick="deleteFile(${file.id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    `;
-                    fileListEl.appendChild(card);
-                });
             };
         }
 
-        // 4. Download File
-        function downloadFile(id) {
-            const transaction = db.transaction(['files'], 'readonly');
-            const objectStore = transaction.objectStore('files');
-            const request = objectStore.get(id);
+        // Fungsi Membuat Kartu File
+        function createFileCard(file, container) {
+            const div = document.createElement('div');
+            div.className = 'file-card';
 
-            request.onsuccess = () => {
-                const fileRecord = request.result;
-                if (fileRecord) {
-                    const blobUrl = URL.createObjectURL(fileRecord.data);
+            // Icon logic
+            let icon = 'fa-file';
+            if(file.type.includes('image')) icon = 'fa-file-image';
+            else if(file.type.includes('pdf')) icon = 'fa-file-pdf';
+
+            div.innerHTML = `
+                <i class="fa-solid ${icon} file-icon"></i>
+                <div class="file-name" title="${file.name}">${file.name}</div>
+                <div style="color:var(--text-muted); font-size:0.8rem; margin-bottom:10px;">${formatSize(file.size)}</div>
+                <div class="file-actions">
+                    <button class="action-btn" title="Download"><i class="fa-solid fa-download"></i></button>
+                    <button class="action-btn delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+
+            // --- PERBAIKAN KRUSIAL: EVENT LISTENER ---
+            // Kita ambil tombol dari dalam elemen yang baru dibuat
+            const btnDown = div.querySelector('.action-btn:first-child'); // Tombol Download
+            const btnDel = div.querySelector('.action-btn.delete');       // Tombol Hapus
+
+            // Pasang event Download
+            btnDown.addEventListener('click', () => {
+                downloadFile(file.id);
+            });
+
+            // Pasang event Hapus
+            btnDel.addEventListener('click', () => {
+                deleteFile(file.id, div); // Kirim elemen div juga untuk animasi hapus
+            });
+
+            container.appendChild(div);
+        }
+
+        // --- 5. DOWNLOAD & DELETE LOGIC ---
+        function downloadFile(id) {
+            const tx = db.transaction(['files'], 'readonly');
+            const store = tx.objectStore('files');
+            const req = store.get(id);
+
+            req.onsuccess = () => {
+                const file = req.result;
+                if(file) {
+                    const url = URL.createObjectURL(file.data);
                     const a = document.createElement('a');
-                    a.href = blobUrl;
-                    a.download = fileRecord.name;
+                    a.href = url;
+                    a.download = file.name;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    URL.revokeObjectURL(blobUrl);
+                    URL.revokeObjectURL(url);
                 }
             };
         }
 
-        // 5. Hapus File
-        function deleteFile(id) {
-            if(confirm('CONFIRM DELETION: Apakah Anda yakin ingin menghapus file ini?')) {
-                const transaction = db.transaction(['files'], 'readwrite');
-                const objectStore = transaction.objectStore('files');
-                const request = objectStore.delete(id);
+        function deleteFile(id, elementDiv) {
+            if(confirm('Yakin hapus file ini?')) {
+                const tx = db.transaction(['files'], 'readwrite');
+                const store = tx.objectStore('files');
+                const req = store.delete(id);
 
-                request.onsuccess = () => {
-                    loadFiles();
-                    updateStorageInfo();
+                req.onsuccess = () => {
+                    // Hapus elemen dari tampilan langsung (biar respon cepat)
+                    elementDiv.style.opacity = '0';
+                    elementDiv.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        elementDiv.remove();
+                        // Cek ulang jika kosong
+                        const grid = document.getElementById('file-list');
+                        if(grid.children.length === 0) {
+                            document.getElementById('empty-msg').style.display = 'block';
+                        }
+                        updateStorage();
+                    }, 300);
+                    showToast("File dihapus");
                 };
             }
         }
 
-        // Helper Functions
-        function updateStorageInfo() {
-            if (navigator.storage && navigator.storage.estimate) {
-                navigator.storage.estimate().then(estimate => {
-                    const used = formatSize(estimate.usage);
-                    document.getElementById('storage-info').innerText = `[STORAGE] USED: ${used}`;
+        // --- UTILS ---
+        function formatSize(bytes) {
+            if(bytes === 0) return '0 B';
+            const k = 1024;
+            const s = ['B','KB','MB','GB'];
+            const i = Math.floor(Math.log(bytes)/Math.log(k));
+            return parseFloat((bytes/Math.pow(k,i)).toFixed(2)) + ' ' + s[i];
+        }
+
+        function updateStorage() {
+            if(navigator.storage && navigator.storage.estimate) {
+                navigator.storage.estimate().then(e => {
+                    document.getElementById('storage-info').innerText = 'Terpakai: ' + formatSize(e.usage);
                 });
             }
         }
 
-        function formatSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        function showToast(msg, isError=false) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.borderColor = isError ? '#ff4757' : '#00d2d3';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        function getFileIcon(type, name) {
-            if (type.startsWith('image/')) return 'fa-solid fa-file-image';
-            if (type.startsWith('video/')) return 'fa-solid fa-file-video';
-            if (type.startsWith('audio/')) return 'fa-solid fa-file-audio';
-            if (type.includes('pdf')) return 'fa-solid fa-file-pdf';
-            if (type.includes('word') || type.includes('document')) return 'fa-solid fa-file-word';
-            if (type.includes('zip') || type.includes('compressed')) return 'fa-solid fa-file-zipper';
-            if (name.endsWith('.js') || name.endsWith('.html') || name.endsWith('.css') || name.endsWith('.py') || name.endsWith('.exe')) return 'fa-solid fa-file-code';
-            return 'fa-solid fa-file';
-        }
-
-        function getFileClass(type) {
-            if (type.startsWith('image/')) return 'type-image';
-            if (type.startsWith('video/')) return 'type-video';
-            if (type.includes('pdf')) return 'type-pdf';
-            return 'type-default';
-        }
     </script>
 </body>
 </html>
