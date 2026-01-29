@@ -38,6 +38,7 @@
             align-items: center;
             padding: 0 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            flex-shrink: 0; /* Agar header tidak mengecil */
         }
 
         .brand {
@@ -51,9 +52,10 @@
             background: rgba(0,0,0,0.2);
         }
 
-        /* Main */
+        /* Main Content */
         main {
             flex: 1; padding: 30px; max-width: 1200px; width: 100%; margin: 0 auto; overflow-y: auto;
+            padding-bottom: 80px; /* Tambah ruang agar konten tertutup footer */
         }
 
         /* Upload Zone */
@@ -116,6 +118,28 @@
             border-radius: 30px; color: #fff; z-index: 1000; transition: 0.3s;
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* --- FOOTER STYLE (BARU) --- */
+        footer {
+            height: 60px;
+            background: rgba(30, 39, 46, 0.98);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 100;
+        }
+
+        .footer-text {
+            font-weight: 600;
+            background: linear-gradient(90deg, #00d2d3, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
@@ -139,6 +163,11 @@
         <div id="empty-msg" style="text-align:center; color:var(--text-muted); margin-top:50px; display:none;">Belum ada file.</div>
     </main>
 
+    <!-- FOOTER BARU -->
+    <footer>
+        <span class="footer-text">Created by ®ZinXploit™</span>
+    </footer>
+
     <div class="progress-container" id="progress-box">
         <div style="font-size:0.9rem;" id="prog-text">Uploading... 0%</div>
         <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
@@ -148,11 +177,10 @@
 
     <script>
         // --- 1. KONEKSI DATABASE (IndexedDB) ---
-        const DB_NAME = 'ZinXploitDB_v2'; // Nama baru untuk fresh start jika perlu
+        const DB_NAME = 'ZinXploitDB_v2'; 
         const DB_VERSION = 1;
         let db;
 
-        // Fungsi Buka Database
         function openDB() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -175,19 +203,18 @@
             });
         }
 
-        // --- 2. INISIALISASI SAAT HALAMAN DIMUAT ---
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 await openDB();
                 console.log("Database siap.");
-                loadFiles(); // PENTING: Muat file saat pertama kali buka
+                loadFiles();
                 updateStorage();
             } catch (err) {
                 showToast("Error Database: " + err, true);
             }
         });
 
-        // --- 3. HANDLE UPLOAD ---
+        // --- 2. HANDLE UPLOAD ---
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
 
@@ -212,9 +239,7 @@
             
             pBox.style.display = 'block';
             
-            // Loop upload satu per satu
             Array.from(files).forEach((file, index) => {
-                // Simulasi progress visual
                 let progress = 0;
                 const interval = setInterval(() => {
                     progress += 5;
@@ -223,15 +248,14 @@
 
                     if (progress >= 100) {
                         clearInterval(interval);
-                        saveToDB(file); // Simpan ke DB
+                        saveToDB(file);
                     }
                 }, 50);
 
-                // Jika file terakhir, sembunyikan progress setelah jeda
                 if (index === files.length - 1) {
                     setTimeout(() => {
                         pBox.style.display = 'none';
-                        loadFiles(); // Refresh list
+                        loadFiles();
                         updateStorage();
                         showToast("Upload selesai!");
                     }, 1000);
@@ -252,7 +276,7 @@
             store.add(record);
         }
 
-        // --- 4. LOAD & RENDER FILES (FIXED) ---
+        // --- 3. LOAD & RENDER ---
         function loadFiles() {
             const tx = db.transaction(['files'], 'readonly');
             const store = tx.objectStore('files');
@@ -263,13 +287,12 @@
                 const grid = document.getElementById('file-list');
                 const empty = document.getElementById('empty-msg');
                 
-                grid.innerHTML = ''; // Bersihkan grid
+                grid.innerHTML = '';
 
                 if (files.length === 0) {
                     empty.style.display = 'block';
                 } else {
                     empty.style.display = 'none';
-                    // Urutkan terbaru dulu (reverse)
                     files.reverse().forEach(file => {
                         createFileCard(file, grid);
                     });
@@ -277,12 +300,10 @@
             };
         }
 
-        // Fungsi Membuat Kartu File
         function createFileCard(file, container) {
             const div = document.createElement('div');
             div.className = 'file-card';
 
-            // Icon logic
             let icon = 'fa-file';
             if(file.type.includes('image')) icon = 'fa-file-image';
             else if(file.type.includes('pdf')) icon = 'fa-file-pdf';
@@ -297,25 +318,16 @@
                 </div>
             `;
 
-            // --- PERBAIKAN KRUSIAL: EVENT LISTENER ---
-            // Kita ambil tombol dari dalam elemen yang baru dibuat
-            const btnDown = div.querySelector('.action-btn:first-child'); // Tombol Download
-            const btnDel = div.querySelector('.action-btn.delete');       // Tombol Hapus
+            const btnDown = div.querySelector('.action-btn:first-child');
+            const btnDel = div.querySelector('.action-btn.delete');
 
-            // Pasang event Download
-            btnDown.addEventListener('click', () => {
-                downloadFile(file.id);
-            });
-
-            // Pasang event Hapus
-            btnDel.addEventListener('click', () => {
-                deleteFile(file.id, div); // Kirim elemen div juga untuk animasi hapus
-            });
+            btnDown.addEventListener('click', () => downloadFile(file.id));
+            btnDel.addEventListener('click', () => deleteFile(file.id, div));
 
             container.appendChild(div);
         }
 
-        // --- 5. DOWNLOAD & DELETE LOGIC ---
+        // --- 4. DOWNLOAD & DELETE ---
         function downloadFile(id) {
             const tx = db.transaction(['files'], 'readonly');
             const store = tx.objectStore('files');
@@ -343,12 +355,10 @@
                 const req = store.delete(id);
 
                 req.onsuccess = () => {
-                    // Hapus elemen dari tampilan langsung (biar respon cepat)
                     elementDiv.style.opacity = '0';
                     elementDiv.style.transform = 'scale(0.8)';
                     setTimeout(() => {
                         elementDiv.remove();
-                        // Cek ulang jika kosong
                         const grid = document.getElementById('file-list');
                         if(grid.children.length === 0) {
                             document.getElementById('empty-msg').style.display = 'block';
@@ -363,9 +373,8 @@
         // --- UTILS ---
         function formatSize(bytes) {
             if(bytes === 0) return '0 B';
-            const k = 1024;
-            const s = ['B','KB','MB','GB'];
-            const i = Math.floor(Math.log(bytes)/Math.log(k));
+            const k=1024, s=['B','KB','MB','GB'];
+            const i=Math.floor(Math.log(bytes)/Math.log(k));
             return parseFloat((bytes/Math.pow(k,i)).toFixed(2)) + ' ' + s[i];
         }
 
@@ -384,7 +393,6 @@
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
-
     </script>
 </body>
 </html>
