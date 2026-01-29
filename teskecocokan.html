@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZinXploit Love Calculator</title>
-    <!-- Font Awesome untuk Ikon Hati -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -16,6 +15,7 @@
             --text-main: #f5f6fa;
             --text-muted: #dcdde1;
             --accent: #00d2d3;
+            --header-height: 70px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -25,13 +25,127 @@
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            flex-direction: column;
             background-image: radial-gradient(circle at 50% 50%, #3d4652 0%, #2f3640 100%);
         }
 
-        /* Container Utama */
+        /* --- HEADER ATAS (Fixed) --- */
+        header {
+            height: var(--header-height);
+            background: rgba(31, 39, 46, 0.95);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo i { font-size: 1.4rem; }
+
+        /* Hamburger Button */
+        .hamburger {
+            display: none; /* Hidden di Desktop */
+            font-size: 1.8rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .hamburger:hover { color: var(--primary); }
+
+        /* Menu Nav (Desktop) */
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+        }
+
+        /* --- SIDEBAR MENU (Mobile) --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Sembunyi di kanan */
+            width: 280px;
+            height: 100vh;
+            background: #1e272e;
+            padding-top: 80px;
+            transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+            z-index: 999;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            border-left: 1px solid var(--primary);
+        }
+
+        .sidebar.active { right: 0; }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .sidebar a:hover { background: rgba(255,255,255,0.05); color: var(--primary); padding-left: 40px; }
+
+        .sidebar-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        /* Overlay Gelap saat Sidebar Buka */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+        .overlay.active { display: block; }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-wrapper {
+            margin-top: var(--header-height); /* Jarakan content agar tidak tertutup header */
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            padding-bottom: 60px;
+        }
+
+        /* Kotak Content Card */
         .container {
             background: var(--bg-card);
             border-radius: 20px;
@@ -43,28 +157,20 @@
             position: relative;
         }
 
-        /* Header */
-        .header {
+        .card-header {
             text-align: center;
             padding: 30px 20px;
             background: rgba(255, 71, 87, 0.1);
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-
-        .header h1 {
-            font-size: 1.8rem;
+        .card-header h1 {
+            font-size: 1.5rem;
             color: var(--primary);
             margin-bottom: 5px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
-
-        .header p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .header i {
+        .card-header p { color: var(--text-muted); font-size: 0.85rem; }
+        .card-header i {
             font-size: 2rem;
             color: var(--primary);
             margin-bottom: 10px;
@@ -79,59 +185,43 @@
             60% { transform: scale(1); }
         }
 
-        /* Form Area */
-        .form-group {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
+        /* Form & Input Styles */
+        .form-group { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .partner-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--accent);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: block;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: bold;
         }
-
         .input-row {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-
         input {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: #2f3640;
             border: 1px solid #444;
-            border-radius: 8px;
+            border-radius: 6px;
             color: white;
             font-size: 0.9rem;
             outline: none;
-            transition: 0.3s;
         }
+        input:focus { border-color: var(--accent); }
 
-        input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 8px rgba(0, 210, 211, 0.3);
-        }
-
-        /* Tombol Cek */
-        .action-area {
-            padding: 20px;
-            text-align: center;
-        }
-
+        .action-area { padding: 20px; text-align: center; }
         .btn-check {
             background: linear-gradient(45deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 12px 30px;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
@@ -139,13 +229,9 @@
             width: 100%;
             text-transform: uppercase;
         }
+        .btn-check:hover { transform: translateY(-2px); }
 
-        .btn-check:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.6);
-        }
-
-        /* Hasil Area */
+        /* Result Area */
         #result-area {
             display: none;
             padding: 30px 20px;
@@ -153,161 +239,185 @@
             text-align: center;
             border-top: 1px solid var(--primary);
         }
-
         .score-circle {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            border: 8px solid var(--primary);
-            margin: 0 auto 20px;
+            border: 6px solid var(--primary);
+            margin: 0 auto 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: var(--primary);
             box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+            animation: popIn 0.5s ease;
         }
+        @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        
+        .score-text { font-size: 1.2rem; color: white; font-weight: bold; margin-bottom: 10px; }
+        .analysis-text { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; font-style: italic; }
+        .zodiac-icon { font-size: 1.3rem; color: var(--accent); margin: 5px; }
 
-        @keyframes popIn {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
-
-        .score-text {
-            font-size: 1.5rem;
-            color: white;
-            font-weight: bold;
-        }
-
-        .analysis-text {
+        /* --- FOOTER --- */
+        footer {
+            padding: 15px;
+            text-align: center;
             color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-top: 15px;
-            font-style: italic;
+            font-size: 0.8rem;
+            margin-top: auto;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .footer-text {
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff4757, #00d2d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .zodiac-icon {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-
-        /* Responsif untuk HP */
-        @media (max-width: 480px) {
-            .input-row {
-                grid-template-columns: 1fr; /* Stack input di HP */
-                gap: 8px;
-            }
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* Sembunyikan menu desktop */
+            .hamburger { display: block; } /* Tampilkan hamburger */
+            .input-row { grid-template-columns: 1fr; gap: 8px; }
+            header { padding: 0 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <i class="fa-solid fa-heart"></i>
-            <h1>Love Calculator</h1>
-            <p>Cek Kecocokan Berdasarkan Nama & Tanggal Lahir</p>
+    <!-- HEADER ATAS -->
+    <header>
+        <div class="brand-logo">
+            <i class="fa-solid fa-heart"></i> ZinXploit™
         </div>
 
-        <form id="love-form" onsubmit="calculateLove(event)">
-            <!-- Input Pasangan 1 -->
-            <div class="form-group">
-                <span class="partner-label">Pasangan 1 (Anda)</span>
-                <div class="input-row">
-                    <input type="text" id="name1" placeholder="Nama Lengkap" required>
-                    <input type="number" id="day1" placeholder="Tgl" min="1" max="31" required>
-                    <input type="number" id="month1" placeholder="Bln" min="1" max="12" required>
-                    <input type="number" id="year1" placeholder="Thn" min="1900" max="2024" required style="grid-column: span 3;">
-                </div>
-            </div>
+        <!-- Menu Desktop (Hilang di HP) -->
+        <nav class="nav-links">
+            <a href="teskecocokan.html" class="active">Love Calculator</a>
+            <a href="home.html">Beranda</a>
+            <a href="porto.html">Tentang</a>
+            <a href="neptu.html">Neptu</a>
+        </nav>
 
-            <!-- Input Pasangan 2 -->
-            <div class="form-group">
-                <span class="partner-label">Pasangan 2 (Dia)</span>
-                <div class="input-row">
-                    <input type="text" id="name2" placeholder="Nama Lengkap" required>
-                    <input type="number" id="day2" placeholder="Tgl" min="1" max="31" required>
-                    <input type="number" id="month2" placeholder="Bln" min="1" max="12" required>
-                    <input type="number" id="year2" placeholder="Thn" min="1900" max="2024" required style="grid-column: span 3;">
-                </div>
-            </div>
-
-            <div class="action-area">
-                <button type="submit" class="btn-check"><i class="fa-solid fa-wand-magic-sparkles"></i> Cek Kecocokan</button>
-            </div>
-        </form>
-
-        <!-- Area Hasil -->
-        <div id="result-area">
-            <div class="zodiac-icon" id="zodiac1"></div>
-            <i class="fa-solid fa-heart" style="color:var(--primary); margin: 10px 0;"></i>
-            <div class="zodiac-icon" id="zodiac2"></div>
-            
-            <div class="score-circle">
-                <span id="score">0%</span>
-            </div>
-            <div class="score-text" id="status-text">Soulmate!</div>
-            <p class="analysis-text" id="analysis"></p>
+        <!-- Tombol Hamburger (Muncul di HP) -->
+        <div class="hamburger" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
         </div>
+    </header>
+
+    <!-- OVERLAY & SIDEBAR -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-close" onclick="toggleSidebar()">&times;</div>
+        <a href="teskecocokan.html"><i class="fa-solid fa-heart" style="margin-right:10px;"></i> Love Calculator</a>
+        <a href="home.html"><i class="fa-solid fa-home" style="margin-right:10px;"></i> Beranda</a>
+        <a href="porto.html"><i class="fa-solid fa-info-circle" style="margin-right:10px;"></i> Tentang</a>
+        <a href="neptu.html"><i class="fa-solid fa-neptu" style="margin-right:10px;"></i>Neptu</a>
     </div>
 
+    <!-- MAIN WRAPPER (Agar content terpisah dari header) -->
+    <div class="main-wrapper">
+        
+        <!-- KOTAK CONTENT UTAMA -->
+        <div class="container">
+            <div class="card-header">
+                <i class="fa-solid fa-heart"></i>
+                <h1>Love Calculator</h1>
+                <p>Cek Kecocokan Pasangan</p>
+            </div>
+
+            <form id="love-form" onsubmit="calculateLove(event)">
+                <div class="form-group">
+                    <span class="partner-label">Pasangan 1 (Anda)</span>
+                    <div class="input-row">
+                        <input type="text" id="name1" placeholder="Nama Lengkap" required>
+                        <input type="number" id="day1" placeholder="Tgl" min="1" max="31" required>
+                        <input type="number" id="month1" placeholder="Bln" min="1" max="12" required>
+                        <input type="number" id="year1" placeholder="Thn" min="1900" max="2024" required style="grid-column: span 3;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <span class="partner-label">Pasangan 2 (Dia)</span>
+                    <div class="input-row">
+                        <input type="text" id="name2" placeholder="Nama Lengkap" required>
+                        <input type="number" id="day2" placeholder="Tgl" min="1" max="31" required>
+                        <input type="number" id="month2" placeholder="Bln" min="1" max="12" required>
+                        <input type="number" id="year2" placeholder="Thn" min="1900" max="2024" required style="grid-column: span 3;">
+                    </div>
+                </div>
+
+                <div class="action-area">
+                    <button type="submit" class="btn-check"><i class="fa-solid fa-wand-magic-sparkles"></i> Cek Kecocokan</button>
+                </div>
+            </form>
+
+            <div id="result-area">
+                <div class="zodiac-icon" id="zodiac1"></div>
+                <i class="fa-solid fa-heart" style="color:var(--primary); margin: 5px 0;"></i>
+                <div class="zodiac-icon" id="zodiac2"></div>
+                
+                <div class="score-circle">
+                    <span id="score">0%</span>
+                </div>
+                <div class="score-text" id="status-text">Soulmate!</div>
+                <p class="analysis-text" id="analysis"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <span class="footer-text">Created by ®ZinXploit™</span>
+    </footer>
+
     <script>
+        // --- LOGIKA SIDEBAR ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // --- LOGIKA KALKULATOR ---
         function calculateLove(e) {
             e.preventDefault();
-
-            // Ambil nilai input
             const n1 = document.getElementById('name1').value;
             const d1 = parseInt(document.getElementById('day1').value);
             const m1 = parseInt(document.getElementById('month1').value);
             const y1 = parseInt(document.getElementById('year1').value);
-
             const n2 = document.getElementById('name2').value;
             const d2 = parseInt(document.getElementById('day2').value);
             const m2 = parseInt(document.getElementById('month2').value);
             const y2 = parseInt(document.getElementById('year2').value);
 
-            // 1. Algoritma Sederhana (Numerologi Campur)
-            // Kita buat "Magic Number" dari gabungan nama dan tanggal
             const combinedString = (n1 + n2 + d1 + m1 + y1 + d2 + m2 + y2).toLowerCase().replace(/[^a-z0-9]/g, '');
-            
             let value = 0;
-            for(let i = 0; i < combinedString.length; i++) {
-                value += combinedString.charCodeAt(i);
-            }
+            for(let i = 0; i < combinedString.length; i++) value += combinedString.charCodeAt(i);
             
-            // 2. Hitung Zodiak
             const z1 = getZodiac(d1, m1);
             const z2 = getZodiac(d2, m2);
-            
-            // Tampilkan Zodiak di hasil
             document.getElementById('zodiac1').innerText = getZodiacIcon(z1);
             document.getElementById('zodiac2').innerText = getZodiacIcon(z2);
 
-            // 3. Logika Tambahan (Kompatibilitas Zodiak sederhana)
             let zodiacBonus = 0;
-            if (z1 === z2) zodiacBonus = 5; // Zodiak sama bonus kecil
-            if (isCompatibleZodiac(z1, z2)) zodiacBonus = 10; // Zodiak cocok
+            if (z1 === z2) zodiacBonus = 5; 
+            if (isCompatibleZodiac(z1, z2)) zodiacBonus = 10; 
 
-            // 4. Generate Persentase Akhir
-            // Menggunakan modulus dan penambahan random seed agar hasil konsisten untuk input yang sama
             let score = (value % 80) + zodiacBonus + 5; 
-            
-            // Normalisasi agar max 100
             if (score > 100) score = 100;
-            if (score < 10) score = 10; // Minimal 10%
+            if (score < 10) score = 10;
 
-            // 5. Tentukan Status & Analisis
             const resultArea = document.getElementById('result-area');
             const scoreEl = document.getElementById('score');
             const statusEl = document.getElementById('status-text');
             const analysisEl = document.getElementById('analysis');
 
-            // Animasi Counter
             let currentScore = 0;
             const interval = setInterval(() => {
                 if(currentScore >= score) {
@@ -317,34 +427,29 @@
                     currentScore++;
                 }
                 scoreEl.innerText = currentScore + "%";
-                
-                // Ubah warna lingkaran berdasarkan score
                 const circle = document.querySelector('.score-circle');
-                if(currentScore < 50) circle.style.borderColor = "#ff4757"; // Merah
-                else if(currentScore < 80) circle.style.borderColor = "#fbc531"; // Kuning
-                else circle.style.borderColor = "#4cd137"; // Hijau
-
+                if(currentScore < 50) circle.style.borderColor = "#ff4757";
+                else if(currentScore < 80) circle.style.borderColor = "#fbc531";
+                else circle.style.borderColor = "#4cd137";
             }, 20);
 
             resultArea.style.display = 'block';
 
-            // Teks Analisis
             if (score < 40) {
                 statusEl.innerText = "Hati-hati!";
-                analysisEl.innerText = "Hubungan ini mungkin penuh tantangan. Perlu kompromi yang besar dari kedua belah pihak.";
+                analysisEl.innerText = "Hubungan ini mungkin penuh tantangan.";
             } else if (score < 70) {
                 statusEl.innerText = "Biasa Saja";
-                analysisEl.innerText = "Ada chemistry, tapi masih perlu banyak pengenalan. Jangan terburu-buru menyimpulkan.";
+                analysisEl.innerText = "Ada chemistry, tapi masih perlu banyak pengenalan.";
             } else if (score < 90) {
                 statusEl.innerText = "Cocok Sekali!";
-                analysisEl.innerText = "Kalian punya potensi yang besar. Sifat kalian saling melengkapi satu sama lain.";
+                analysisEl.innerText = "Kalian punya potensi yang besar.";
             } else {
                 statusEl.innerText = "Jodoh Dunia Akhirat!";
-                analysisEl.innerText = "Wow! Persentase kalian sangat tinggi. Kalian terlihat seperti pasangan yang ditakdirkan bersama.";
+                analysisEl.innerText = "Kalian terlihat seperti pasangan yang ditakdirkan bersama.";
             }
         }
 
-        // Fungsi Cek Zodiak
         function getZodiac(day, month) {
             if ((month == 1 && day <= 20) || (month == 12 && day >= 22)) return "Capricorn";
             if ((month == 1 && day >= 21) || (month == 2 && day <= 18)) return "Aquarius";
@@ -362,27 +467,18 @@
         }
 
         function getZodiacIcon(zodiac) {
-            const icons = {
-                "Capricorn": "♑", "Aquarius": "♒", "Pisces": "♓",
-                "Aries": "♈", "Taurus": "♉", "Gemini": "♊",
-                "Cancer": "♋", "Leo": "♌", "Virgo": "♍",
-                "Libra": "♎", "Scorpio": "♏", "Sagittarius": "♐"
-            };
+            const icons = {"Capricorn": "♑", "Aquarius": "♒", "Pisces": "♓","Aries": "♈", "Taurus": "♉", "Gemini": "♊","Cancer": "♋", "Leo": "♌", "Virgo": "♍","Libra": "♎", "Scorpio": "♏", "Sagittarius": "♐"};
             return icons[zodiac] || "?";
         }
 
-        // Logika Sederhana Kompatibilitas Zodiak
         function isCompatibleZodiac(z1, z2) {
-            // Contoh sederhana: Elemen sama dianggap cocok (Api+Api, Air+Air, dll)
             const fire = ["Aries", "Leo", "Sagittarius"];
             const water = ["Cancer", "Scorpio", "Pisces"];
             const earth = ["Taurus", "Virgo", "Capricorn"];
             const air = ["Gemini", "Libra", "Aquarius"];
-
             const e1 = (fire.includes(z1)?"fire":(water.includes(z1)?"water":(earth.includes(z1)?"earth":"air")));
             const e2 = (fire.includes(z2)?"fire":(water.includes(z2)?"water":(earth.includes(z2)?"earth":"air")));
-
-            return e1 === e2; // Elemen sama = bonus
+            return e1 === e2; 
         }
     </script>
 </body>
