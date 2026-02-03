@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Ramalan Spiritual Nusantara</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  margin:0;
+  font-family:Georgia, serif;
+  background:#0d0804;
+  color:#f5e6c8;
+  overflow:hidden;
+}
+
+/* === ASAP === */
+.smoke{
+  position:fixed;
+  width:200%;
+  height:200%;
+  background:url("https://i.imgur.com/5R8XQzF.png") repeat;
+  animation:asap 120s linear infinite;
+  opacity:0.25;
+  pointer-events:none;
+}
+@keyframes asap{
+  from{transform:translateX(0) translateY(0);}
+  to{transform:translateX(-500px) translateY(-300px);}
+}
+
+/* === AURA === */
+.aura{
+  position:fixed;
+  width:300px;
+  height:300px;
+  background:radial-gradient(circle, rgba(255,215,150,0.25), transparent 70%);
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  animation:denyut 6s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes denyut{
+  0%,100%{transform:translate(-50%,-50%) scale(1);}
+  50%{transform:translate(-50%,-50%) scale(1.15);}
+}
+
+/* === KONTEN === */
+.container{
+  position:relative;
+  z-index:2;
+  max-width:700px;
+  margin:auto;
+  padding:20px;
+}
+.card{
+  background:rgba(0,0,0,0.55);
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 0 30px rgba(0,0,0,0.8);
+}
+h1{text-align:center;letter-spacing:2px;font-weight:normal;}
+input,select,button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:6px;
+  border:none;
+}
+button{
+  background:#c49a3a;
+  font-weight:bold;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+th,td{
+  border:1px solid rgba(255,255,255,0.2);
+  padding:10px;
+}
+th{background:rgba(255,255,255,0.1);}
+.footer{
+  font-size:11px;
+  opacity:0.6;
+  text-align:center;
+  margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- asap & aura -->
+<div class="smoke"></div>
+<div class="aura"></div>
+
+<!-- musik gamelan -->
+<audio id="musik" loop autoplay>
+  <source src="https://cdn.pixabay.com/audio/2022/10/19/audio_3a3d42c4b4.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+  <div class="card">
+    <h1>🜂 Ramalan Spiritual Nusantara 🜂</h1>
+
+    <input type="text" id="nama" placeholder="Masukkan nama">
+
+    <select id="lokasi">
+      <option value="">Letak tahi lalat</option>
+      <option value="dahi">Dahi</option>
+      <option value="pipi">Pipi</option>
+      <option value="leher">Leher</option>
+      <option value="dada">Dada</option>
+      <option value="punggung">Punggung</option>
+      <option value="tangan">Tangan</option>
+      <option value="kaki">Kaki</option>
+    </select>
+
+    <button onclick="tambah()">Buka Takdir</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Makna Nama</th>
+          <th>Makna Tahi Lalat</th>
+        </tr>
+      </thead>
+      <tbody id="tabel"></tbody>
+    </table>
+
+    <div class="footer">
+      Fiksi & hiburan • Aura Nusantara
+    </div>
+  </div>
+</div>
+
+<script>
+const musik=document.getElementById("musik");
+// autoplay fix HP
+document.body.addEventListener("click",()=>musik.play(),{once:true});
+
+function artiNama(n){
+  if(n.length<=4) return "Jiwa lugas, kuat, dan tidak suka kepalsuan.";
+  if(n.length<=7) return "Jiwa seimbang, mudah beradaptasi, namun sering memendam.";
+  return "Jiwa tua, penuh beban karma dan pengalaman masa lampau.";
+}
+
+function artiTahi(l){
+  return {
+    dahi:"Takdir kepemimpinan dan keputusan berat.",
+    pipi:"Emosi dalam dan luka batin tersembunyi.",
+    leher:"Sumpah setia dan pengorbanan.",
+    dada:"Hati pengasuh dan penyembuh.",
+    punggung:"Beban keluarga dan tanggung jawab lama.",
+    tangan:"Pekerja keras dan pencipta rezeki.",
+    kaki:"Jiwa pengembara pencari makna."
+  }[l];
+}
+
+function tambah(){
+  const nama=document.getElementById("nama").value;
+  const lokasi=document.getElementById("lokasi").value;
+  if(!nama||!lokasi) return alert("Lengkapi nama & letak tahi lalat");
+
+  const tr=document.createElement("tr");
+  tr.innerHTML=`
+    <td>${nama}</td>
+    <td>${artiNama(nama)}</td>
+    <td>${artiTahi(lokasi)}</td>
+  `;
+  document.getElementById("tabel").appendChild(tr);
+
+  document.getElementById("nama").value="";
+  document.getElementById("lokasi").value="";
+}
+</script>
+
+</body>
+</html>
