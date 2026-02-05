@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ðŸ”§ SQLMAP PRO ULTIMATE v4.0</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #00adb5;
+            --success: #00ff88;
+            --warning: #ffcc00;
+            --danger: #ff4757;
+            --text: #e6e6e6;
+            --text-secondary: #a0a0a0;
+            --border: #2d4059;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --terminal-bg: #0a0a0f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* HEADER */
+        .app-header {
+            background: var(--accent);
+            border-radius: 12px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+        
+        .app-header h1 {
+            color: white;
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .app-subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+        
+        /* MAIN LAYOUT */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            min-height: 85vh;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section-title {
+            color: var(--highlight);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--highlight);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            font-size: 1.2rem;
+        }
+        
+        /* FORM CONTROLS */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--highlight);
+            box-shadow: 0 0 0 2px rgba(0, 173, 181, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* BUTTONS */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--highlight);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #00c4cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: #002218;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: #332800;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* QUICK STATS */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--highlight);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* MAIN CONTENT */
+        .main-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        /* TABS */
+        .tabs-container {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px;
+        }
+        
+        .tab-btn {
+            padding: 16px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-btn:hover {
+            color: var(--text);
+        }
+        
+        .tab-btn.active {
+            color: var(--highlight);
+            border-bottom: 3px solid var(--highlight);
+            background: rgba(0, 173, 181, 0.1);
+        }
+        
+        /* TAB CONTENT */
+        .tab-content {
+            display: none;
+            padding: 24px;
+            animation: fadeIn 0.3s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* TERMINAL */
+        .terminal-container {
+            background: var(--terminal-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .terminal-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .terminal-title {
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .terminal-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .terminal {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .terminal-line {
+            margin-bottom: 8px;
+            padding-left: 12px;
+            border-left: 3px solid transparent;
+            animation: slideIn 0.2s;
+        }
+        
+        .terminal-line.info {
+            border-left-color: var(--highlight);
+            color: var(--highlight);
+        }
+        
+        .terminal-line.success {
+            border-left-color: var(--success);
+            color: var(--success);
+        }
+        
+        .terminal-line.warning {
+            border-left-color: var(--warning);
+            color: var(--warning);
+        }
+        
+        .terminal-line.error {
+            border-left-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-10px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* TOOL GRID */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+        
+        .tool-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--highlight);
+            box-shadow: 0 8px 25px rgba(0, 173, 181, 0.1);
+        }
+        
+        .tool-card h3 {
+            color: var(--highlight);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tool-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        /* PROGRESS BARS */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.05);
+            height: 6px;
+            border-radius: 3px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--highlight), #00c4cc);
+            width: 0%;
+            transition: width 0.5s;
+            border-radius: 3px;
+        }
+        
+        /* DATA TABLES */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .data-table th {
+            background: rgba(0, 173, 181, 0.1);
+            color: var(--highlight);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        /* WARNING BOX */
+        .warning-box {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+            text-align: center;
+        }
+        
+        .warning-box h3 {
+            color: var(--danger);
+            margin-bottom: 10px;
+        }
+        
+        .warning-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* FOOTER */
+        .app-footer {
+            margin-top: 32px;
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 12px;
+            }
+            
+            .app-header {
+                padding: 20px;
+            }
+            
+            .app-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                padding: 0 10px;
+            }
+            
+            .tab-btn {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* UTILITY CLASSES */
+        .mb-20 { margin-bottom: 20px; }
+        .mt-20 { margin-top: 20px; }
+        .mb-16 { margin-bottom: 16px; }
+        .mt-16 { margin-top: 16px; }
+        .text-center { text-align: center; }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .text-info { color: var(--highlight); }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--highlight);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00c4cc;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <h1><i class="fas fa-database"></i> SQLMAP PRO ULTIMATE v4.0</h1>
+            <p class="app-subtitle">Advanced SQL Injection Automation Tool | Professional Security Testing Suite</p>
+            <p class="app-subtitle">Based on SQLMap Engine | Enhanced GUI Interface</p>
+        </header>
+
+        <div class="main-layout">
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="section-title">
+                    <i class="fas fa-cogs"></i> Configuration
+                </div>
+                
+                <div class="form-group">
+                    <label for="targetUrl"><i class="fas fa-link"></i> Target URL</label>
+                    <input type="text" id="targetUrl" class="form-control" placeholder="https://example.com/page.php?id=1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="httpMethod"><i class="fas fa-exchange-alt"></i> HTTP Method</label>
+                    <select id="httpMethod" class="form-control">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postData"><i class="fas fa-edit"></i> POST Data</label>
+                    <textarea id="postData" class="form-control" placeholder="username=admin&password=test"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cookies"><i class="fas fa-cookie"></i> Cookies</label>
+                    <input type="text" id="cookies" class="form-control" placeholder="session=abc123; token=xyz789">
+                </div>
+                
+                <div class="form-group">
+                    <label for="userAgent"><i class="fas fa-user-secret"></i> User Agent</label>
+                    <select id="userAgent" class="form-control">
+                        <option value="random">Random</option>
+                        <option value="chrome">Google Chrome</option>
+                        <option value="firefox">Mozilla Firefox</option>
+                        <option value="mobile">Mobile Browser</option>
+                        <option value="sqlmap">SQLMap Default</option>
+                    </select>
+                </div>
+                
+                <div class="section-title">
+                    <i class="fas fa-tachometer-alt"></i> Quick Stats
+                </div>
+                
+                <div class="quick-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="liveTargets">0</div>
+                        <div class="stat-label">Targets</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="liveInjections">0</div>
+                        <div class="stat-label">Injections</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="liveDatabases">0</div>
+                        <div class="stat-label">Databases</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="liveTables">0</div>
+                        <div class="stat-label">Tables</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">
+                    <i class="fas fa-play-circle"></i> Quick Actions
+                </div>
+                
+                <button class="btn btn-primary" onclick="startDetection()">
+                    <i class="fas fa-search"></i> Start Detection
+                </button>
+                
+                <button class="btn btn-success" onclick="startEnumeration()">
+                    <i class="fas fa-database"></i> Enumerate Data
+                </button>
+                
+                <button class="btn btn-warning" onclick="dumpDatabase()">
+                    <i class="fas fa-download"></i> Dump Database
+                </button>
+                
+                <button class="btn btn-danger" onclick="bypassWaf()">
+                    <i class="fas fa-shield-alt"></i> Bypass WAF
+                </button>
+                
+                <button class="btn btn-secondary" onclick="clearTerminal()">
+                    <i class="fas fa-broom"></i> Clear Terminal
+                </button>
+                
+                <div class="warning-box mt-20">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Legal Disclaimer</h3>
+                    <p>This tool is for authorized security testing only. Unauthorized use against systems you don't own is illegal.</p>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="main-content">
+                <!-- TABS -->
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('detection')">
+                            <i class="fas fa-search"></i> Detection
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('enumeration')">
+                            <i class="fas fa-database"></i> Enumeration
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('injection')">
+                            <i class="fas fa-syringe"></i> Injection
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('exploitation')">
+                            <i class="fas fa-bomb"></i> Exploitation
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('results')">
+                            <i class="fas fa-chart-bar"></i> Results
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('terminal')">
+                            <i class="fas fa-terminal"></i> Terminal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DETECTION TAB -->
+                <div id="detection" class="tab-content active">
+                    <div class="section-title">
+                        <i class="fas fa-search"></i> SQL Injection Detection
+                    </div>
+                    
+                    <p class="mb-20">Scan your target for SQL injection vulnerabilities using various techniques.</p>
+                    
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h3><i class="fas fa-bullseye"></i> Basic Detection</h3>
+                            <p>Test for basic SQL injection vulnerabilities using common payloads.</p>
+                            <button class="btn btn-primary" onclick="basicDetection()">Start Scan</button>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="basicProgress"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-microscope"></i> Advanced Detection</h3>
+                            <p>Comprehensive scanning with advanced heuristics and pattern matching.</p>
+                            <button class="btn btn-primary" onclick="advancedDetection()">Deep Scan</button>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="advancedProgress"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-shield-alt"></i> WAF Detection</h3>
+                            <p>Detect and fingerprint Web Application Firewalls (WAF/IPS).</p>
+                            <button class="btn btn-warning" onclick="wafDetection()">Detect WAF</button>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="wafProgress"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-eye-slash"></i> Blind Detection</h3>
+                            <p>Detect blind SQL injection vulnerabilities using boolean/time-based techniques.</p>
+                            <button class="btn btn-primary" onclick="blindDetection()">Test Blind</button>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="blindProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-container mt-20">
+                        <div class="terminal-header">
+                            <div class="terminal-title">Detection Output</div>
+                            <div class="terminal-controls">
+                                <button class="btn btn-secondary" onclick="clearTerminal()" style="padding: 6px 12px; width: auto;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="terminal" id="detectionTerminal">
+[SQLMAP PRO] Detection module initialized
+[SQLMAP PRO] Ready to scan for SQL injection vulnerabilities
+[INFO] Enter target URL in the sidebar and select a detection method
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ENUMERATION TAB -->
+                <div id="enumeration" class="tab-content">
+                    <div class="section-title">
+                        <i class="fas fa-database"></i> Database Enumeration
+                    </div>
+                    
+                    <p class="mb-20">Enumerate database information, tables, columns, and user privileges.</p>
+                    
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h3><i class="fas fa-server"></i> Databases</h3>
+                            <p>Enumerate all available databases on the target server.</p>
+                            <button class="btn btn-primary" onclick="enumerateDatabases()">List Databases</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-table"></i> Tables</h3>
+                            <p>Enumerate tables within the current database.</p>
+                            <button class="btn btn-primary" onclick="enumerateTables()">List Tables</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-columns"></i> Columns</h3>
+                            <p>Enumerate columns within specific tables.</p>
+                            <button class="btn btn-primary" onclick="enumerateColumns()">List Columns</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-users"></i> Users</h3>
+                            <p>Enumerate database users and their privileges.</p>
+                            <button class="btn btn-primary" onclick="enumerateUsers()">List Users</button>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-container mt-20">
+                        <div class="terminal-header">
+                            <div class="terminal-title">Enumeration Output</div>
+                        </div>
+                        <div class="terminal" id="enumerationTerminal">
+[ENUMERATION] Database enumeration module ready
+[INFO] Select an enumeration method to begin
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INJECTION TAB -->
+                <div id="injection" class="tab-content">
+                    <div class="section-title">
+                        <i class="fas fa-syringe"></i> Injection Techniques
+                    </div>
+                    
+                    <p class="mb-20">Test various SQL injection techniques with detailed payload analysis.</p>
+                    
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h3><i class="fas fa-check-circle"></i> Boolean Based</h3>
+                            <p>Extract data by analyzing TRUE/FALSE responses from the application.</p>
+                            <button class="btn btn-primary" onclick="booleanInjection()">Execute</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-clock"></i> Time Based</h3>
+                            <p>Use time delays to extract data without visible output.</p>
+                            <button class="btn btn-primary" onclick="timeBasedInjection()">Execute</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-link"></i> UNION Based</h3>
+                            <p>Use UNION queries to extract data directly in the response.</p>
+                            <button class="btn btn-primary" onclick="unionInjection()">Execute</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-layer-group"></i> Stacked Queries</h3>
+                            <p>Execute multiple SQL statements in a single injection point.</p>
+                            <button class="btn btn-primary" onclick="stackedInjection()">Execute</button>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-container mt-20">
+                        <div class="terminal-header">
+                            <div class="terminal-title">Injection Output</div>
+                        </div>
+                        <div class="terminal" id="injectionTerminal">
+[INJECTION] SQL injection techniques module
+[INFO] Select an injection technique to test
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXPLOITATION TAB -->
+                <div id="exploitation" class="tab-content">
+                    <div class="section-title">
+                        <i class="fas fa-bomb"></i> Advanced Exploitation
+                    </div>
+                    
+                    <p class="mb-20">Advanced exploitation techniques including file access, command execution, and persistence.</p>
+                    
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h3><i class="fas fa-file"></i> File Read/Write</h3>
+                            <p>Read or write files on the server filesystem.</p>
+                            <input type="text" id="filePath" class="form-control mb-16" placeholder="/etc/passwd">
+                            <button class="btn btn-danger" onclick="fileRead()">Read File</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-terminal"></i> OS Command</h3>
+                            <p>Execute operating system commands through SQL injection.</p>
+                            <input type="text" id="osCommand" class="form-control mb-16" placeholder="whoami">
+                            <button class="btn btn-danger" onclick="osCommand()">Execute</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-user-shield"></i> Privilege Escalation</h3>
+                            <p>Attempt to escalate database user privileges.</p>
+                            <button class="btn btn-warning" onclick="privEscalation()">Escalate</button>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-door-open"></i> Backdoor</h3>
+                            <p>Install a web shell or reverse shell for persistent access.</p>
+                            <button class="btn btn-danger" onclick="installWebshell()">Install Web Shell</button>
+                        </div>
+                    </div>
+                    
+                    <div class="warning-box mt-20">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Warning</h3>
+                        <p>These techniques are destructive and should only be used on systems you own or have explicit permission to test.</p>
+                    </div>
+                </div>
+
+                <!-- RESULTS TAB -->
+                <div id="results" class="tab-content">
+                    <div class="section-title">
+                        <i class="fas fa-chart-bar"></i> Scan Results
+                    </div>
+                    
+                    <div class="tool-grid">
+                        <div class="tool-card">
+                            <h3><i class="fas fa-info-circle"></i> Target Info</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <td>URL:</td>
+                                    <td id="resultUrl">-</td>
+                                </tr>
+                                <tr>
+                                    <td>Method:</td>
+                                    <td id="resultMethod">-</td>
+                                </tr>
+                                <tr>
+                                    <td>Vulnerable:</td>
+                                    <td id="resultVuln">-</td>
+                                </tr>
+                                <tr>
+                                    <td>DB Type:</td>
+                                    <td id="resultDbType">-</td>
+                                </tr>
+                                <tr>
+                                    <td>DB Version:</td>
+                                    <td id="resultDbVersion">-</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <h3><i class="fas fa-database"></i> Found Databases</h3>
+                            <div id="databaseList" style="max-height: 200px; overflow-y: auto;">
+                                <div class="terminal-line info">No databases enumerated yet</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-20">
+                        <h3 class="section-title"><i class="fas fa-table"></i> Dumped Tables</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Table Name</th>
+                                    <th>Rows</th>
+                                    <th>Columns</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablesBody">
+                                <tr>
+                                    <td colspan="4" class="text-center">No tables dumped yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-20">
+                        <button class="btn btn-primary" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export Results
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TERMINAL TAB -->
+                <div id="terminal" class="tab-content">
+                    <div class="section-title">
+                        <i class="fas fa-terminal"></i> SQLMap Terminal
+                    </div>
+                    
+                    <div class="terminal-container">
+                        <div class="terminal-header">
+                            <div class="terminal-title">SQLMap CLI Emulator</div>
+                        </div>
+                        <div class="terminal" id="sqlmapTerminal">
+sqlmap.py --version
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal.
+[!] it is the end user's responsibility to obey all applicable local, state and federal laws.
+[!] authors assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 00:00:00 /2026-01-08/
+
+sqlmap.py>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-20">
+                        <div class="form-group">
+                            <label for="terminalInput"><i class="fas fa-keyboard"></i> Command Input</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="terminalInput" class="form-control" placeholder="Enter sqlmap command..." onkeypress="if(event.key==='Enter') executeSqlmapCommand()">
+                                <button class="btn btn-primary" onclick="executeSqlmapCommand()" style="width: auto;">
+                                    <i class="fas fa-play"></i> Execute
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="tool-grid">
+                            <div class="tool-card">
+                                <h3><i class="fas fa-bolt"></i> Quick Commands</h3>
+                                <button class="btn btn-secondary" onclick="quickCommand('--dbs')" style="width: 100%; margin-bottom: 8px;">
+                                    Show Databases
+                                </button>
+                                <button class="btn btn-secondary" onclick="quickCommand('--tables')" style="width: 100%; margin-bottom: 8px;">
+                                    Show Tables
+                                </button>
+                                <button class="btn btn-secondary" onclick="quickCommand('--dump')" style="width: 100%;">
+                                    Dump Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <p>SQLMAP PRO ULTIMATE v4.0 | Based on SQLMap Engine | Professional Security Testing Tool</p>
+            <p class="mt-16">© 2026 ZinXploit Premium | For Authorized Penetration Testing Only</p>
+        </footer>
+    </div>
+
+    <script>
+        // ===================== GLOBAL VARIABLES =====================
+        let scanResults = {
+            target: null,
+            vulnerable: false,
+            dbType: null,
+            dbVersion: null,
+            databases: [],
+            tables: [],
+            users: [],
+            data: [],
+            payloadsTested: 0,
+            wafDetected: false
+        };
+        
+        let currentSession = {
+            url: '',
+            method: 'GET',
+            cookies: '',
+            userAgent: 'sqlmap'
+        };
+
+        // ===================== INITIALIZATION =====================
+        window.onload = function() {
+            updateLiveStats();
+            addTerminalLine('[SQLMAP PRO] v4.0 initialized successfully', 'success');
+            addTerminalLine('[SQLMAP PRO] Professional SQL Injection Testing Suite', 'info');
+            addTerminalLine('[SQLMAP PRO] Ready for security assessment', 'success');
+        };
+
+        // ===================== TAB MANAGEMENT =====================
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate button
+            event.currentTarget.classList.add('active');
+            
+            addTerminalLine(`[NAV] Switched to ${tabName} module`, 'info');
+        }
+
+        // ===================== DETECTION FUNCTIONS =====================
+        function startDetection() {
+            const url = document.getElementById('targetUrl').value;
+            if (!url) {
+                addTerminalLine('[ERROR] Please enter a target URL first', 'error');
+                return;
+            }
+            
+            currentSession.url = url;
+            currentSession.method = document.getElementById('httpMethod').value;
+            currentSession.cookies = document.getElementById('cookies').value;
+            currentSession.userAgent = document.getElementById('userAgent').value;
+            
+            addTerminalLine(`[DETECTION] Starting scan on: ${url}`, 'warning');
+            addTerminalLine(`[DETECTION] Method: ${currentSession.method} | Agent: ${currentSession.userAgent}`, 'info');
+            
+            // Simulate scanning
+            simulateProgress('basicProgress', 100, 'Initial scan complete');
+            
+            setTimeout(() => {
+                const dbTypes = ['MySQL', 'PostgreSQL', 'Microsoft SQL Server', 'Oracle'];
+                const versions = ['5.7.40', '14.0', '2019', '19c'];
+                const randomDb = dbTypes[Math.floor(Math.random() * dbTypes.length)];
+                const randomVer = versions[Math.floor(Math.random() * versions.length)];
+                
+                scanResults.target = url;
+                scanResults.vulnerable = Math.random() > 0.3;
+                scanResults.dbType = randomDb;
+                scanResults.dbVersion = randomVer;
+                scanResults.payloadsTested = Math.floor(Math.random() * 100) + 50;
+                
+                updateResultsDisplay();
+                updateLiveStats();
+                
+                if (scanResults.vulnerable) {
+                    addTerminalLine('[SUCCESS] SQL injection vulnerability detected!', 'success');
+                    addTerminalLine(`[INFO] Database: ${randomDb} ${randomVer}`, 'info');
+                } else {
+                    addTerminalLine('[INFO] No SQL injection vulnerability detected', 'warning');
+                }
+            }, 2000);
+        }
+
+        function basicDetection() {
+            addTerminalLine('[BASIC] Testing for basic SQL injection...', 'info');
+            simulateProgress('basicProgress', 100, 'Basic detection completed');
+            
+            setTimeout(() => {
+                addTerminalLine('[BASIC] Testing payload: \' OR \'1\'=\'1', 'info');
+                addTerminalLine('[BASIC] Testing payload: " OR ""="', 'info');
+                addTerminalLine('[BASIC] Testing payload: 1 OR 1=1', 'info');
+                addTerminalLine('[BASIC] Basic tests completed', 'success');
+            }, 1000);
+        }
+
+        function advancedDetection() {
+            addTerminalLine('[ADVANCED] Starting comprehensive scan...', 'warning');
+            simulateProgress('advancedProgress', 100, 'Advanced scan completed');
+            
+            setTimeout(() => {
+                addTerminalLine('[ADVANCED] Testing boolean-based techniques', 'info');
+                addTerminalLine('[ADVANCED] Testing time-based techniques', 'info');
+                addTerminalLine('[ADVANCED] Testing error-based techniques', 'info');
+                addTerminalLine('[ADVANCED] Advanced scan completed', 'success');
+            }, 1500);
+        }
+
+        function wafDetection() {
+            addTerminalLine('[WAF] Detecting Web Application Firewall...', 'info');
+            simulateProgress('wafProgress', 100, 'WAF detection completed');
+            
+            setTimeout(() => {
+                const wafs = ['CloudFlare', 'ModSecurity', 'Imperva', 'AWS WAF', 'Akamai'];
+                const detectedWaf = wafs[Math.floor(Math.random() * wafs.length)];
+                
+                scanResults.wafDetected = true;
+                addTerminalLine(`[WAF] Detected: ${detectedWaf}`, 'warning');
+                addTerminalLine('[WAF] Analyzing bypass possibilities...', 'info');
+            }, 2000);
+        }
+
+        function blindDetection() {
+            addTerminalLine('[BLIND] Testing for blind SQL injection...', 'info');
+            simulateProgress('blindProgress', 100, 'Blind detection completed');
+            
+            setTimeout(() => {
+                addTerminalLine('[BLIND] Testing boolean-based blind', 'info');
+                addTerminalLine('[BLIND] Testing time-based blind', 'info');
+                addTerminalLine('[BLIND] Blind detection completed', 'success');
+            }, 1500);
+        }
+
+        // ===================== ENUMERATION FUNCTIONS =====================
+        function startEnumeration() {
+            if (!scanResults.vulnerable) {
+                addTerminalLine('[ERROR] No vulnerability detected. Run detection first.', 'error');
+                return;
+            }
+            
+            switchTab('enumeration');
+            setTimeout(() => {
+                enumerateDatabases();
+            }, 500);
+        }
+
+        function enumerateDatabases() {
+            addTerminalLine('[ENUM] Enumerating databases...', 'warning');
+            
+            setTimeout(() => {
+                const databases = ['information_schema', 'mysql', 'webapp_db', 'admin_panel', 'test_db'];
+                scanResults.databases = databases;
+                
+                const dbList = document.getElementById('databaseList');
+                dbList.innerHTML = '';
+                databases.forEach(db => {
+                    const div = document.createElement('div');
+                    div.className = 'terminal-line success';
+                    div.textContent = `[+] ${db}`;
+                    dbList.appendChild(div);
+                });
+                
+                addTerminalLine(`[ENUM] Found ${databases.length} databases`, 'success');
+                updateLiveStats();
+            }, 1500);
+        }
+
+        function enumerateTables() {
+            if (scanResults.databases.length === 0) {
+                addTerminalLine('[ERROR] Enumerate databases first', 'error');
+                return;
+            }
+            
+            addTerminalLine('[ENUM] Enumerating tables...', 'warning');
+            
+            setTimeout(() => {
+                const tables = ['users', 'products', 'orders', 'logs', 'config'];
+                scanResults.tables = tables;
+                
+                updateResultsTables();
+                addTerminalLine(`[ENUM] Found ${tables.length} tables`, 'success');
+                updateLiveStats();
+            }, 1500);
+        }
+
+        function enumerateColumns() {
+            addTerminalLine('[ENUM] Enumerating columns...', 'warning');
+            
+            setTimeout(() => {
+                addTerminalLine('[ENUM] Table: users', 'info');
+                addTerminalLine('[ENUM] Columns: id, username, password, email, role', 'success');
+            }, 1500);
+        }
+
+        function enumerateUsers() {
+            addTerminalLine('[ENUM] Enumerating database users...', 'warning');
+            
+            setTimeout(() => {
+                addTerminalLine('[ENUM] User: root@localhost (ALL PRIVILEGES)', 'success');
+                addTerminalLine('[ENUM] User: admin@% (SELECT, INSERT, UPDATE)', 'success');
+                addTerminalLine('[ENUM] User: webapp@localhost (SELECT)', 'success');
+            }, 1500);
+        }
+
+        // ===================== INJECTION FUNCTIONS =====================
+        function booleanInjection() {
+            addTerminalLine('[INJECT] Boolean-based injection test', 'warning');
+            addTerminalLine('[INJECT] Payload: \' AND ASCII(SUBSTRING(database(),1,1)) > 100 -- ', 'info');
+            addTerminalLine('[INJECT] Character found: w (ASCII 119)', 'success');
+        }
+
+        function timeBasedInjection() {
+            addTerminalLine('[INJECT] Time-based injection test', 'warning');
+            addTerminalLine('[INJECT] Payload: \' AND SLEEP(2) -- ', 'info');
+            addTerminalLine('[INJECT] Response delayed: 2 seconds', 'success');
+        }
+
+        function unionInjection() {
+            addTerminalLine('[INJECT] UNION-based injection test', 'warning');
+            addTerminalLine('[INJECT] Determining column count...', 'info');
+            addTerminalLine('[INJECT] Found 5 columns', 'success');
+            addTerminalLine('[INJECT] Extracted: Database version, current user', 'success');
+        }
+
+        function stackedInjection() {
+            addTerminalLine('[INJECT] Stacked queries test', 'warning');
+            addTerminalLine('[INJECT] Payload: \'; SELECT @@version; -- ', 'info');
+            addTerminalLine('[INJECT] Version: 5.7.40', 'success');
+        }
+
+        // ===================== EXPLOITATION FUNCTIONS =====================
+        function fileRead() {
+            const path = document.getElementById('filePath').value || '/etc/passwd';
+            addTerminalLine(`[EXPLOIT] Reading file: ${path}`, 'warning');
+            
+            setTimeout(() => {
+                addTerminalLine('[EXPLOIT] File content:', 'success');
+                addTerminalLine('root:x:0:0:root:/root:/bin/bash', 'info');
+                addTerminalLine('www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin', 'info');
+            }, 1500);
+        }
+
+        function osCommand() {
+            const cmd = document.getElementById('osCommand').value || 'whoami';
+            addTerminalLine(`[EXPLOIT] Executing: ${cmd}`, 'warning');
+            
+            setTimeout(() => {
+                addTerminalLine('[EXPLOIT] Output: www-data', 'success');
+            }, 1500);
+        }
+
+        function privEscalation() {
+            addTerminalLine('[EXPLOIT] Attempting privilege escalation...', 'warning');
+            
+            setTimeout(() => {
+                addTerminalLine('[EXPLOIT] Attempting to grant SUPER privilege...', 'info');
+                addTerminalLine('[EXPLOIT] Privilege escalation successful!', 'success');
+            }, 2000);
+        }
+
+        function installWebshell() {
+            addTerminalLine('[EXPLOIT] Installing web shell...', 'warning');
+            
+            setTimeout(() => {
+                addTerminalLine('[EXPLOIT] Web shell installed at: /var/www/html/shell.php', 'success');
+                addTerminalLine('[EXPLOIT] Access: http://target.com/shell.php?cmd=whoami', 'info');
+            }, 1500);
+        }
+
+        // ===================== UTILITY FUNCTIONS =====================
+        function addTerminalLine(message, type = 'info') {
+            const terminals = ['detectionTerminal', 'enumerationTerminal', 'injectionTerminal', 'sqlmapTerminal'];
+            
+            terminals.forEach(termId => {
+                const terminal = document.getElementById(termId);
+                if (terminal && terminal.parentElement.parentElement.classList.contains('active')) {
+                    const line = document.createElement('div');
+                    line.className = `terminal-line ${type}`;
+                    line.textContent = message;
+                    terminal.appendChild(line);
+                    terminal.scrollTop = terminal.scrollHeight;
+                }
+            });
+        }
+
+        function clearTerminal() {
+            const terminals = ['detectionTerminal', 'enumerationTerminal', 'injectionTerminal', 'sqlmapTerminal'];
+            
+            terminals.forEach(termId => {
+                const terminal = document.getElementById(termId);
+                if (terminal) {
+                    terminal.innerHTML = '';
+                    if (termId === 'sqlmapTerminal') {
+                        terminal.innerHTML = 'sqlmap.py>';
+                    }
+                }
+            });
+            
+            addTerminalLine('[SYSTEM] Terminal cleared', 'info');
+        }
+
+        function simulateProgress(elementId, targetPercent, completionMessage) {
+            let current = 0;
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const interval = setInterval(() => {
+                current += 2;
+                element.style.width = current + '%';
+                
+                if (current >= targetPercent) {
+                    clearInterval(interval);
+                    if (completionMessage) {
+                        addTerminalLine(completionMessage, 'success');
+                    }
+                }
+            }, 30);
+        }
+
+        function updateLiveStats() {
+            document.getElementById('liveTargets').textContent = currentSession.url ? '1' : '0';
+            document.getElementById('liveInjections').textContent = scanResults.payloadsTested;
+            document.getElementById('liveDatabases').textContent = scanResults.databases.length;
+            document.getElementById('liveTables').textContent = scanResults.tables.length;
+        }
+
+        function updateResultsDisplay() {
+            document.getElementById('resultUrl').textContent = scanResults.target || '-';
+            document.getElementById('resultMethod').textContent = currentSession.method;
+            document.getElementById('resultVuln').textContent = scanResults.vulnerable ? 'YES' : 'NO';
+            document.getElementById('resultVuln').className = scanResults.vulnerable ? 'text-success' : 'text-danger';
+            document.getElementById('resultDbType').textContent = scanResults.dbType || '-';
+            document.getElementById('resultDbVersion').textContent = scanResults.dbVersion || '-';
+        }
+
+        function updateResultsTables() {
+            const tbody = document.getElementById('tablesBody');
+            tbody.innerHTML = '';
+            
+            scanResults.tables.forEach(table => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${table}</td>
+                    <td>${Math.floor(Math.random() * 1000) + 100}</td>
+                    <td>${Math.floor(Math.random() * 8) + 3}</td>
+                    <td class="text-success">Dumped</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function executeSqlmapCommand() {
+            const input = document.getElementById('terminalInput').value;
+            if (!input) return;
+            
+            const terminal = document.getElementById('sqlmapTerminal');
+            terminal.innerHTML += `\nsqlmap.py> ${input}`;
+            
+            setTimeout(() => {
+                if (input.includes('--dbs')) {
+                    terminal.innerHTML += '\n[INFO] available databases [5]:\n[*] information_schema\n[*] mysql\n[*] webapp_db\n[*] admin_panel\n[*] test_db';
+                } else if (input.includes('--tables')) {
+                    terminal.innerHTML += '\n[INFO] tables [5]:\n+----------+\n| users    |\n| products |\n| orders   |\n| logs     |\n| config   |\n+----------+';
+                } else if (input.includes('--dump')) {
+                    terminal.innerHTML += '\n[INFO] dumping table \'users\'\n[INFO] table \'users\' dumped successfully';
+                }
+                
+                terminal.innerHTML += '\nsqlmap.py>';
+                terminal.scrollTop = terminal.scrollHeight;
+            }, 500);
+            
+            document.getElementById('terminalInput').value = '';
+        }
+
+        function quickCommand(cmd) {
+            document.getElementById('terminalInput').value = cmd;
+            executeSqlmapCommand();
+        }
+
+        function dumpDatabase() {
+            addTerminalLine('[DUMP] Starting database dump...', 'warning');
+            
+            setTimeout(() => {
+                addTerminalLine('[DUMP] Dumping table: users (124 records)', 'info');
+                addTerminalLine('[DUMP] Dumping table: products (567 records)', 'info');
+                addTerminalLine('[DUMP] Dumping table: orders (892 records)', 'info');
+                addTerminalLine('[DUMP] Database dump completed: 1583 records', 'success');
+            }, 2000);
+        }
+
+        function bypassWaf() {
+            addTerminalLine('[WAF] Attempting WAF bypass...', 'warning');
+            
+            setTimeout(() => {
+                addTerminalLine('[WAF] Using URL encoding...', 'info');
+                addTerminalLine('[WAF] Using case variation...', 'info');
+                addTerminalLine('[WAF] Using comments bypass...', 'info');
+                addTerminalLine('[WAF] WAF bypass successful!', 'success');
+            }, 2000);
+        }
+
+        function exportData() {
+            const data = {
+                scanResults: scanResults,
+                currentSession: currentSession,
+                timestamp: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sqlmap-pro-results-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            addTerminalLine('[EXPORT] Results exported to JSON file', 'success');
+        }
+    </script>
+</body>
+</html>
