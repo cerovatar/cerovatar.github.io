@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siomay Mantap · Kasir</title>
+    <!-- Bootstrap 5 & Chart.js -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #0b0f1c;
+            --card: #0f1425;
+            --accent: #ffaa33;
+            --muted: #94a3b8;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: #e6eef6;
+        }
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #0f1a2f, #0b1220);
+            padding: 20px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        .nav-link {
+            color: #cfe8f0;
+            margin: 8px 0;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .nav-link.active {
+            background: rgba(255, 170, 51, 0.12);
+            color: var(--accent);
+        }
+        main {
+            flex: 1;
+            padding: 22px;
+        }
+        .card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border: 1px solid #2a3455;
+            color: inherit;
+            border-radius: 24px;
+            backdrop-filter: blur(8px);
+        }
+        .small-muted {
+            color: var(--muted);
+            font-size: 13px;
+        }
+        .table-wrap {
+            overflow-x: auto;
+        }
+        .qris-thumb {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 8px;
+        }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        footer {
+            color: #ddd;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                transform: translateX(-120%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+
+        /* Receipt styles */
+        #receiptContent {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        @media print {
+            body * { visibility: hidden; }
+            #receiptModal, #receiptModal * { visibility: visible; }
+            #receiptModal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            #receiptActions { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <!-- Sidebar -->
+        <aside class="sidebar shadow-sm" id="sidebar">
+            <div class="logo">🥟 Siomay Mantap — Kasir</div>
+            <div class="small-muted mb-2">ZinXploit-Gpt · v1.0</div>
+            <nav class="nav flex-column mt-3" id="menu">
+                <a href="#" class="nav-link active" data-view="kasir">Kasir</a>
+                <a href="#" class="nav-link" data-view="produk">Produk & Stok</a>
+                <a href="#" class="nav-link" data-view="laporan">Laporan Penjualan</a>
+                <a href="#" class="nav-link" data-view="setoran">Setoran</a>
+                <a href="#" class="nav-link" data-view="pengeluaran">Pengeluaran</a>
+                <a href="#" class="nav-link" data-view="pengaturan">Pengaturan</a>
+            </nav>
+            <div class="mt-4">
+                <button class="btn btn-sm btn-outline-light" id="exportBtn">Export Data</button>
+                <button class="btn btn-sm btn-outline-danger ms-2" id="resetBtn">Reset</button>
+            </div>
+            <div class="small-muted mt-4">Created by © ZinXploit</div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-ghost me-3 d-lg-none" id="toggleSidebar">☰</button>
+                <h3 id="viewTitle">Kasir</h3>
+            </div>
+
+            <!-- Views -->
+            <section id="views">
+                <!-- KASIR -->
+                <div class="view" id="view-kasir">
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <div class="card p-3">
+                                <h5>Produk Siomay — Tambah ke Keranjang</h5>
+                                <div class="small-muted mb-2">Klik produk untuk menambah ke keranjang</div>
+                                <div id="productList" class="d-flex flex-wrap gap-2"></div>
+                            </div>
+                            <div class="card p-3 mt-3">
+                                <h5>Tambah Produk Cepat</h5>
+                                <form id="quickAddForm" class="row g-2">
+                                    <div class="col-6"><input required id="q_name" placeholder="Nama produk" class="form-control" /></div>
+                                    <div class="col-3"><input required id="q_price" type="number" min="0" placeholder="Harga" class="form-control" /></div>
+                                    <div class="col-3"><input required id="q_stock" type="number" min="0" placeholder="Stok" class="form-control" /></div>
+                                    <div class="col-12 text-end"><button class="btn btn-primary btn-sm">Tambah</button></div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card p-3">
+                                <h5>Keranjang</h5>
+                                <div class="table-wrap">
+                                    <table class="table table-sm table-borderless text-light" id="cartTable">
+                                        <thead><tr><th>Item</th><th>Qty</th><th>Harga</th><th>Subtotal</th><th></th></tr></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div>
+                                        <div class="small-muted">Total:</div>
+                                        <div id="cartTotal" style="font-size:20px;font-weight:600">Rp 0</div>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-success" id="checkoutBtn">Checkout</button>
+                                        <button class="btn btn-outline-light ms-2" id="clearCartBtn">Kosongkan</button>
+                                    </div>
+                                </div>
+                                <div class="small-muted mt-2">Struk dapat dilihat setelah checkout.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUK & STOK -->
+                <div class="view d-none" id="view-produk">
+                    <div class="card p-3">
+                        <h5>Manajemen Produk & Stok</h5>
+                        <form id="productForm" class="row g-2 mb-3">
+                            <div class="col-md-4"><input id="p_name" placeholder="Nama produk" required class="form-control" /></div>
+                            <div class="col-md-2"><input id="p_price" type="number" min="0" placeholder="Harga" required class="form-control" /></div>
+                            <div class="col-md-2"><input id="p_stock" type="number" min="0" placeholder="Stok" required class="form-control" /></div>
+                            <div class="col-md-2"><input id="p_unit" placeholder="Satuan (per porsi)" class="form-control" /></div>
+                            <div class="col-md-2 text-end"><button class="btn btn-primary">Simpan Produk</button></div>
+                        </form>
+                        <div class="table-wrap">
+                            <table class="table table-striped table-sm text-light" id="productTable">
+                                <thead><tr><th>Nama</th><th>Harga</th><th>Stok</th><th>Unit</th><th>Aksi</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAPORAN -->
+                <div class="view d-none" id="view-laporan">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card p-3 mb-3">
+                                <h5>Grafik Penjualan</h5>
+                                <canvas id="salesChart" height="140"></canvas>
+                            </div>
+                            <div class="card p-3">
+                                <h5>Daftar Transaksi</h5>
+                                <div class="table-wrap">
+                                    <table class="table table-sm table-hover text-light" id="salesTable">
+                                        <thead><tr><th>Tanggal</th><th>Items</th><th>Total</th><th>Metode</th><th>Aksi</th></tr></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card p-3 mb-3">
+                                <h5>Ringkasan Keuangan</h5>
+                                <div class="small-muted">Total Penjualan:</div>
+                                <div id="summarySales" style="font-weight:700;font-size:22px">Rp 0</div>
+                                <div class="small-muted mt-3">Total Pengeluaran:</div>
+                                <div id="summaryExpenses" style="font-weight:700;font-size:22px; color: #f87171;">- Rp 0</div>
+                                <hr class="my-3" style="border-color: var(--muted);" />
+                                <div class="small-muted">Pendapatan Bersih (Setoran):</div>
+                                <div id="summaryNetSetoran" style="font-weight:700;font-size:26px; color: var(--accent);">Rp 0</div>
+                            </div>
+                            <div class="card p-3 mb-3">
+                                <h5>Ringkasan Produk</h5>
+                                <div class="small-muted">Total Siomay Terjual (porsi):</div>
+                                <div id="summaryQty" style="font-weight:700;font-size:20px">0</div>
+                            </div>
+                            <div class="card p-3">
+                                <h5>Filter Tanggal</h5>
+                                <div class="mb-2"><input id="filterFrom" type="date" class="form-control" /></div>
+                                <div class="mb-2"><input id="filterTo" type="date" class="form-control" /></div>
+                                <div class="text-end"><button class="btn btn-primary btn-sm" id="applyFilter">Terapkan</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SETORAN (manual) -->
+                <div class="view d-none" id="view-setoran">
+                    <div class="card p-3">
+                        <h5>Setoran Harian (Manual)</h5>
+                        <div class="small-muted mb-2">Masukkan harga per porsi dan jumlah terjual untuk menghitung setoran.</div>
+                        <form id="setoranForm" class="row g-2 align-items-end">
+                            <div class="col-md-4"><label class="small-muted">Harga per porsi (Rp)</label><input id="s_price" type="number" min="0" class="form-control" required /></div>
+                            <div class="col-md-4"><label class="small-muted">Jumlah terjual (porsi)</label><input id="s_qty" type="number" min="0" class="form-control" required /></div>
+                            <div class="col-md-4"><label class="small-muted">Total setoran</label><input id="s_total" class="form-control" readonly /></div>
+                            <div class="col-12 text-end"><button class="btn btn-primary">Simpan Setoran</button></div>
+                        </form>
+                        <div class="mt-3 table-wrap">
+                            <table class="table table-sm text-light" id="setoranTable">
+                                <thead><tr><th>Tanggal</th><th>Harga/porsi</th><th>Qty</th><th>Total</th><th>Aksi</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PENGELUARAN (termasuk stok baru) -->
+                <div class="view d-none" id="view-pengeluaran">
+                    <div class="card p-3">
+                        <h5>Pengeluaran / Pembelian Stok</h5>
+                        <form id="expenseForm" class="row g-2 mb-3">
+                            <div class="col-md-5"><input id="e_desc" placeholder="Keterangan" required class="form-control" /></div>
+                            <div class="col-md-3"><input id="e_amount" type="number" min="0" placeholder="Jumlah (Rp)" required class="form-control" /></div>
+                            <div class="col-md-2"><input id="e_qty" type="number" min="0" placeholder="Tambah stok (porsi)" class="form-control" /></div>
+                            <div class="col-md-2 text-end"><button class="btn btn-warning">Catat Pengeluaran</button></div>
+                        </form>
+                        <div class="table-wrap">
+                            <table class="table table-sm text-light" id="expenseTable">
+                                <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Jumlah</th><th>Stok+</th><th>Aksi</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PENGATURAN (QRIS & Rekening) -->
+                <div class="view d-none" id="view-pengaturan">
+                    <div class="card p-3">
+                        <h5>Pengaturan Pembayaran & Rekening</h5>
+                        <form id="settingsForm" class="row g-2">
+                            <div class="col-md-6">
+                                <label class="small-muted">Upload QRIS (Gopay/QRIS)</label>
+                                <input type="file" id="qrisUpload" accept="image/*" class="form-control" />
+                                <div class="mt-2"><img id="qrisPreview" class="qris-thumb" src="" alt="QRIS" style="display:none;" /></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small-muted">Rekening / E-Wallet</label>
+                                <input id="bankName" class="form-control" placeholder="Bank / E-wallet name" />
+                                <input id="bankAcc" class="form-control mt-2" placeholder="Nomor rekening / ID" />
+                                <div class="text-end mt-2"><button class="btn btn-success">Simpan Pengaturan</button></div>
+                            </div>
+                        </form>
+                    </div>
+                    <footer>Created by ©ZinXploit · 5/2/2026</footer>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Pembayaran -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title">Konfirmasi Pembayaran</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Total Pembayaran: <strong id="modalTotal"></strong></p>
+                    <div class="mb-3">
+                        <label class="form-label">Pilih Metode:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="payCash" value="cash" checked>
+                            <label class="form-check-label" for="payCash">Cash</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="payQris" value="qris">
+                            <label class="form-check-label" for="payQris">QRIS</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="payTransfer" value="transfer">
+                            <label class="form-check-label" for="payTransfer">Transfer Bank</label>
+                        </div>
+                    </div>
+                    <div id="cashPaymentDetails">
+                        <label for="cashAmount" class="form-label">Jumlah Uang:</label>
+                        <input type="number" class="form-control" id="cashAmount" placeholder="Masukkan jumlah uang">
+                        <p class="mt-2">Kembalian: <strong id="cashChange">Rp 0</strong></p>
+                    </div>
+                    <div id="qrisPaymentDetails" class="text-center d-none">
+                        <p>Scan QRIS di bawah ini:</p>
+                        <img id="qrisModalImage" class="qris-thumb" src="" alt="QRIS">
+                    </div>
+                    <div id="transferPaymentDetails" class="d-none">
+                        <p>Transfer ke rekening berikut:</p>
+                        <p>Bank: <strong id="transferBankName"></strong></p>
+                        <p>No. Rekening: <strong id="transferBankAcc"></strong></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success" id="confirmPaymentBtn">Bayar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Struk -->
+    <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title">Struk Transaksi</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="receiptContent"></div>
+                </div>
+                <div class="modal-footer justify-content-center" id="receiptActions">
+                    <button type="button" class="btn btn-primary" id="printReceiptBtn">Print</button>
+                    <button type="button" class="btn btn-success" id="sendWaReceiptBtn">Kirim WA</button>
+                    <button type="button" class="btn btn-info" id="saveReceiptBtn">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ========== UTILITIES ==========
+        const $ = sel => document.querySelector(sel);
+        const $$ = sel => Array.from(document.querySelectorAll(sel));
+        const money = v => 'Rp ' + Number(v).toLocaleString('id-ID');
+        const uid = () => 'id' + Math.random().toString(36).slice(2, 9);
+
+        // ========== DATABASE (localStorage) ==========
+        const DB = {
+            save() { localStorage.setItem('siomay_data', JSON.stringify(this.data)); },
+            load() {
+                try {
+                    this.data = JSON.parse(localStorage.getItem('siomay_data')) || this._default();
+                } catch {
+                    this.data = this._default();
+                }
+            },
+            _default() {
+                return {
+                    products: [
+                        { id: uid(), name: 'Siomay Ikan', price: 5000, stock: 50, unit: 'porsi' },
+                        { id: uid(), name: 'Siomay Ayam', price: 5500, stock: 40, unit: 'porsi' },
+                        { id: uid(), name: 'Tahu Bakso', price: 4000, stock: 30, unit: 'porsi' },
+                        { id: uid(), name: 'Kol Goreng', price: 3000, stock: 25, unit: 'porsi' },
+                        { id: uid(), name: 'Telur Rebus', price: 4000, stock: 20, unit: 'porsi' }
+                    ],
+                    sales: [],
+                    setoran: [],
+                    expenses: [],
+                    settings: { qris: null, bankName: '', bankAcc: '' }
+                };
+            },
+            data: null
+        };
+        DB.load();
+
+        // ========== NAVIGASI ==========
+        const menuLinks = $$('#menu .nav-link');
+        const views = $$('.view');
+        function showView(name) {
+            views.forEach(v => v.classList.add('d-none'));
+            $('#view-' + name).classList.remove('d-none');
+            menuLinks.forEach(a => a.classList.remove('active'));
+            $$('#menu .nav-link[data-view="' + name + '"]')[0].classList.add('active');
+            $('#viewTitle').innerText = name.charAt(0).toUpperCase() + name.slice(1);
+        }
+        menuLinks.forEach(a => a.addEventListener('click', e => {
+            e.preventDefault();
+            showView(a.dataset.view);
+            if (window.innerWidth < 900) $('#sidebar').classList.remove('open');
+        }));
+        $('#toggleSidebar').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
+
+        // ========== PRODUK UI ==========
+        function renderProducts() {
+            const list = $('#productList'); list.innerHTML = '';
+            const table = $('#productTable tbody'); table.innerHTML = '';
+            DB.data.products.forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-sm btn-outline-light';
+                btn.innerText = `${p.name} • ${money(p.price)} (stok ${p.stock})`;
+                btn.addEventListener('click', () => addToCart(p.id));
+                list.appendChild(btn);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${p.name}</td><td>${money(p.price)}</td><td>${p.stock}</td><td>${p.unit || '-'}</td>
+                    <td><button class="btn btn-sm btn-outline-light edit">Edit</button> <button class="btn btn-sm btn-danger del">Hapus</button></td>`;
+                tr.querySelector('.del').addEventListener('click', () => {
+                    if (confirm('Hapus produk?')) {
+                        DB.data.products = DB.data.products.filter(x => x.id !== p.id);
+                        DB.save();
+                        renderProducts();
+                        renderCart();
+                        renderStats();
+                    }
+                });
+                tr.querySelector('.edit').addEventListener('click', () => {
+                    const name = prompt('Nama', p.name); if (!name) return;
+                    const price = prompt('Harga', p.price); if (price == null) return;
+                    const stock = prompt('Stok', p.stock); if (stock == null) return;
+                    p.name = name; p.price = Number(price); p.stock = Number(stock);
+                    DB.save();
+                    renderProducts();
+                    renderCart();
+                    renderStats();
+                });
+                table.appendChild(tr);
+            });
+        }
+
+        $('#productForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const name = $('#p_name').value.trim();
+            const price = Number($('#p_price').value);
+            const stock = Number($('#p_stock').value);
+            const unit = $('#p_unit').value.trim();
+            if (!name) return alert('Nama produk harus diisi');
+            DB.data.products.push({ id: uid(), name, price, stock, unit });
+            DB.save();
+            $('#productForm').reset();
+            renderProducts();
+        });
+
+        $('#quickAddForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const name = $('#q_name').value.trim();
+            const price = Number($('#q_price').value);
+            const stock = Number($('#q_stock').value);
+            if (!name) return;
+            DB.data.products.push({ id: uid(), name, price, stock, unit: 'porsi' });
+            DB.save();
+            $('#quickAddForm').reset();
+            renderProducts();
+        });
+
+        // ========== KERANJANG ==========
+        let cart = [];
+        function addToCart(pid) {
+            const p = DB.data.products.find(x => x.id === pid);
+            if (!p) return alert('Produk tidak ditemukan');
+            if (p.stock <= 0) return alert('Stok habis');
+            const item = cart.find(i => i.id === pid);
+            if (item) {
+                if (item.qty + 1 > p.stock) return alert('Stok tidak cukup');
+                item.qty++;
+            } else {
+                cart.push({ id: pid, qty: 1, price: p.price, name: p.name });
+            }
+            renderCart();
+        }
+        function renderCart() {
+            const tbody = $('#cartTable tbody'); tbody.innerHTML = '';
+            let total = 0;
+            cart.forEach(i => {
+                const sub = i.qty * i.price;
+                total += sub;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${i.name}</td><td><input type="number" min="1" value="${i.qty}" class="form-control form-control-sm qty" style="width:80px"/></td>
+                    <td>${money(i.price)}</td><td>${money(sub)}</td>
+                    <td><button class="btn btn-sm btn-danger rm">-</button></td>`;
+                tr.querySelector('.rm').addEventListener('click', () => {
+                    cart = cart.filter(x => x.id !== i.id);
+                    renderCart();
+                });
+                tr.querySelector('.qty').addEventListener('change', (ev) => {
+                    const v = Number(ev.target.value);
+                    const prod = DB.data.products.find(p => p.id === i.id);
+                    if (v > prod.stock) {
+                        alert('Stok tidak cukup');
+                        ev.target.value = i.qty;
+                        return;
+                    }
+                    i.qty = v;
+                    renderCart();
+                });
+                tbody.appendChild(tr);
+            });
+            $('#cartTotal').innerText = money(total);
+        }
+        $('#clearCartBtn').addEventListener('click', () => { cart = []; renderCart(); });
+
+        // ========== MODAL PEMBAYARAN ==========
+        const paymentModal = new bootstrap.Modal($('#paymentModal'));
+        const receiptModal = new bootstrap.Modal($('#receiptModal'));
+        let currentSale = null;
+
+        $('#checkoutBtn').addEventListener('click', () => {
+            if (cart.length === 0) return alert('Keranjang kosong');
+            const total = cart.reduce((s, i) => s + i.qty * i.price, 0);
+            $('#modalTotal').innerText = money(total);
+            $('#cashAmount').value = '';
+            $('#cashChange').innerText = 'Rp 0';
+            showPaymentDetails('cash');
+            paymentModal.show();
+        });
+
+        $$('input[name="paymentMethod"]').forEach(radio => {
+            radio.addEventListener('change', () => showPaymentDetails(radio.value));
+        });
+
+        function showPaymentDetails(method) {
+            $('#cashPaymentDetails').classList.add('d-none');
+            $('#qrisPaymentDetails').classList.add('d-none');
+            $('#transferPaymentDetails').classList.add('d-none');
+            if (method === 'cash') $('#cashPaymentDetails').classList.remove('d-none');
+            else if (method === 'qris') {
+                $('#qrisPaymentDetails').classList.remove('d-none');
+                const qrisSrc = DB.data.settings.qris;
+                $('#qrisModalImage').src = qrisSrc || '';
+                $('#qrisModalImage').alt = qrisSrc ? 'QRIS' : 'QRIS belum diatur';
+            } else if (method === 'transfer') {
+                $('#transferPaymentDetails').classList.remove('d-none');
+                $('#transferBankName').innerText = DB.data.settings.bankName || 'Belum diatur';
+                $('#transferBankAcc').innerText = DB.data.settings.bankAcc || 'Belum diatur';
+            }
+        }
+
+        $('#cashAmount').addEventListener('input', () => {
+            const total = cart.reduce((s, i) => s + i.qty * i.price, 0);
+            const amount = Number($('#cashAmount').value) || 0;
+            $('#cashChange').innerText = money(amount - total);
+        });
+
+        $('#confirmPaymentBtn').addEventListener('click', () => {
+            const total = cart.reduce((s, i) => s + i.qty * i.price, 0);
+            const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+            let amountPaid = total;
+            if (method === 'cash') {
+                amountPaid = Number($('#cashAmount').value) || 0;
+                if (amountPaid < total) return alert('Uang tidak cukup!');
+            }
+            const items = cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price }));
+            currentSale = {
+                id: uid(),
+                date: new Date().toISOString(),
+                items,
+                total,
+                paymentMethod: method,
+                amountPaid
+            };
+            DB.data.sales.push(currentSale);
+            items.forEach(it => {
+                const p = DB.data.products.find(x => x.id === it.id);
+                if (p) p.stock = Math.max(0, p.stock - it.qty);
+            });
+            DB.save();
+            cart = [];
+            renderCart();
+            renderProducts();
+            renderSales();
+            renderStats();
+            renderFinancialSummary();
+            paymentModal.hide();
+            displayReceipt(currentSale);
+            receiptModal.show();
+        });
+
+        function displayReceipt(sale) {
+            const items = sale.items.map(i =>
+                `${i.name.padEnd(20)} ${i.qty} x ${money(i.price).padStart(10)} = ${money(i.qty * i.price).padStart(12)}`
+            ).join('\n');
+            const change = sale.amountPaid - sale.total;
+            const paymentDetails = sale.paymentMethod === 'cash'
+                ? `Uang Diterima: ${money(sale.amountPaid)}\nKembalian:     ${money(change)}`
+                : `Metode: ${sale.paymentMethod.toUpperCase()}`;
+            const receiptText = `
+================================
+       Siomay Mantap
+    Jl. Kenangan No. 12
+   Telp: 0812-3456-7890
+================================
+Tanggal: ${new Date(sale.date).toLocaleString('id-ID')}
+No. Struk: ${sale.id}
+--------------------------------
+ ${items}
+--------------------------------
+Subtotal:      ${money(sale.total).padStart(12)}
+ ${paymentDetails.padEnd(25)}
+================================
+      Terima Kasih
+    Selamat Menikmati
+================================
+            `;
+            $('#receiptContent').innerText = receiptText;
+        }
+
+        // ========== AKSI STRUK ==========
+        $('#printReceiptBtn').addEventListener('click', () => window.print());
+        $('#sendWaReceiptBtn').addEventListener('click', () => {
+            const text = $('#receiptContent').innerText;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        });
+        $('#saveReceiptBtn').addEventListener('click', () => {
+            const text = $('#receiptContent').innerText;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `struk_${currentSale.id}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // ========== LAPORAN & GRAFIK ==========
+        let salesChart = null;
+        function renderSales(filtered) {
+            const arr = (filtered || DB.data.sales).slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+            const tb = $('#salesTable tbody'); tb.innerHTML = '';
+            arr.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${new Date(s.date).toLocaleString()}</td>
+                    <td>${s.items.map(i => i.name + ' x' + i.qty).join(', ')}</td>
+                    <td>${money(s.total)}</td><td>${s.paymentMethod}</td>
+                    <td><button class="btn btn-sm btn-outline-light view">Lihat</button>
+                    <button class="btn btn-sm btn-danger del">Hapus</button></td>`;
+                tr.querySelector('.view').addEventListener('click', () => {
+                    displayReceipt(s);
+                    receiptModal.show();
+                });
+                tr.querySelector('.del').addEventListener('click', () => {
+                    if (confirm('Hapus transaksi?')) {
+                        DB.data.sales = DB.data.sales.filter(x => x.id !== s.id);
+                        DB.save();
+                        renderSales();
+                        renderStats();
+                        renderFinancialSummary();
+                    }
+                });
+                tb.appendChild(tr);
+            });
+
+            const labels = [], values = [];
+            const days = 14;
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const key = d.toISOString().slice(0, 10);
+                labels.push(key);
+                const sum = DB.data.sales.filter(s => s.date.slice(0, 10) === key).reduce((a, b) => a + b.total, 0);
+                values.push(sum);
+            }
+            if (salesChart) salesChart.destroy();
+            const ctx = $('#salesChart');
+            if (ctx) {
+                salesChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Penjualan (Rp)', data: values, backgroundColor: 'rgba(255,170,51,0.5)' }] },
+                    options: { scales: { y: { ticks: { callback: v => v.toLocaleString('id-ID') } } } }
+                });
+            }
+        }
+
+        function renderStats() {
+            const total = DB.data.sales.reduce((s, x) => s + x.total, 0);
+            const qty = DB.data.sales.reduce((s, x) => s + x.items.reduce((a, b) => a + b.qty, 0), 0);
+            $('#summarySales').innerText = money(total);
+            $('#summaryQty').innerText = qty;
+        }
+
+        function renderFinancialSummary() {
+            const totalSales = DB.data.sales.reduce((s, x) => s + x.total, 0);
+            const totalExpenses = DB.data.expenses.reduce((s, x) => s + x.amount, 0);
+            $('#summaryExpenses').innerText = '- ' + money(totalExpenses);
+            $('#summaryNetSetoran').innerText = money(totalSales - totalExpenses);
+        }
+
+        // Filter laporan
+        $('#applyFilter').addEventListener('click', () => {
+            const from = $('#filterFrom').value;
+            const to = $('#filterTo').value;
+            let arr = DB.data.sales;
+            if (from) arr = arr.filter(s => s.date.slice(0, 10) >= from);
+            if (to) arr = arr.filter(s => s.date.slice(0, 10) <= to);
+            renderSales(arr);
+        });
+
+        // ========== SETORAN MANUAL ==========
+        function calcSetoran() {
+            const p = Number($('#s_price').value || 0);
+            const q = Number($('#s_qty').value || 0);
+            $('#s_total').value = p * q;
+        }
+        $('#s_price').addEventListener('input', calcSetoran);
+        $('#s_qty').addEventListener('input', calcSetoran);
+
+        $('#setoranForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const price = Number($('#s_price').value);
+            const qty = Number($('#s_qty').value);
+            const total = price * qty;
+            const rec = { id: uid(), date: new Date().toISOString(), price, qty, total };
+            DB.data.setoran.push(rec);
+            DB.save();
+            renderSetoran();
+            alert('Setoran tersimpan');
+            $('#setoranForm').reset();
+            $('#s_total').value = '';
+        });
+
+        function renderSetoran() {
+            const tb = $('#setoranTable tbody'); tb.innerHTML = '';
+            DB.data.setoran.slice().reverse().forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${new Date(s.date).toLocaleString()}</td><td>${money(s.price)}</td><td>${s.qty}</td><td>${money(s.total)}</td>
+                    <td><button class="btn btn-sm btn-danger del">Hapus</button></td>`;
+                tr.querySelector('.del').addEventListener('click', () => {
+                    if (confirm('Hapus setoran?')) {
+                        DB.data.setoran = DB.data.setoran.filter(x => x.id !== s.id);
+                        DB.save();
+                        renderSetoran();
+                    }
+                });
+                tb.appendChild(tr);
+            });
+        }
+
+        // ========== PENGELUARAN + STOK BARU ==========
+        $('#expenseForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const desc = $('#e_desc').value.trim();
+            const amount = Number($('#e_amount').value);
+            const addStock = Number($('#e_qty').value || 0);
+            const rec = { id: uid(), date: new Date().toISOString(), desc, amount, addStock };
+            DB.data.expenses.push(rec);
+            if (addStock > 0 && DB.data.products.length > 0) {
+                // tambah stok ke produk pertama (bisa disesuaikan, misal produk default)
+                DB.data.products[0].stock = Number(DB.data.products[0].stock) + addStock;
+            }
+            DB.save();
+            renderExpenses();
+            renderProducts();
+            renderFinancialSummary();
+            alert('Pengeluaran tersimpan');
+            $('#expenseForm').reset();
+        });
+
+        function renderExpenses() {
+            const tb = $('#expenseTable tbody'); tb.innerHTML = '';
+            DB.data.expenses.slice().reverse().forEach(x => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${new Date(x.date).toLocaleString()}</td><td>${x.desc}</td><td>${money(x.amount)}</td><td>${x.addStock || '-'}</td>
+                    <td><button class="btn btn-sm btn-danger del">Hapus</button></td>`;
+                tr.querySelector('.del').addEventListener('click', () => {
+                    if (confirm('Hapus pengeluaran?')) {
+                        DB.data.expenses = DB.data.expenses.filter(y => y.id !== x.id);
+                        DB.save();
+                        renderExpenses();
+                        renderFinancialSummary();
+                    }
+                });
+                tb.appendChild(tr);
+            });
+        }
+
+        // ========== PENGATURAN ==========
+        $('#qrisUpload').addEventListener('change', e => {
+            const f = e.target.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = () => {
+                DB.data.settings.qris = r.result;
+                $('#qrisPreview').src = r.result;
+                $('#qrisPreview').style.display = 'block';
+                DB.save();
+            };
+            r.readAsDataURL(f);
+        });
+
+        $('#settingsForm').addEventListener('submit', e => {
+            e.preventDefault();
+            DB.data.settings.bankName = $('#bankName').value;
+            DB.data.settings.bankAcc = $('#bankAcc').value;
+            DB.save();
+            alert('Pengaturan tersimpan');
+        });
+
+        // ========== EXPORT / RESET ==========
+        $('#exportBtn').addEventListener('click', () => {
+            const data = JSON.stringify(DB.data, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'siomay_data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        $('#resetBtn').addEventListener('click', () => {
+            if (confirm('Reset semua data?')) {
+                localStorage.removeItem('siomay_data');
+                DB.load();
+                DB.save();
+                renderAll();
+                alert('Data direset');
+            }
+        });
+
+        // ========== INITIAL RENDER ==========
+        function renderAll() {
+            renderProducts();
+            renderCart();
+            renderSales();
+            renderSetoran();
+            renderExpenses();
+            renderStats();
+            renderFinancialSummary();
+            if (DB.data.settings.qris) {
+                $('#qrisPreview').src = DB.data.settings.qris;
+                $('#qrisPreview').style.display = 'block';
+            }
+            $('#bankName').value = DB.data.settings.bankName || '';
+            $('#bankAcc').value = DB.data.settings.bankAcc || '';
+        }
+
+        renderAll();
+        showView('kasir');
+    </script>
+</body>
+</html>
