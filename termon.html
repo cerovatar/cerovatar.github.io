@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ NeoTerm - Cyberpunk Terminal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        
+        :root {
+            --bg: #0a0f0f;
+            --terminal-bg: #1a1e1e;
+            --text: #c0ffc0;
+            --text-dim: #80a080;
+            --prompt: #ff80ff;
+            --accent: #00ffff;
+            --error: #ff6080;
+            --success: #80ff80;
+            --warning: #ffff80;
+            --border: #33ff33;
+            --scanline: rgba(0, 255, 0, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--bg);
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Efek CRT */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                var(--scanline) 0px,
+                var(--scanline) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at 50% 50%,
+                transparent 0%,
+                rgba(0, 0, 0, 0.4) 100%
+            );
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .terminal-container {
+            width: 95%;
+            max-width: 1000px;
+            height: 90vh;
+            background: var(--terminal-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(51, 255, 51, 0.3),
+                        inset 0 0 20px rgba(51, 255, 51, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(2px);
+        }
+        
+        /* Terminal header */
+        .terminal-header {
+            background: #0a0f0f;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--accent);
+            text-shadow: 0 0 5px var(--accent);
+        }
+        
+        .header-left {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .terminal-title {
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .status-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            box-shadow: 0 0 5px currentColor;
+        }
+        
+        .dot.red { background: #ff5f5f; color: #ff5f5f; }
+        .dot.yellow { background: #ffff5f; color: #ffff5f; }
+        .dot.green { background: var(--border); color: var(--border); }
+        
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .header-btn {
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .header-btn:hover {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+        }
+        
+        /* Terminal body */
+        .terminal-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            background: radial-gradient(circle at 20% 20%, #1a2a1a, var(--terminal-bg));
+            position: relative;
+        }
+        
+        .terminal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .terminal-body::-webkit-scrollbar-track {
+            background: var(--terminal-bg);
+        }
+        
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+            box-shadow: inset 0 0 5px var(--border);
+        }
+        
+        /* Output area */
+        #output {
+            margin-bottom: 10px;
+            font-size: 1rem;
+            line-height: 1.5;
+            text-shadow: 0 0 2px currentColor;
+        }
+        
+        .line {
+            margin-bottom: 5px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        .prompt-line {
+            color: var(--prompt);
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .prompt {
+            color: var(--prompt);
+            font-weight: bold;
+            margin-right: 10px;
+            white-space: nowrap;
+            text-shadow: 0 0 5px var(--prompt);
+        }
+        
+        .input-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        #inputField {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            flex: 1;
+            outline: none;
+            caret-color: var(--border);
+            min-width: 50px;
+        }
+        
+        /* Custom cursor effect */
+        #inputField {
+            text-shadow: 0 0 5px var(--text);
+        }
+        
+        #inputField::placeholder {
+            color: var(--text-dim);
+            opacity: 0.5;
+        }
+        
+        /* Color classes */
+        .color-success { color: var(--success); }
+        .color-error { color: var(--error); }
+        .color-warning { color: var(--warning); }
+        .color-accent { color: var(--accent); }
+        .color-dim { color: var(--text-dim); }
+        
+        /* Terminal footer */
+        .terminal-footer {
+            background: #0a0f0f;
+            padding: 10px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        
+        .footer-info {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(0, 255, 0, 0.1);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 3;
+        }
+        
+        /* Matrix rain effect (minimal) */
+        .matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                180deg,
+                rgba(0, 255, 0, 0.03) 0px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .ascii-art {
+            color: var(--accent);
+            font-size: 0.7rem;
+            white-space: pre;
+            margin-bottom: 10px;
+            text-align: center;
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 2px var(--accent); }
+            50% { text-shadow: 0 0 10px var(--accent); }
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix"></div>
+    <div class="scanline"></div>
+    
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="header-left">
+                <div class="status-dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <span class="terminal-title">⚡ NeoTerm v2.0 · CYBERPUNK EDITION</span>
+            </div>
+            <div class="header-right">
+                <span class="header-btn" onclick="clearTerminal()">[ X ]</span>
+                <span class="header-btn" onclick="minimizeTerminal()">[ - ]</span>
+                <span class="header-btn" onclick="maximizeTerminal()">[ □ ]</span>
+            </div>
+        </div>
+        
+        <div class="terminal-body" id="terminalBody">
+            <pre class="ascii-art">
+    ╔═══════════════════════════════════════════╗
+    ║  ███╗   ██╗███████╗ ██████╗ ████████╗    ║
+    ║  ████╗  ██║██╔════╝██╔═══██╗╚══██╔══╝    ║
+    ║  ██╔██╗ ██║█████╗  ██║   ██║   ██║       ║
+    ║  ██║╚██╗██║██╔══╝  ██║   ██║   ██║       ║
+    ║  ██║ ╚████║███████╗╚██████╔╝   ██║       ║
+    ║  ╚═╝  ╚═══╝╚══════╝ ╚═════╝    ╚═╝       ║
+    ╚═══════════════════════════════════════════╝
+            </pre>
+            <div id="output">
+                <div class="line color-accent">=======================================</div>
+                <div class="line">NeoTerm v2.0 - Cyberpunk Terminal</div>
+                <div class="line">System: Android | Kernel: 5.10.69-neo</div>
+                <div class="line">Uptime: 1h 23m | Users: 1</div>
+                <div class="line">Memory: 1.2G/4.0G | Storage: 23G/128G</div>
+                <div class="line color-accent">=======================================</div>
+                <div class="line">Type '<span class="color-success">help</span>' for available commands</div>
+                <div class="line"></div>
+            </div>
+            
+            <div class="line prompt-line">
+                <span class="prompt" id="prompt">[root@neoterm ~]#</span>
+                <div class="input-container">
+                    <input type="text" id="inputField" autofocus placeholder="Enter command..." autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+        
+        <div class="terminal-footer">
+            <div class="footer-info">
+                <span>🔒 ENCRYPTED</span>
+                <span class="blink">⬤ REC</span>
+                <span>🌐 127.0.0.1:31337</span>
+            </div>
+            <div class="footer-info">
+                <span>CPU: 23%</span>
+                <span>RAM: 1.2G/4G</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GLOBAL VARIABLES ====================
+        const output = document.getElementById('output');
+        const inputField = document.getElementById('inputField');
+        const terminalBody = document.getElementById('terminalBody');
+        let commandHistory = [];
+        let historyIndex = -1;
+        let currentDir = '~';
+        let username = 'root';
+        let hostname = 'neoterm';
+        
+        // File system simulation
+        let filesystem = {
+            '~': {
+                type: 'dir',
+                content: {
+                    'documents': { type: 'dir', content: {} },
+                    'downloads': { type: 'dir', content: {} },
+                    'projects': { type: 'dir', content: {} },
+                    'config.txt': { type: 'file', content: 'NeoTerm configuration file' },
+                    'readme.md': { type: 'file', content: '# Welcome to NeoTerm\n\nThis is a custom Linux terminal emulator.' }
+                }
+            },
+            '/': {
+                type: 'dir',
+                content: {
+                    'bin': { type: 'dir', content: {} },
+                    'etc': { type: 'dir', content: {} },
+                    'home': { type: 'dir', content: {} },
+                    'usr': { type: 'dir', content: {} },
+                    'var': { type: 'dir', content: {} }
+                }
+            }
+        };
+        
+        // ==================== UTILITY FUNCTIONS ====================
+        function addLine(text, className = '') {
+            const line = document.createElement('div');
+            line.className = `line ${className}`;
+            line.innerHTML = text;
+            output.appendChild(line);
+            scrollToBottom();
+        }
+        
+        function scrollToBottom() {
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+        
+        function clearTerminal() {
+            output.innerHTML = '';
+            addLine('Terminal cleared. Type <span class="color-success">help</span> for commands.', 'color-dim');
+        }
+        
+        function minimizeTerminal() {
+            document.querySelector('.terminal-container').style.height = '50vh';
+        }
+        
+        function maximizeTerminal() {
+            document.querySelector('.terminal-container').style.height = '90vh';
+        }
+        
+        function updatePrompt() {
+            document.getElementById('prompt').innerHTML = `[${username}@${hostname} ${currentDir}]#`;
+        }
+        
+        // ==================== COMMAND HANDLER ====================
+        function handleCommand(cmd) {
+            const parts = cmd.trim().split(' ');
+            const command = parts[0].toLowerCase();
+            const args = parts.slice(1);
+            
+            // Save to history
+            commandHistory.push(cmd);
+            historyIndex = commandHistory.length;
+            
+            // Add command to output
+            addLine(`<span class="prompt">[${username}@${hostname} ${currentDir}]#</span> ${cmd}`);
+            
+            // Process commands
+            switch(command) {
+                case 'help':
+                    addLine('Available commands:', 'color-accent');
+                    addLine('  <span class="color-success">help</span>           - Show this help message', 'color-dim');
+                    addLine('  <span class="color-success">clear</span>          - Clear terminal', 'color-dim');
+                    addLine('  <span class="color-success">ls</span>             - List directory contents', 'color-dim');
+                    addLine('  <span class="color-success">pwd</span>            - Print working directory', 'color-dim');
+                    addLine('  <span class="color-success">cd [dir]</span>       - Change directory', 'color-dim');
+                    addLine('  <span class="color-success">cat [file]</span>     - View file contents', 'color-dim');
+                    addLine('  <span class="color-success">echo [text]</span>    - Print text', 'color-dim');
+                    addLine('  <span class="color-success">date</span>           - Show current date/time', 'color-dim');
+                    addLine('  <span class="color-success">whoami</span>         - Show current user', 'color-dim');
+                    addLine('  <span class="color-success">neofetch</span>       - Show system info', 'color-dim');
+                    addLine('  <span class="color-success">matrix</span>         - Activate matrix mode', 'color-dim');
+                    addLine('  <span class="color-success">hack [ip]</span>      - Simulate hacking (joke)', 'color-dim');
+                    addLine('  <span class="color-success">exit</span>           - Exit terminal (simulate)', 'color-dim');
+                    break;
+                    
+                case 'clear':
+                    clearTerminal();
+                    break;
+                    
+                case 'ls':
+                    if (currentDir === '~') {
+                        addLine('documents/   downloads/   projects/   config.txt   readme.md', 'color-success');
+                    } else {
+                        addLine('bin/   etc/   home/   usr/   var/', 'color-success');
+                    }
+                    break;
+                    
+                case 'pwd':
+                    addLine(currentDir === '~' ? '/home/' + username : currentDir);
+                    break;
+                    
+                case 'cd':
+                    if (!args[0] || args[0] === '~' || args[0] === '/home') {
+                        currentDir = '~';
+                        addLine('Changed to home directory', 'color-dim');
+                    } else if (args[0] === '/') {
+                        currentDir = '/';
+                        addLine('Changed to root directory', 'color-dim');
+                    } else if (args[0] === '..') {
+                        if (currentDir === '~') {
+                            currentDir = '/';
+                        } else {
+                            currentDir = '~';
+                        }
+                        addLine(`Changed to ${currentDir}`, 'color-dim');
+                    } else {
+                        addLine(`cd: ${args[0]}: No such directory`, 'color-error');
+                    }
+                    updatePrompt();
+                    break;
+                    
+                case 'cat':
+                    if (args[0] === 'config.txt') {
+                        addLine('NeoTerm configuration file', 'color-success');
+                    } else if (args[0] === 'readme.md') {
+                        addLine('# Welcome to NeoTerm', 'color-accent');
+                        addLine('', 'color-dim');
+                        addLine('This is a custom Linux terminal emulator for Android.', 'color-dim');
+                        addLine('Features:', 'color-success');
+                        addLine('- Cyberpunk theme with CRT effects', 'color-dim');
+                        addLine('- Custom command system', 'color-dim');
+                        addLine('- File system simulation', 'color-dim');
+                        addLine('- Matrix mode easter egg', 'color-dim');
+                    } else {
+                        addLine(`cat: ${args[0]}: No such file`, 'color-error');
+                    }
+                    break;
+                    
+                case 'echo':
+                    addLine(args.join(' ') || '', 'color-success');
+                    break;
+                    
+                case 'date':
+                    addLine(new Date().toString(), 'color-warning');
+                    break;
+                    
+                case 'whoami':
+                    addLine(username, 'color-success');
+                    break;
+                    
+                case 'neofetch':
+                    addLine('           .-.-.   ', 'color-accent');
+                    addLine('          | | | |  ', 'color-accent');
+                    addLine('        .-| | | |-.', 'color-accent');
+                    addLine('       | | | | | | |', 'color-accent');
+                    addLine('        `-| | | |-`', 'color-accent');
+                    addLine('          `-.-´   ', 'color-accent');
+                    addLine('', 'color-dim');
+                    addLine('OS: NeoTerm Linux 2.0', 'color-success');
+                    addLine('Host: Android 14 (Cyberpunk Edition)', 'color-success');
+                    addLine('Kernel: 5.10.69-neo', 'color-success');
+                    addLine('Shell: bash 5.1.16', 'color-success');
+                    addLine('Terminal: NeoTerm v2.0', 'color-success');
+                    addLine('CPU: Octa-core @ 2.4GHz', 'color-success');
+                    addLine('Memory: 1.2GB / 4GB', 'color-success');
+                    break;
+                    
+                case 'matrix':
+                    addLine('Initializing Matrix...', 'color-warning');
+                    let count = 0;
+                    const matrixInterval = setInterval(() => {
+                        const randomColor = Math.random() > 0.5 ? 'color-success' : 'color-accent';
+                        addLine('0'.repeat(Math.floor(Math.random() * 50)) + '1'.repeat(Math.floor(Math.random() * 30)), randomColor);
+                        count++;
+                        if (count > 20) {
+                            clearInterval(matrixInterval);
+                            addLine('Matrix connection terminated.', 'color-error');
+                        }
+                    }, 200);
+                    break;
+                    
+                case 'hack':
+                    if (args[0]) {
+                        addLine(`[${new Date().toLocaleTimeString()}] Initializing hack on ${args[0]}...`, 'color-warning');
+                        setTimeout(() => addLine('[22%] Bypassing firewall...', 'color-warning'), 500);
+                        setTimeout(() => addLine('[47%] Exploiting vulnerability...', 'color-warning'), 1000);
+                        setTimeout(() => addLine('[73%] Gaining root access...', 'color-warning'), 1500);
+                        setTimeout(() => addLine('[89%] Downloading data...', 'color-warning'), 2000);
+                        setTimeout(() => addLine('[100%] Hack complete! (just kidding)', 'color-success'), 2500);
+                        setTimeout(() => addLine('This was a simulation. Don\'t do illegal stuff!', 'color-error'), 3000);
+                    } else {
+                        addLine('Usage: hack [target IP]', 'color-error');
+                    }
+                    break;
+                    
+                case 'exit':
+                    addLine('Logout', 'color-dim');
+                    setTimeout(() => {
+                        output.innerHTML = '';
+                        addLine('Session terminated. Click anywhere to restart.', 'color-error');
+                    }, 500);
+                    break;
+                    
+                case '':
+                    // Empty command, do nothing
+                    break;
+                    
+                default:
+                    addLine(`Command not found: ${command}. Type '<span class="color-success">help</span>' for available commands.`, 'color-error');
+            }
+            
+            scrollToBottom();
+        }
+        
+        // ==================== EVENT LISTENERS ====================
+        inputField.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = inputField.value;
+                handleCommand(cmd);
+                inputField.value = '';
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    inputField.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    inputField.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    inputField.value = '';
+                }
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                // Simple auto-complete
+                const cmd = inputField.value;
+                const completions = ['help', 'clear', 'ls', 'pwd', 'cd', 'cat', 'echo', 'date', 'whoami', 'neofetch', 'matrix', 'hack', 'exit'];
+                const matches = completions.filter(c => c.startsWith(cmd));
+                if (matches.length === 1) {
+                    inputField.value = matches[0];
+                } else if (matches.length > 1) {
+                    addLine(matches.join('    '), 'color-dim');
+                }
+            }
+        });
+        
+        // Focus input on click anywhere
+        terminalBody.addEventListener('click', () => {
+            inputField.focus();
+        });
+        
+        // Initial focus
+        inputField.focus();
+        
+        // Easter egg: Konami code
+        let konami = [];
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        
+        document.addEventListener('keydown', (e) => {
+            konami.push(e.key);
+            if (konami.length > konamiCode.length) {
+                konami.shift();
+            }
+            if (JSON.stringify(konami) === JSON.stringify(konamiCode)) {
+                addLine('⚡ KONAMI CODE ACTIVATED! ⚡', 'color-accent');
+                addLine('Unlimited power! (not really)', 'color-warning');
+                document.body.style.animation = 'glitch 0.5s infinite';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
