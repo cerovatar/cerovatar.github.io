@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ NeoTerm - Cyberpunk Terminal</title>
+    <title>⚡ NeoTerm v3.0 - Termux Style</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
         
@@ -284,7 +284,7 @@
             z-index: 3;
         }
         
-        /* Matrix rain effect (minimal) */
+        /* Matrix rain effect */
         .matrix {
             position: absolute;
             top: 0;
@@ -314,6 +314,22 @@
             0%, 100% { text-shadow: 0 0 2px var(--accent); }
             50% { text-shadow: 0 0 10px var(--accent); }
         }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--success);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-left: 5px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -328,7 +344,7 @@
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
                 </div>
-                <span class="terminal-title">⚡ NeoTerm v2.0 · CYBERPUNK EDITION</span>
+                <span class="terminal-title">⚡ NeoTerm v3.0 · TERMUX EDITION</span>
             </div>
             <div class="header-right">
                 <span class="header-btn" onclick="clearTerminal()">[ X ]</span>
@@ -340,22 +356,23 @@
         <div class="terminal-body" id="terminalBody">
             <pre class="ascii-art">
     ╔═══════════════════════════════════════════╗
-    ║  ███╗   ██╗███████╗ ██████╗ ████████╗    ║
-    ║  ████╗  ██║██╔════╝██╔═══██╗╚══██╔══╝    ║
-    ║  ██╔██╗ ██║█████╗  ██║   ██║   ██║       ║
-    ║  ██║╚██╗██║██╔══╝  ██║   ██║   ██║       ║
-    ║  ██║ ╚████║███████╗╚██████╔╝   ██║       ║
-    ║  ╚═╝  ╚═══╝╚══════╝ ╚═════╝    ╚═╝       ║
+    ║  ████████╗███████╗██████╗ ███╗   ███╗    ║
+    ║  ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║    ║
+    ║     ██║   █████╗  ██████╔╝██╔████╔██║    ║
+    ║     ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║    ║
+    ║     ██║   ███████╗██║  ██║██║ ╚═╝ ██║    ║
+    ║     ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ║
     ╚═══════════════════════════════════════════╝
             </pre>
             <div id="output">
                 <div class="line color-accent">=======================================</div>
-                <div class="line">NeoTerm v2.0 - Cyberpunk Terminal</div>
+                <div class="line">NeoTerm v3.0 - Termux Style Terminal for Android</div>
                 <div class="line">System: Android | Kernel: 5.10.69-neo</div>
                 <div class="line">Uptime: 1h 23m | Users: 1</div>
                 <div class="line">Memory: 1.2G/4.0G | Storage: 23G/128G</div>
                 <div class="line color-accent">=======================================</div>
-                <div class="line">Type '<span class="color-success">help</span>' for available commands</div>
+                <div class="line">Welcome to NeoTerm! Type '<span class="color-success">help</span>' for commands.</div>
+                <div class="line">Package manager: <span class="color-success">pkg install &lt;package&gt;</span></div>
                 <div class="line"></div>
             </div>
             
@@ -369,9 +386,9 @@
         
         <div class="terminal-footer">
             <div class="footer-info">
-                <span>🔒 ENCRYPTED</span>
+                <span>🔒 PKG READY</span>
                 <span class="blink">⬤ REC</span>
-                <span>🌐 127.0.0.1:31337</span>
+                <span>📦 124 packages available</span>
             </div>
             <div class="footer-info">
                 <span>CPU: 23%</span>
@@ -391,29 +408,45 @@
         let username = 'root';
         let hostname = 'neoterm';
         
-        // File system simulation
-        let filesystem = {
-            '~': {
-                type: 'dir',
-                content: {
-                    'documents': { type: 'dir', content: {} },
-                    'downloads': { type: 'dir', content: {} },
-                    'projects': { type: 'dir', content: {} },
-                    'config.txt': { type: 'file', content: 'NeoTerm configuration file' },
-                    'readme.md': { type: 'file', content: '# Welcome to NeoTerm\n\nThis is a custom Linux terminal emulator.' }
-                }
-            },
-            '/': {
-                type: 'dir',
-                content: {
-                    'bin': { type: 'dir', content: {} },
-                    'etc': { type: 'dir', content: {} },
-                    'home': { type: 'dir', content: {} },
-                    'usr': { type: 'dir', content: {} },
-                    'var': { type: 'dir', content: {} }
-                }
-            }
+        // Package database - daftar package yang tersedia [citation:7]
+        const packages = {
+            'python': { version: '3.12.5', size: '45 MB', description: 'High-level programming language' },
+            'python3': { version: '3.12.5', size: '45 MB', description: 'Python 3.x' },
+            'git': { version: '2.45.1', size: '28 MB', description: 'Distributed version control system' },
+            'nodejs': { version: '20.15.0', size: '62 MB', description: 'JavaScript runtime environment' },
+            'npm': { version: '10.8.1', size: '8 MB', description: 'Node package manager' },
+            'php': { version: '8.3.8', size: '35 MB', description: 'PHP scripting language' },
+            'ruby': { version: '3.3.3', size: '32 MB', description: 'Ruby programming language' },
+            'golang': { version: '1.22.5', size: '128 MB', description: 'Go programming language' },
+            'rust': { version: '1.79.0', size: '156 MB', description: 'Rust systems programming' },
+            'openssh': { version: '9.7p1', size: '3.2 MB', description: 'SSH client and server' },
+            'curl': { version: '8.9.0', size: '2.8 MB', description: 'URL transfer tool' },
+            'wget': { version: '1.24.5', size: '3.1 MB', description: 'Network downloader' },
+            'nmap': { version: '7.95', size: '18 MB', description: 'Network scanner' },
+            'vim': { version: '9.1.0', size: '12 MB', description: 'Text editor' },
+            'nano': { version: '8.0', size: '1.8 MB', description: 'Simple text editor' },
+            'micro': { version: '2.0.13', size: '9 MB', description: 'Modern terminal editor' },
+            'htop': { version: '3.3.0', size: '1.2 MB', description: 'Interactive process viewer' },
+            'tree': { version: '2.1.1', size: '0.8 MB', description: 'Directory tree viewer' },
+            'ffmpeg': { version: '6.1.1', size: '89 MB', description: 'Multimedia framework' },
+            'yt-dlp': { version: '2024.07.09', size: '15 MB', description: 'YouTube downloader' },
+            'sqlite': { version: '3.46.0', size: '4.2 MB', description: 'SQL database engine' },
+            'mariadb': { version: '11.4.2', size: '156 MB', description: 'MySQL database server' },
+            'redis': { version: '7.2.5', size: '8.5 MB', description: 'In-memory database' },
+            'nginx': { version: '1.26.1', size: '1.8 MB', description: 'Web server' },
+            'apache2': { version: '2.4.59', size: '12 MB', description: 'Apache web server' },
+            'tmux': { version: '3.4', size: '2.5 MB', description: 'Terminal multiplexer' },
+            'make': { version: '4.4.1', size: '1.2 MB', description: 'Build automation tool' },
+            'gcc': { version: '13.2.0', size: '68 MB', description: 'GNU C compiler' },
+            'clang': { version: '17.0.6', size: '72 MB', description: 'C language compiler' },
+            'cmake': { version: '3.29.6', size: '18 MB', description: 'Cross-platform build system' },
+            'unzip': { version: '6.0', size: '0.9 MB', description: 'ZIP file extractor' },
+            'zip': { version: '3.0', size: '1.1 MB', description: 'ZIP file compressor' },
+            'tar': { version: '1.35', size: '2.3 MB', description: 'Tape archiver' }
         };
+        
+        // Installed packages simulation
+        let installedPackages = ['bash', 'coreutils', 'termux-tools']; // default packages [citation:7]
         
         // ==================== UTILITY FUNCTIONS ====================
         function addLine(text, className = '') {
@@ -445,6 +478,144 @@
             document.getElementById('prompt').innerHTML = `[${username}@${hostname} ${currentDir}]#`;
         }
         
+        // ==================== PACKAGE MANAGEMENT FUNCTIONS ====================
+        function pkgSearch(query) {
+            addLine(`Searching for packages matching: ${query}`, 'color-dim');
+            
+            let found = 0;
+            for (const [pkg, info] of Object.entries(packages)) {
+                if (pkg.includes(query.toLowerCase()) || info.description.toLowerCase().includes(query.toLowerCase())) {
+                    addLine(`  <span class="color-success">${pkg}</span> - ${info.description} [version: ${info.version}]`, 'color-dim');
+                    found++;
+                }
+            }
+            
+            if (found === 0) {
+                addLine(`No packages found matching '${query}'`, 'color-error');
+            } else {
+                addLine(`Found ${found} packages`, 'color-success');
+            }
+        }
+        
+        function pkgInstall(packageName) {
+            const pkg = packages[packageName];
+            
+            if (!pkg) {
+                addLine(`<span class="color-error">ERROR:</span> Package '${packageName}' not found. Try 'pkg search ${packageName}'`, 'color-error');
+                return;
+            }
+            
+            if (installedPackages.includes(packageName)) {
+                addLine(`Package <span class="color-success">${packageName}</span> is already installed (version ${pkg.version})`, 'color-warning');
+                return;
+            }
+            
+            addLine(`<span class="color-warning">Reading package lists...</span>`, 'color-dim');
+            addLine(`<span class="color-warning">Building dependency tree...</span>`, 'color-dim');
+            addLine(`<span class="color-warning">The following NEW packages will be installed:</span>`, 'color-dim');
+            addLine(`  <span class="color-success">${packageName}</span> (${pkg.version}) - ${pkg.size}`, 'color-dim');
+            
+            // Simulasi proses instalasi
+            addLine(`<span class="color-warning">Do you want to continue? [Y/n]</span>`, 'color-warning');
+            
+            // Simulasi user menjawab Y (langsung lanjut)
+            setTimeout(() => {
+                addLine(`<span class="color-warning">Get:1 https://packages.termux.dev/apt/termux-main stable/main ${packageName} [${pkg.size}]</span>`, 'color-dim');
+                
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    addLine(`<span class="color-dim">[${progress}%] Downloading ${packageName}...</span>`, 'color-dim');
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            installedPackages.push(packageName);
+                            addLine(`<span class="color-success">(Reading database ... 100%</span>`, 'color-success');
+                            addLine(`<span class="color-success">Preparing to unpack .../${packageName}_${pkg.version}_aarch64.deb ...</span>`, 'color-success');
+                            addLine(`<span class="color-success">Unpacking ${packageName} (${pkg.version}) ...</span>`, 'color-success');
+                            addLine(`<span class="color-success">Setting up ${packageName} (${pkg.version}) ...</span>`, 'color-success');
+                            addLine(`<span class="color-success">Processing triggers for man-db (2.12.1) ...</span>`, 'color-success');
+                            addLine(`<span class="color-success">✅ Package ${packageName} installed successfully!</span>`, 'color-success');
+                        }, 500);
+                    }
+                }, 300);
+            }, 1000);
+        }
+        
+        function pkgUninstall(packageName) {
+            const index = installedPackages.indexOf(packageName);
+            
+            if (index === -1) {
+                addLine(`Package '${packageName}' is not installed`, 'color-error');
+                return;
+            }
+            
+            addLine(`<span class="color-warning">Removing ${packageName}...</span>`, 'color-warning');
+            
+            setTimeout(() => {
+                installedPackages.splice(index, 1);
+                addLine(`<span class="color-success">(Reading database ... 100%</span>`, 'color-success');
+                addLine(`<span class="color-success">Removing ${packageName} ...</span>`, 'color-success');
+                addLine(`<span class="color-success">Processing triggers for man-db ...</span>`, 'color-success');
+                addLine(`<span class="color-success">✅ Package ${packageName} removed successfully!</span>`, 'color-success');
+            }, 1000);
+        }
+        
+        function pkgListInstalled() {
+            addLine(`<span class="color-accent">Listing installed packages...</span>`, 'color-accent');
+            
+            if (installedPackages.length === 0) {
+                addLine('No packages installed', 'color-dim');
+                return;
+            }
+            
+            installedPackages.sort().forEach(pkg => {
+                const info = packages[pkg];
+                if (info) {
+                    addLine(`  <span class="color-success">${pkg}</span> - ${info.version} [installed]`, 'color-dim');
+                } else {
+                    addLine(`  <span class="color-success">${pkg}</span> [system package]`, 'color-dim');
+                }
+            });
+            
+            addLine(`Total: ${installedPackages.length} packages installed`, 'color-success');
+        }
+        
+        function pkgListAll() {
+            addLine(`<span class="color-accent">All available packages (${Object.keys(packages).length}):</span>`, 'color-accent');
+            
+            let count = 0;
+            for (const [pkg, info] of Object.entries(packages).sort()) {
+                const installed = installedPackages.includes(pkg) ? ' <span class="color-success">[installed]</span>' : '';
+                addLine(`  <span class="color-success">${pkg}</span> - ${info.description} ${installed}`, 'color-dim');
+                count++;
+                if (count >= 20) {
+                    addLine(`  <span class="color-warning">... and ${Object.keys(packages).length - 20} more packages</span>`, 'color-warning');
+                    break;
+                }
+            }
+        }
+        
+        function pkgInfo(packageName) {
+            const pkg = packages[packageName];
+            
+            if (!pkg) {
+                addLine(`Package '${packageName}' not found`, 'color-error');
+                return;
+            }
+            
+            const installed = installedPackages.includes(packageName) ? 'Yes' : 'No';
+            
+            addLine(`<span class="color-accent">Package: ${packageName}</span>`, 'color-accent');
+            addLine(`  Version: ${pkg.version}`, 'color-dim');
+            addLine(`  Description: ${pkg.description}`, 'color-dim');
+            addLine(`  Size: ${pkg.size}`, 'color-dim');
+            addLine(`  Installed: ${installed}`, installed === 'Yes' ? 'color-success' : 'color-dim');
+            addLine(`  Repository: Termux Main`, 'color-dim');
+            addLine(`  Architecture: aarch64`, 'color-dim');
+        }
+        
         // ==================== COMMAND HANDLER ====================
         function handleCommand(cmd) {
             const parts = cmd.trim().split(' ');
@@ -462,19 +633,26 @@
             switch(command) {
                 case 'help':
                     addLine('Available commands:', 'color-accent');
-                    addLine('  <span class="color-success">help</span>           - Show this help message', 'color-dim');
-                    addLine('  <span class="color-success">clear</span>          - Clear terminal', 'color-dim');
-                    addLine('  <span class="color-success">ls</span>             - List directory contents', 'color-dim');
-                    addLine('  <span class="color-success">pwd</span>            - Print working directory', 'color-dim');
-                    addLine('  <span class="color-success">cd [dir]</span>       - Change directory', 'color-dim');
-                    addLine('  <span class="color-success">cat [file]</span>     - View file contents', 'color-dim');
-                    addLine('  <span class="color-success">echo [text]</span>    - Print text', 'color-dim');
-                    addLine('  <span class="color-success">date</span>           - Show current date/time', 'color-dim');
-                    addLine('  <span class="color-success">whoami</span>         - Show current user', 'color-dim');
-                    addLine('  <span class="color-success">neofetch</span>       - Show system info', 'color-dim');
-                    addLine('  <span class="color-success">matrix</span>         - Activate matrix mode', 'color-dim');
-                    addLine('  <span class="color-success">hack [ip]</span>      - Simulate hacking (joke)', 'color-dim');
-                    addLine('  <span class="color-success">exit</span>           - Exit terminal (simulate)', 'color-dim');
+                    addLine('  <span class="color-success">help</span>              - Show this help message', 'color-dim');
+                    addLine('  <span class="color-success">clear</span>             - Clear terminal', 'color-dim');
+                    addLine('  <span class="color-success">ls</span>                - List directory contents', 'color-dim');
+                    addLine('  <span class="color-success">pwd</span>               - Print working directory', 'color-dim');
+                    addLine('  <span class="color-success">cd [dir]</span>          - Change directory', 'color-dim');
+                    addLine('  <span class="color-success">cat [file]</span>        - View file contents', 'color-dim');
+                    addLine('  <span class="color-success">echo [text]</span>       - Print text', 'color-dim');
+                    addLine('  <span class="color-success">date</span>              - Show current date/time', 'color-dim');
+                    addLine('  <span class="color-success">whoami</span>            - Show current user', 'color-dim');
+                    addLine('  <span class="color-success">termux-setup-storage</span> - Setup storage access', 'color-dim');
+                    addLine('', 'color-dim');
+                    addLine('<span class="color-accent">Package Manager Commands:</span>', 'color-accent');
+                    addLine('  <span class="color-success">pkg update</span>        - Update package lists', 'color-dim');
+                    addLine('  <span class="color-success">pkg upgrade</span>       - Upgrade packages', 'color-dim');
+                    addLine('  <span class="color-success">pkg search [query]</span> - Search packages', 'color-dim');
+                    addLine('  <span class="color-success">pkg install [pkg]</span>  - Install package', 'color-dim');
+                    addLine('  <span class="color-success">pkg uninstall [pkg]</span>- Remove package', 'color-dim');
+                    addLine('  <span class="color-success">pkg list-installed</span> - List installed', 'color-dim');
+                    addLine('  <span class="color-success">pkg list-all</span>       - List all packages', 'color-dim');
+                    addLine('  <span class="color-success">pkg info [pkg]</span>     - Show package info', 'color-dim');
                     break;
                     
                 case 'clear':
@@ -483,18 +661,18 @@
                     
                 case 'ls':
                     if (currentDir === '~') {
-                        addLine('documents/   downloads/   projects/   config.txt   readme.md', 'color-success');
+                        addLine('documents/   downloads/   projects/   config.txt   readme.md   storage/', 'color-success');
                     } else {
-                        addLine('bin/   etc/   home/   usr/   var/', 'color-success');
+                        addLine('bin/   etc/   home/   usr/   var/   data/', 'color-success');
                     }
                     break;
                     
                 case 'pwd':
-                    addLine(currentDir === '~' ? '/home/' + username : currentDir);
+                    addLine(currentDir === '~' ? '/data/data/com.termux/files/home' : currentDir);
                     break;
                     
                 case 'cd':
-                    if (!args[0] || args[0] === '~' || args[0] === '/home') {
+                    if (!args[0] || args[0] === '~' || args[0] === 'home') {
                         currentDir = '~';
                         addLine('Changed to home directory', 'color-dim');
                     } else if (args[0] === '/') {
@@ -507,6 +685,9 @@
                             currentDir = '~';
                         }
                         addLine(`Changed to ${currentDir}`, 'color-dim');
+                    } else if (args[0] === 'storage') {
+                        currentDir = '/storage';
+                        addLine('Changed to storage directory (Android file access)', 'color-success');
                     } else {
                         addLine(`cd: ${args[0]}: No such directory`, 'color-error');
                     }
@@ -515,16 +696,21 @@
                     
                 case 'cat':
                     if (args[0] === 'config.txt') {
-                        addLine('NeoTerm configuration file', 'color-success');
+                        addLine('# NeoTerm Configuration', 'color-accent');
+                        addLine('TERMUX_VERSION=0.118.0', 'color-dim');
+                        addLine('ALLOW_EXTERNAL_APPS=true', 'color-dim');
+                        addLine('PACKAGE_MANAGER=pkg', 'color-dim');
                     } else if (args[0] === 'readme.md') {
-                        addLine('# Welcome to NeoTerm', 'color-accent');
+                        addLine('# Welcome to NeoTerm v3.0', 'color-accent');
                         addLine('', 'color-dim');
-                        addLine('This is a custom Linux terminal emulator for Android.', 'color-dim');
-                        addLine('Features:', 'color-success');
+                        addLine('This is a Termux-style terminal emulator for Android.', 'color-dim');
+                        addLine('', 'color-dim');
+                        addLine('## Features:', 'color-success');
+                        addLine('- Full package manager simulation (pkg install)', 'color-dim');
+                        addLine('- 100+ available packages', 'color-dim');
+                        addLine('- Termux API simulation', 'color-dim');
+                        addLine('- Storage access', 'color-dim');
                         addLine('- Cyberpunk theme with CRT effects', 'color-dim');
-                        addLine('- Custom command system', 'color-dim');
-                        addLine('- File system simulation', 'color-dim');
-                        addLine('- Matrix mode easter egg', 'color-dim');
                     } else {
                         addLine(`cat: ${args[0]}: No such file`, 'color-error');
                     }
@@ -542,57 +728,85 @@
                     addLine(username, 'color-success');
                     break;
                     
-                case 'neofetch':
-                    addLine('           .-.-.   ', 'color-accent');
-                    addLine('          | | | |  ', 'color-accent');
-                    addLine('        .-| | | |-.', 'color-accent');
-                    addLine('       | | | | | | |', 'color-accent');
-                    addLine('        `-| | | |-`', 'color-accent');
-                    addLine('          `-.-´   ', 'color-accent');
-                    addLine('', 'color-dim');
-                    addLine('OS: NeoTerm Linux 2.0', 'color-success');
-                    addLine('Host: Android 14 (Cyberpunk Edition)', 'color-success');
-                    addLine('Kernel: 5.10.69-neo', 'color-success');
-                    addLine('Shell: bash 5.1.16', 'color-success');
-                    addLine('Terminal: NeoTerm v2.0', 'color-success');
-                    addLine('CPU: Octa-core @ 2.4GHz', 'color-success');
-                    addLine('Memory: 1.2GB / 4GB', 'color-success');
-                    break;
-                    
-                case 'matrix':
-                    addLine('Initializing Matrix...', 'color-warning');
-                    let count = 0;
-                    const matrixInterval = setInterval(() => {
-                        const randomColor = Math.random() > 0.5 ? 'color-success' : 'color-accent';
-                        addLine('0'.repeat(Math.floor(Math.random() * 50)) + '1'.repeat(Math.floor(Math.random() * 30)), randomColor);
-                        count++;
-                        if (count > 20) {
-                            clearInterval(matrixInterval);
-                            addLine('Matrix connection terminated.', 'color-error');
-                        }
-                    }, 200);
-                    break;
-                    
-                case 'hack':
-                    if (args[0]) {
-                        addLine(`[${new Date().toLocaleTimeString()}] Initializing hack on ${args[0]}...`, 'color-warning');
-                        setTimeout(() => addLine('[22%] Bypassing firewall...', 'color-warning'), 500);
-                        setTimeout(() => addLine('[47%] Exploiting vulnerability...', 'color-warning'), 1000);
-                        setTimeout(() => addLine('[73%] Gaining root access...', 'color-warning'), 1500);
-                        setTimeout(() => addLine('[89%] Downloading data...', 'color-warning'), 2000);
-                        setTimeout(() => addLine('[100%] Hack complete! (just kidding)', 'color-success'), 2500);
-                        setTimeout(() => addLine('This was a simulation. Don\'t do illegal stuff!', 'color-error'), 3000);
-                    } else {
-                        addLine('Usage: hack [target IP]', 'color-error');
-                    }
-                    break;
-                    
-                case 'exit':
-                    addLine('Logout', 'color-dim');
+                case 'termux-setup-storage':
+                    addLine('<span class="color-warning">Requesting storage access...</span>', 'color-warning');
                     setTimeout(() => {
-                        output.innerHTML = '';
-                        addLine('Session terminated. Click anywhere to restart.', 'color-error');
-                    }, 500);
+                        addLine('<span class="color-success">Storage permission granted!</span>', 'color-success');
+                        addLine('<span class="color-dim">You can now access files in /storage directory.</span>', 'color-dim');
+                    }, 1000);
+                    break;
+                    
+                // ==================== PKG COMMANDS ====================
+                case 'pkg':
+                    if (args.length === 0) {
+                        addLine('pkg: missing command', 'color-error');
+                        addLine('Usage: pkg [update|upgrade|search|install|uninstall|list-installed|list-all|info]', 'color-dim');
+                        break;
+                    }
+                    
+                    const subCmd = args[0].toLowerCase();
+                    const pkgArg = args[1];
+                    
+                    switch(subCmd) {
+                        case 'update':
+                            addLine('<span class="color-warning">Hit:1 https://packages.termux.dev/apt/termux-main stable InRelease</span>', 'color-dim');
+                            addLine('<span class="color-warning">Get:2 https://packages.termux.dev/apt/termux-main stable/main aarch64 Packages [245 kB]</span>', 'color-dim');
+                            addLine('<span class="color-warning">Fetched 245 kB in 2s (122 kB/s)</span>', 'color-dim');
+                            addLine('<span class="color-success">Reading package lists... Done</span>', 'color-success');
+                            addLine('<span class="color-success">Package lists updated. 124 packages available.</span>', 'color-success');
+                            break;
+                            
+                        case 'upgrade':
+                            addLine('<span class="color-warning">Reading package lists... Done</span>', 'color-dim');
+                            addLine('<span class="color-warning">Building dependency tree... Done</span>', 'color-dim');
+                            addLine('<span class="color-success">All packages are up to date.</span>', 'color-success');
+                            break;
+                            
+                        case 'search':
+                            if (!pkgArg) {
+                                addLine('pkg search: missing search query', 'color-error');
+                            } else {
+                                pkgSearch(pkgArg);
+                            }
+                            break;
+                            
+                        case 'install':
+                            if (!pkgArg) {
+                                addLine('pkg install: missing package name', 'color-error');
+                            } else {
+                                pkgInstall(pkgArg);
+                            }
+                            break;
+                            
+                        case 'uninstall':
+                        case 'remove':
+                            if (!pkgArg) {
+                                addLine('pkg uninstall: missing package name', 'color-error');
+                            } else {
+                                pkgUninstall(pkgArg);
+                            }
+                            break;
+                            
+                        case 'list-installed':
+                            pkgListInstalled();
+                            break;
+                            
+                        case 'list-all':
+                            pkgListAll();
+                            break;
+                            
+                        case 'info':
+                            if (!pkgArg) {
+                                addLine('pkg info: missing package name', 'color-error');
+                            } else {
+                                pkgInfo(pkgArg);
+                            }
+                            break;
+                            
+                        default:
+                            addLine(`pkg: unknown command '${subCmd}'`, 'color-error');
+                            addLine('See pkg --help for available commands', 'color-dim');
+                    }
                     break;
                     
                 case '':
@@ -631,7 +845,7 @@
                 e.preventDefault();
                 // Simple auto-complete
                 const cmd = inputField.value;
-                const completions = ['help', 'clear', 'ls', 'pwd', 'cd', 'cat', 'echo', 'date', 'whoami', 'neofetch', 'matrix', 'hack', 'exit'];
+                const completions = ['help', 'clear', 'ls', 'pwd', 'cd', 'cat', 'echo', 'date', 'whoami', 'termux-setup-storage', 'pkg update', 'pkg upgrade', 'pkg search', 'pkg install', 'pkg uninstall', 'pkg list-installed', 'pkg list-all', 'pkg info'];
                 const matches = completions.filter(c => c.startsWith(cmd));
                 if (matches.length === 1) {
                     inputField.value = matches[0];
@@ -660,11 +874,10 @@
             }
             if (JSON.stringify(konami) === JSON.stringify(konamiCode)) {
                 addLine('⚡ KONAMI CODE ACTIVATED! ⚡', 'color-accent');
-                addLine('Unlimited power! (not really)', 'color-warning');
-                document.body.style.animation = 'glitch 0.5s infinite';
+                addLine('Unlimited power! Installing all packages...', 'color-warning');
                 setTimeout(() => {
-                    document.body.style.animation = '';
-                }, 3000);
+                    addLine('Just kidding! 😂', 'color-success');
+                }, 2000);
             }
         });
     </script>
