@@ -17,14 +17,17 @@
             font-family: 'Inter', sans-serif;
             padding: 2rem 1rem;
             color: #e2e8f0;
+            position: relative;
         }
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
+        /* Header dengan menu titik tiga */
         .header {
             text-align: center;
             margin-bottom: 2rem;
+            position: relative;
         }
         .header h1 {
             font-size: 2.5rem;
@@ -39,6 +42,60 @@
             max-width: 700px;
             margin: 0 auto;
         }
+        /* Menu titik tiga */
+        .menu-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #ffd966;
+            transition: all 0.2s;
+        }
+        .menu-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.05);
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: rgba(20, 30, 45, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 0.5rem 0;
+            min-width: 160px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1.2rem;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .dropdown-menu a:hover {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd966;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        /* Badge */
         .badge {
             display: inline-block;
             background: rgba(255, 215, 0, 0.2);
@@ -172,18 +229,30 @@
             margin-top: 3rem;
             font-size: 0.8rem;
             color: #5a6f8c;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            padding-top: 1.5rem;
         }
         @media (max-width: 640px) {
             .vocab-chinese { font-size: 1.2rem; }
             .tab-btn { padding: 0.4rem 1rem; font-size: 0.75rem; }
             .audio-btn { width: 36px; height: 36px; font-size: 1rem; }
             .vocab-grid { grid-template-columns: 1fr; }
+            .menu-btn { width: 40px; height: 40px; font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
+        <div class="menu-container">
+            <div class="menu-btn" id="menuBtn">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="index.html" id="homeLink">🏠 Halaman Utama</a>
+                <a href="home.html" id="mainHomeLink">🏡 Home</a>
+            </div>
+        </div>
         <h1><i class="fas fa-language"></i> Kosakata Mandarin Taiwan Lengkap</h1>
         <p>300+ kosakata | Aksara tradisional (正體字) | Pinyin + Arti + Audio</p>
         <div class="badge"><i class="fas fa-headphones"></i> Klik ikon speaker untuk mendengar suara | 🎙️</div>
@@ -212,7 +281,8 @@
     <div id="vocabContainer" class="vocab-grid"></div>
     <div id="voiceStatus" class="voice-warning"></div>
     <footer>
-        <i class="fas fa-heart" style="color:#ffd966;"></i> Belajar Mandarin Taiwan | Audio menggunakan Web Speech API (browser harus mendukung suara Mandarin)
+        <i class="fas fa-heart" style="color:#ffd966;"></i> Belajar Mandarin Taiwan | Audio menggunakan Web Speech API (browser harus mendukung suara Mandarin)<br>
+        <span style="font-size:0.75rem; display:inline-block; margin-top:0.5rem;">© created by ZinXploit</span>
     </footer>
 </div>
 
@@ -531,6 +601,33 @@
         setTimeout(() => {
             if (!selectedVoice) initVoices();
         }, 500);
+    });
+</script>
+<script>
+    // Inisialisasi menu dropdown
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdown = document.getElementById('dropdownMenu');
+
+    menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+    });
+
+    // Tutup dropdown jika klik di luar
+    document.addEventListener('click', (e) => {
+        if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // Set tautan (jika halaman tidak ada, biarkan sebagai #)
+    document.getElementById('homeLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'index.html'; // ganti dengan halaman utama Anda
+    });
+    document.getElementById('mainHomeLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'home.html'; // ganti dengan halaman home Anda
     });
 </script>
 </body>
