@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kosakata Bahasa Hakka (客家话) + Audio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(145deg, #1a2a3a, #0f1722);
+            font-family: 'Inter', sans-serif;
+            padding: 2rem 1rem;
+            color: #e2e8f0;
+            position: relative;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #f4c542, #c77d1e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            color: #9bb3d0;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .menu-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(199, 125, 30, 0.3);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #f4c542;
+            transition: all 0.2s;
+        }
+        .menu-btn:hover {
+            background: rgba(199, 125, 30, 0.2);
+            transform: scale(1.05);
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: rgba(20, 30, 45, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            border: 1px solid rgba(199, 125, 30, 0.3);
+            padding: 0.5rem 0;
+            min-width: 170px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1.2rem;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .dropdown-menu a:hover {
+            background: rgba(199, 125, 30, 0.2);
+            color: #f4c542;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(199, 125, 30, 0.2);
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            margin-top: 0.8rem;
+        }
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            max-width: 400px;
+            margin: 1.5rem auto;
+            border: 1px solid rgba(199, 125, 30, 0.3);
+        }
+        .search-box i {
+            color: #f4c542;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+        }
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            color: #cbd5e1;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+        .tab-btn.active {
+            background: #c77d1e;
+            color: #1e2a3a;
+        }
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1rem;
+        }
+        .vocab-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(4px);
+            border-radius: 1rem;
+            padding: 1rem;
+            border: 1px solid rgba(199, 125, 30, 0.2);
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .vocab-card:hover {
+            transform: translateY(-2px);
+            border-color: #c77d1e;
+        }
+        .vocab-info {
+            flex: 1;
+        }
+        .vocab-hakka {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f4c542;
+            letter-spacing: 1px;
+        }
+        .vocab-reading {
+            font-size: 0.85rem;
+            color: #a0b4d0;
+            margin: 0.3rem 0;
+        }
+        .vocab-meaning {
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            margin-top: 0.5rem;
+        }
+        .audio-btn {
+            background: rgba(199, 125, 30, 0.2);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #f4c542;
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+        }
+        .audio-btn:hover {
+            background: #c77d1e;
+            color: #1e2a3a;
+            transform: scale(1.05);
+        }
+        .no-result {
+            text-align: center;
+            padding: 3rem;
+            color: #9bb3d0;
+        }
+        .voice-warning {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #a0b4d0;
+            margin-top: 1rem;
+            background: rgba(0,0,0,0.2);
+            padding: 0.3rem;
+            border-radius: 2rem;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: #5a6f8c;
+            border-top: 1px solid rgba(199, 125, 30, 0.2);
+            padding-top: 1.5rem;
+        }
+        @media (max-width: 640px) {
+            .vocab-hakka { font-size: 1.2rem; }
+            .tab-btn { padding: 0.4rem 1rem; font-size: 0.75rem; }
+            .audio-btn { width: 36px; height: 36px; font-size: 1rem; }
+            .vocab-grid { grid-template-columns: 1fr; }
+            .menu-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="menu-container">
+            <div class="menu-btn" id="menuBtn">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="index.html">🏠 Halaman Utama</a>
+                <a href="home.html">🏡 Home</a>
+                <a href="taiwan.html">🇹🇼 Bahasa Taiwan</a>
+                <a href="jepang.html">🇯🇵 Bahasa Jepang</a>
+                <a href="russia.html">🇷🇺 Bahasa Rusia</a>
+                <a href="hokkien.html">🇹🇼 Bahasa Hokkien</a>
+                <a href="hakka.html">🇨🇳 Bahasa Hakka</a>
+            </div>
+        </div>
+        <h1><i class="fas fa-language"></i> 客家话 / Hakka (Khek)</h1>
+        <p>Kosakata Bahasa Hakka (Taiwan) | Aksara Han + Romanisasi Pha̍k-fa-sṳ | Arti + Audio</p>
+        <div class="badge"><i class="fas fa-headphones"></i> Klik ikon speaker untuk mendengar pelafalan</div>
+    </div>
+
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Cari kata (Hakka, romanisasi, atau arti)...">
+    </div>
+
+    <div class="category-tabs" id="tabsContainer">
+        <button class="tab-btn active" data-cat="all">Semua</button>
+        <button class="tab-btn" data-cat="salam">Salam & Percakapan</button>
+        <button class="tab-btn" data-cat="angka">Angka & Waktu</button>
+        <button class="tab-btn" data-cat="keluarga">Keluarga & Orang</button>
+        <button class="tab-btn" data-cat="makanan">Makanan & Minuman</button>
+        <button class="tab-btn" data-cat="sehari">Kata Sehari-hari</button>
+    </div>
+
+    <div id="vocabContainer" class="vocab-grid"></div>
+    <div id="voiceStatus" class="voice-warning"></div>
+    <footer>
+        <i class="fas fa-heart" style="color:#f4c542;"></i> Belajar Bahasa Hakka | Audio menggunakan Web Speech API (perangkat harus mendukung suara Mandarin)<br>
+        <span style="font-size:0.75rem; display:inline-block; margin-top:0.5rem;">© created by ZinXploit</span>
+    </footer>
+</div>
+
+<script>
+    const vocabulary = [
+        // Salam & Percakapan
+        { hakka: "你好", reading: "ngì hó", meaning: "Halo / Apa kabar", category: "salam" },
+        { hakka: "恁仔細", reading: "án-chṳ́-se", meaning: "Terima kasih", category: "salam" },
+        { hakka: "毋使客氣", reading: "m̀-sṳ́ hak-hi", meaning: "Sama-sama", category: "salam" },
+        { hakka: "正再會", reading: "chang chai-fi", meaning: "Selamat tinggal", category: "salam" },
+        { hakka: "請問", reading: "chhiáng mun", meaning: "Permisi / Mohon tanya", category: "salam" },
+        { hakka: "失禮", reading: "sṳt-lî", meaning: "Maaf", category: "salam" },
+        { hakka: "你安做麼个名", reading: "ngì ôn-cho mak-ke miàng", meaning: "Siapa namamu?", category: "salam" },
+        { hakka: "我對印尼來", reading: "ngài tui Yìn-nî lòi", meaning: "Saya dari Indonesia", category: "salam" },
+        { hakka: "你會講客話無", reading: "ngì voi kóng Hak-fa mò", meaning: "Bisa bahasa Hakka?", category: "salam" },
+        { hakka: "我聽毋識", reading: "ngài thâng m̀-sṳt", meaning: "Saya tidak mengerti", category: "salam" },
+        // Angka & Waktu
+        { hakka: "零", reading: "làng", meaning: "Nol", category: "angka" },
+        { hakka: "一", reading: "yit", meaning: "Satu", category: "angka" },
+        { hakka: "二", reading: "ngi", meaning: "Dua", category: "angka" },
+        { hakka: "三", reading: "sâm", meaning: "Tiga", category: "angka" },
+        { hakka: "四", reading: "si", meaning: "Empat", category: "angka" },
+        { hakka: "五", reading: "ńg", meaning: "Lima", category: "angka" },
+        { hakka: "六", reading: "liuk", meaning: "Enam", category: "angka" },
+        { hakka: "七", reading: "chhit", meaning: "Tujuh", category: "angka" },
+        { hakka: "八", reading: "pat", meaning: "Delapan", category: "angka" },
+        { hakka: "九", reading: "kiú", meaning: "Sembilan", category: "angka" },
+        { hakka: "十", reading: "sṳ̍p", meaning: "Sepuluh", category: "angka" },
+        { hakka: "今晡日", reading: "kîm-pû-ngit", meaning: "Hari ini", category: "angka" },
+        { hakka: "天光日", reading: "thiên-kông-ngit", meaning: "Besok", category: "angka" },
+        { hakka: "昨晡日", reading: "chhò-pû-ngit", meaning: "Kemarin", category: "angka" },
+        // Keluarga & Orang
+        { hakka: "家庭", reading: "kâ-thìn", meaning: "Keluarga", category: "keluarga" },
+        { hakka: "阿爸", reading: "â-pâ", meaning: "Ayah", category: "keluarga" },
+        { hakka: "阿姆", reading: "â-mê", meaning: "Ibu", category: "keluarga" },
+        { hakka: "阿哥", reading: "â-kô", meaning: "Kakak laki", category: "keluarga" },
+        { hakka: "阿姊", reading: "â-chí", meaning: "Kakak perempuan", category: "keluarga" },
+        { hakka: "老弟", reading: "ló-thâi", meaning: "Adik laki", category: "keluarga" },
+        { hakka: "老妹", reading: "ló-moi", meaning: "Adik perempuan", category: "keluarga" },
+        { hakka: "朋友", reading: "phèn-yû", meaning: "Teman", category: "keluarga" },
+        // Makanan
+        { hakka: "食物", reading: "sṳ̍t-vu̍t", meaning: "Makanan", category: "makanan" },
+        { hakka: "水", reading: "súi", meaning: "Air", category: "makanan" },
+        { hakka: "飯", reading: "fan", meaning: "Nasi", category: "makanan" },
+        { hakka: "麵", reading: "mien", meaning: "Mie", category: "makanan" },
+        { hakka: "茶", reading: "chhà", meaning: "Teh", category: "makanan" },
+        { hakka: "咖啡", reading: "kâ-pî", meaning: "Kopi", category: "makanan" },
+        { hakka: "水果", reading: "súi-kó", meaning: "Buah", category: "makanan" },
+        { hakka: "好食", reading: "hó-sṳ̍t", meaning: "Enak", category: "makanan" },
+        // Kata sehari-hari
+        { hakka: "係", reading: "he", meaning: "Adalah / Ya", category: "sehari" },
+        { hakka: "毋係", reading: "m̀-he", meaning: "Bukan", category: "sehari" },
+        { hakka: "有", reading: "yû", meaning: "Ada / Punya", category: "sehari" },
+        { hakka: "無", reading: "mò", meaning: "Tidak ada", category: "sehari" },
+        { hakka: "去", reading: "hi", meaning: "Pergi", category: "sehari" },
+        { hakka: "來", reading: "lòi", meaning: "Datang", category: "sehari" },
+        { hakka: "看", reading: "khon", meaning: "Lihat", category: "sehari" },
+        { hakka: "買", reading: "mâi", meaning: "Beli", category: "sehari" },
+        { hakka: "中意", reading: "chûng-yi", meaning: "Suka", category: "sehari" },
+        { hakka: "惱", reading: "nó", meaning: "Benci", category: "sehari" },
+        { hakka: "幾多錢", reading: "kí-tô chhièn", meaning: "Berapa harganya", category: "sehari" }
+    ];
+
+    let activeCategory = "all";
+    let searchTerm = "";
+    let selectedVoice = null;
+    const voiceStatusDiv = document.getElementById("voiceStatus");
+
+    function initVoices() {
+        window.speechSynthesis.onvoiceschanged = () => {
+            const voices = window.speechSynthesis.getVoices();
+            selectedVoice = voices.find(voice => voice.lang === 'zh-TW') ||
+                            voices.find(voice => voice.lang === 'zh-CN') ||
+                            voices.find(voice => voice.lang.startsWith('zh'));
+            if (selectedVoice) {
+                voiceStatusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Suara siap: ${selectedVoice.name} (${selectedVoice.lang})`;
+            } else {
+                voiceStatusDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Tidak ditemukan suara Mandarin. Browser mungkin tidak mendukung.`;
+            }
+        };
+        if (window.speechSynthesis.getVoices().length) {
+            window.speechSynthesis.onvoiceschanged();
+        }
+    }
+
+    function speak(text) {
+        if (!window.speechSynthesis) {
+            alert("Browser tidak mendukung speech synthesis.");
+            return;
+        }
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-TW';
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.rate = 0.9;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function renderVocab() {
+        let filtered = vocabulary.filter(item => {
+            const matchCat = activeCategory === "all" || item.category === activeCategory;
+            const matchSearch = searchTerm === "" ||
+                item.hakka.includes(searchTerm) ||
+                item.reading.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.meaning.toLowerCase().includes(searchTerm.toLowerCase());
+            return matchCat && matchSearch;
+        });
+        if (filtered.length === 0) {
+            vocabContainer.innerHTML = `<div class="no-result"><i class="fas fa-frown"></i> Tidak ada kosakata yang cocok</div>`;
+            return;
+        }
+        vocabContainer.innerHTML = filtered.map(item => `
+            <div class="vocab-card">
+                <div class="vocab-info">
+                    <div class="vocab-hakka">${item.hakka}</div>
+                    <div class="vocab-reading">${item.reading}</div>
+                    <div class="vocab-meaning">${item.meaning}</div>
+                </div>
+                <button class="audio-btn" onclick="speak('${item.hakka.replace(/'/g, "\\'")}')" title="Dengar suara">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function setActiveTab(cat) {
+        activeCategory = cat;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            if (btn.dataset.cat === cat) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        renderVocab();
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => setActiveTab(btn.dataset.cat));
+    });
+
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value.trim();
+        renderVocab();
+    });
+
+    initVoices();
+    renderVocab();
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (!selectedVoice) initVoices();
+        }, 500);
+    });
+
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdown = document.getElementById('dropdownMenu');
+    menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+    });
+    document.addEventListener('click', (e) => {
+        if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+</script>
+</body>
+</html>
