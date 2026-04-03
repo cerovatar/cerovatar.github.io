@@ -17,14 +17,17 @@
             font-family: 'Inter', sans-serif;
             padding: 2rem 1rem;
             color: #e2e8f0;
+            position: relative;
         }
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
+        /* Header dengan menu titik tiga */
         .header {
             text-align: center;
             margin-bottom: 2rem;
+            position: relative;
         }
         .header h1 {
             font-size: 2.5rem;
@@ -38,6 +41,59 @@
             color: #9bb3d0;
             max-width: 700px;
             margin: 0 auto;
+        }
+        /* Menu titik tiga */
+        .menu-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 106, 92, 0.3);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #ff6a5c;
+            transition: all 0.2s;
+        }
+        .menu-btn:hover {
+            background: rgba(255, 106, 92, 0.2);
+            transform: scale(1.05);
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: rgba(20, 30, 45, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 106, 92, 0.3);
+            padding: 0.5rem 0;
+            min-width: 170px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1.2rem;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .dropdown-menu a:hover {
+            background: rgba(255, 106, 92, 0.2);
+            color: #ff6a5c;
+        }
+        .dropdown-menu.show {
+            display: block;
         }
         .badge {
             display: inline-block;
@@ -172,18 +228,33 @@
             margin-top: 3rem;
             font-size: 0.8rem;
             color: #5a6f8c;
+            border-top: 1px solid rgba(255, 106, 92, 0.2);
+            padding-top: 1.5rem;
         }
         @media (max-width: 640px) {
             .vocab-japanese { font-size: 1.2rem; }
             .tab-btn { padding: 0.4rem 1rem; font-size: 0.75rem; }
             .audio-btn { width: 36px; height: 36px; font-size: 1rem; }
             .vocab-grid { grid-template-columns: 1fr; }
+            .menu-btn { width: 40px; height: 40px; font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
+        <div class="menu-container">
+            <div class="menu-btn" id="menuBtn">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="index.html">🏠 Halaman Utama</a>
+                <a href="home.html">🏡 Home</a>
+                <a href="taiwan.html">🇹🇼 Bahasa Taiwan</a>
+                <a href="jepang.html">🇯🇵 Bahasa Jepang</a>
+                <a href="russia.html">🇷🇺 Bahasa Rusia</a>
+            </div>
+        </div>
         <h1><i class="fas fa-language"></i> 日本語ボキャブラリー</h1>
         <p>Kosakata Jepang lengkap | Hiragana / Katakana / Kanji | Romaji + Arti + Audio</p>
         <div class="badge"><i class="fas fa-headphones"></i> Klik ikon speaker untuk mendengar pelafalan</div>
@@ -211,7 +282,8 @@
     <div id="vocabContainer" class="vocab-grid"></div>
     <div id="voiceStatus" class="voice-warning"></div>
     <footer>
-        <i class="fas fa-heart" style="color:#ff9a8b;"></i> Belajar Bahasa Jepang | Audio menggunakan Web Speech API (perangkat harus mendukung suara Jepang)
+        <i class="fas fa-heart" style="color:#ff9a8b;"></i> Belajar Bahasa Jepang | Audio menggunakan Web Speech API (perangkat harus mendukung suara Jepang)<br>
+        <span style="font-size:0.75rem; display:inline-block; margin-top:0.5rem;">© created by ZinXploit</span>
     </footer>
 </div>
 
@@ -410,7 +482,6 @@
     let selectedVoice = null;
     const voiceStatusDiv = document.getElementById("voiceStatus");
 
-    // Fungsi untuk memuat voice Jepang
     function initVoices() {
         window.speechSynthesis.onvoiceschanged = () => {
             const voices = window.speechSynthesis.getVoices();
@@ -428,7 +499,6 @@
         }
     }
 
-    // Fungsi untuk memainkan suara
     function speak(text) {
         if (!window.speechSynthesis) {
             alert("Browser Anda tidak mendukung speech synthesis.");
@@ -443,7 +513,6 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    // Render kosakata
     function renderVocab() {
         let filtered = vocabulary.filter(item => {
             const matchCat = activeCategory === "all" || item.category === activeCategory;
@@ -453,12 +522,10 @@
                 item.meaning.toLowerCase().includes(searchTerm.toLowerCase());
             return matchCat && matchSearch;
         });
-
         if (filtered.length === 0) {
             vocabContainer.innerHTML = `<div class="no-result"><i class="fas fa-frown"></i> Tidak ada kosakata yang cocok</div>`;
             return;
         }
-
         vocabContainer.innerHTML = filtered.map(item => `
             <div class="vocab-card">
                 <div class="vocab-info">
@@ -482,7 +549,6 @@
         renderVocab();
     }
 
-    // Event listeners
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => setActiveTab(btn.dataset.cat));
     });
@@ -493,14 +559,27 @@
         renderVocab();
     });
 
-    // Inisialisasi
     initVoices();
     renderVocab();
-
     window.addEventListener('load', () => {
         setTimeout(() => {
             if (!selectedVoice) initVoices();
         }, 500);
+    });
+
+    // Menu dropdown
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdown = document.getElementById('dropdownMenu');
+
+    menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
     });
 </script>
 </body>
