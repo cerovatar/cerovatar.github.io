@@ -1,336 +1,438 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Jawa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Kalender Jawa + Suro & Dark Mode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Variabel warna mode terang (default) */
         :root {
-            --primary-bg: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-muted: #6c757d;
-            --accent-orange: #FF8C00;
-            --accent-dark: #1a1a1a;
-            --holiday-color: #dc3545;
-            --puasa-color: #198754;
-            --today-bg: #e3f2fd;
-            --today-border: #2196F3;
+            --bg-body: linear-gradient(145deg, #eef2f7 0%, #d9e0e8 100%);
+            --card-bg: rgba(255,255,255,0.85);
+            --header-bg: #ffffffdd;
+            --text-main: #1e2a3e;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            --table-header-bg: #fef3c7;
+            --table-header-color: #b45309;
+            --cell-bg: white;
+            --cell-border: #f1f5f9;
+            --today-bg: #fff7ed;
+            --today-border: #f97316;
+            --badge-holiday-bg: #fee2e2;
+            --badge-holiday-color: #b91c1c;
+            --badge-puasa-bg: #dcfce7;
+            --badge-puasa-color: #166534;
+            --legend-bg: #ffffffcc;
+            --footer-bg: #1e293b;
+            --footer-text: #94a3b8;
+            --neptu-bg: #f1f5f9;
+            --suro-bg: #e0e7ff;
+            --suro-color: #3730a3;
+        }
+
+        /* Mode gelap */
+        body.dark {
+            --bg-body: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(30,41,59,0.85);
+            --header-bg: #1e293bdd;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-light: #334155;
+            --table-header-bg: #2d3a5e;
+            --table-header-color: #fbbf24;
+            --cell-bg: #0f172a;
+            --cell-border: #334155;
+            --today-bg: #3b2e1e;
+            --today-border: #f97316;
+            --badge-holiday-bg: #7f1a1a;
+            --badge-holiday-color: #fecaca;
+            --badge-puasa-bg: #064e3b;
+            --badge-puasa-color: #bbf7d0;
+            --legend-bg: #1e293bcc;
+            --footer-bg: #0f172a;
+            --footer-text: #94a3b8;
+            --neptu-bg: #2d3a5e;
+            --suro-bg: #2e2a5e;
+            --suro-color: #c7d2fe;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-            background-color: var(--primary-bg);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-body);
             color: var(--text-main);
-            margin: 0;
-            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            transition: background 0.3s, color 0.2s;
         }
 
-        /* --- HEADER & HAMBURGER MENU --- */
+        /* Header */
         .app-header {
             width: 100%;
-            background-color: var(--accent-dark);
-            color: white;
-            padding: 15px 20px;
+            max-width: 800px;
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            margin: 20px 20px 0;
+            border-radius: 40px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
         }
-
-        .header-title h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; }
-        .header-title p { margin: 2px 0 0; font-size: 0.75rem; opacity: 0.8; color: var(--accent-orange); }
-
-        /* Tombol Hamburger */
-        .hamburger {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: white;
+        .header-title h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c2410c, #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header-title p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .dark-toggle {
             background: none;
             border: none;
-            z-index: 1001;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #f97316;
+            transition: transform 0.2s;
+            padding: 8px;
+            border-radius: 50%;
+        }
+        .dark-toggle:hover { transform: scale(1.1); }
+        .hamburger {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #f97316;
+            display: none;
         }
 
-        /* Menu Overlay Mobile */
+        /* Menu overlay */
         .nav-overlay {
             position: fixed;
             top: 0;
-            right: -100%; /* Sembunyi di kanan */
-            width: 70%;
+            right: -100%;
+            width: 280px;
             height: 100vh;
-            background: var(--accent-dark);
+            background: #1e293b;
+            backdrop-filter: blur(16px);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: right 0.3s ease-in-out;
-            z-index: 999;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            transition: right 0.3s;
+            z-index: 1000;
+            border-radius: 30px 0 0 30px;
         }
-
-        .nav-overlay.active {
-            right: 0;
+        .nav-overlay.active { right: 0; }
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #f97316;
+            cursor: pointer;
         }
-
         .nav-overlay a {
-            color: white;
+            color: #f1f5f9;
             text-decoration: none;
             font-size: 1.2rem;
-            margin: 15px 0;
-            font-weight: 500;
-            transition: color 0.3s;
+            margin: 18px 0;
+            transition: 0.2s;
         }
+        .nav-overlay a:hover { color: #f97316; transform: translateX(-6px); }
 
-        .nav-overlay a:hover {
-            color: var(--accent-orange);
-        }
-
-        /* Kontainer Utama */
-        .app-container {
-            width: 95%;
-            max-width: 700px;
-            margin: 20px auto;
+        /* Kartu Kalender */
+        .calendar-card {
+            max-width: 800px;
+            width: 100%;
+            margin: 20px;
             background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
             overflow: hidden;
-            border-top: 6px solid var(--accent-orange);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .nav-btn {
-            background: none;
-            border: 1px solid #ddd;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            color: var(--text-main);
-        }
-
-        .nav-btn:hover { background-color: var(--accent-orange); color: white; border-color: var(--accent-orange); }
-
-        .current-date-label {
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-transform: capitalize;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .select-group { display: flex; gap: 8px; }
-
-        select {
-            padding: 6px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            background: #fff;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .btn-today {
-            background-color: var(--accent-orange);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .calendar-wrapper { padding: 20px; overflow-x: auto; }
-
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-
-        th {
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 10px 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        td {
-            vertical-align: top;
-            height: 90px;
-            padding: 5px;
-            border: 1px solid #f0f0f0;
-            transition: background 0.2s;
-            cursor: default;
-            position: relative;
-        }
-
-        .day-number { font-size: 1.1rem; font-weight: 600; display: block; margin-bottom: 4px; }
-        
-        .pasaran-info {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+        /* Navigasi - Bulan & Tahun di atas, tombol di bawah */
+        .nav-controls {
+            padding: 16px 20px;
+            background: var(--legend-bg);
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             flex-direction: column;
-            line-height: 1.2;
-            margin-bottom: 4px;
+            align-items: center;
+            gap: 16px;
         }
-
-        .pasaran-name { font-weight: 500; }
-
-        .neptu-value {
-            font-size: 0.7rem;
-            background: #eee;
-            border-radius: 4px;
-            width: fit-content;
-            padding: 1px 4px;
-            margin-top: 2px;
+        /* Bagian bulan & tahun (tengah) */
+        .month-year-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
-
-        /* Badge Event */
-        .event-badge {
-            display: inline-block;
-            font-size: 0.7rem;
-            padding: 2px 4px;
-            border-radius: 4px;
-            margin-top: 2px;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
+        .month-year {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f97316;
+        }
+        .select-group {
+            display: flex;
+            gap: 10px;
+        }
+        select {
+            background: var(--cell-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 40px;
+            padding: 6px 12px;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+        /* Tombol navigasi (prev, next, hari ini) di bawah */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn {
+            background: var(--cell-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 40px;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 1.2rem;
+        }
+        .nav-btn:hover { background: #f97316; color: white; }
+        .btn-today {
+            background: #f97316;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
             font-weight: 600;
-        }
-
-        .badge-holiday { background-color: #f8d7da; color: var(--holiday-color); border: 1px solid #f5c6cb; }
-        .badge-puasa { background-color: #d1e7dd; color: var(--puasa-color); border: 1px solid #badbcc; }
-        
-        /* Styling Khusus */
-        td.holiday .day-number, td.sunday .day-number { color: var(--holiday-color); }
-        td.puasa .day-number { color: var(--puasa-color); }
-        td.today { background-color: var(--today-bg); border: 2px solid var(--today-border); }
-        td.empty { background-color: #fcfcfc; cursor: default; }
-
-        footer {
-            margin-top: auto;
-            background-color: var(--accent-dark);
             color: white;
-            text-align: center;
-            padding: 15px;
-            width: 100%;
-            font-size: 0.9rem;
+            cursor: pointer;
         }
 
-        @media (max-width: 600px) {
-            /* Tampilkan hamburger di HP */
+        /* Tabel kalender */
+        .calendar-wrapper { padding: 20px; overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--cell-bg);
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        th {
+            background: var(--table-header-bg);
+            color: var(--table-header-color);
+            padding: 12px 6px;
+            font-size: 0.8rem;
+        }
+        td {
+            border: 1px solid var(--cell-border);
+            height: 95px;
+            vertical-align: top;
+            padding: 6px;
+            background: var(--cell-bg);
+        }
+        td.empty { background: var(--legend-bg); }
+        td.today {
+            background: var(--today-bg);
+            border: 2px solid var(--today-border);
+        }
+        .day-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: block;
+        }
+        .pasaran {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #f97316;
+        }
+        .neptu-value {
+            font-size: 0.65rem;
+            background: var(--neptu-bg);
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 20px;
+            margin-top: 2px;
+        }
+        .event-badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 40px;
+            margin-top: 4px;
+            text-align: center;
+        }
+        .badge-holiday { background: var(--badge-holiday-bg); color: var(--badge-holiday-color); }
+        .badge-puasa { background: var(--badge-puasa-bg); color: var(--badge-puasa-color); }
+        .badge-suro { background: var(--suro-bg); color: var(--suro-color); }
+        td.holiday .day-number { color: #dc2626; }
+        td.puasa .day-number { color: #059669; }
+
+        /* Legenda */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 12px 20px;
+            background: var(--legend-bg);
+            border-top: 1px solid var(--border-light);
+            font-size: 0.7rem;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 14px; height: 14px; border-radius: 20px; }
+        .dot-holiday { background: #dc2626; }
+        .dot-puasa { background: #059669; }
+        .dot-today { background: #f97316; border: 1px solid #c2410c; }
+        .dot-suro { background: #6366f1; }
+
+        /* Footer */
+        .footer {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 20px 20px;
+            background: var(--footer-bg);
+            border-radius: 40px;
+            text-align: center;
+            padding: 10px;
+            color: var(--footer-text);
+            font-size: 0.7rem;
+        }
+        .footer span { color: #f97316; }
+
+        @media (max-width: 700px) {
             .hamburger { display: block; }
-            
-            .app-container { width: 100%; border-radius: 0; margin: 0; box-shadow: none; }
-            .controls { flex-direction: column; align-items: stretch; gap: 15px; }
-            .header-nav { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-            .select-group { justify-content: center; width: 100%; }
-            td { height: 70px; }
-            .neptu-value { display: none; }
-            .event-badge { font-size: 0.6rem; line-height: 1.1; }
+            .month-year-section { width: 100%; }
+            .select-group { flex-wrap: wrap; justify-content: center; }
+            .nav-buttons { flex-wrap: wrap; }
+            td { height: auto; min-height: 80px; }
+            .neptu-value { font-size: 0.6rem; }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- Header & Hamburger Menu -->
+    <!-- Header -->
     <div class="app-header">
         <div class="header-title">
-            <h1>Kalender Jawa</h1>
-            <p>Penanggalan Jawa, Weton & Ramadhan</p>
+            <h1><i class="fas fa-calendar-alt"></i> Kalender Jawa</h1>
+            <p>Weton · Neptu · Suro</p>
         </div>
-        <!-- Tombol Hamburger -->
-        <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        <div class="header-actions">
+            <button class="dark-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+            <button class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+        </div>
     </div>
 
-    <!-- Menu Overlay (Navigasi Samping) -->
+    <!-- Menu overlay -->
     <div class="nav-overlay" id="navOverlay">
-        <a href="home.html">Home</a>
-        <a href="neptu.html">Neptu</a>
-        <a href="Caljawa.html">Kalender Jawa</a>
-        <a href="Game.html">Game</a>
-        <a href="index.html">Portofolio</a>
+        <button class="close-menu" id="closeMenuBtn"><i class="fas fa-times"></i></button>
+        <a href="#"><i class="fas fa-home"></i> Beranda</a>
+        <a href="#"><i class="fas fa-moon"></i> Neptu</a>
+        <a href="#"><i class="fas fa-calendar-week"></i> Kalender Jawa</a>
+        <a href="#"><i class="fas fa-gamepad"></i> Game</a>
+        <a href="#"><i class="fas fa-user"></i> Portofolio</a>
     </div>
 
-    <div class="app-container">
-        <div class="controls">
-            <div class="header-nav">
-                <button class="nav-btn" id="prevBtn">&lt;</button>
-                <button class="btn-today" id="todayBtn">Hari Ini</button>
-                <button class="nav-btn" id="nextBtn">&gt;</button>
+    <!-- Kalender -->
+    <div class="calendar-card">
+        <div class="nav-controls">
+            <!-- Bagian bulan & tahun (tengah) -->
+            <div class="month-year-section">
+                <div class="month-year" id="monthYearDisplay"></div>
+                <div class="select-group">
+                    <select id="monthSelect"></select>
+                    <select id="yearSelect"></select>
+                </div>
             </div>
-            
-            <div class="current-date-label" id="monthYearDisplay"></div>
-            <div class="select-group">
-                <select id="monthSelect"></select>
-                <select id="yearSelect"></select>
+            <!-- Tombol navigasi (prev, next, hari ini) tepat di bawah -->
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                <button class="btn-today" id="todayBtn"><i class="fas fa-calendar-day"></i> Hari Ini</button>
+                <button class="nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
 
         <div class="calendar-wrapper">
-            <table id="calendarTable">
-                <thead>
-                    <tr>
-                        <th>Min</th>
-                        <th>Sen</th>
-                        <th>Sel</th>
-                        <th>Rab</th>
-                        <th>Kam</th>
-                        <th>Jum</th>
-                        <th>Sab</th>
-                    </tr>
-                </thead>
+            <table>
+                <thead><tr><th>Min</th><th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th></tr></thead>
                 <tbody id="calendarBody"></tbody>
             </table>
         </div>
-        
-        <div style="padding: 0 20px 20px; font-size: 0.8rem; color: #666;">
-            <span style="color: var(--holiday-color); font-weight:bold;">● Merah:</span> Libur Nasional &nbsp; 
-            <span style="color: var(--puasa-color); font-weight:bold;">● Hijau:</span> Puasa (Ramadhan/Senin Kamis)
+
+        <div class="legend">
+            <div class="legend-item"><span class="legend-dot dot-holiday"></span> Libur</div>
+            <div class="legend-item"><span class="legend-dot dot-puasa"></span> Puasa</div>
+            <div class="legend-item"><span class="legend-dot dot-suro"></span> 1 Suro (1 Muharram)</div>
+            <div class="legend-item"><span class="legend-dot dot-today"></span> Hari Ini</div>
+            <div class="legend-item"><i class="fas fa-sun"></i> Pasaran & Neptu</div>
         </div>
     </div>
 
-    <footer>
-        <p>Created by &copy; <span>ZinXploit</span></p>
-    </footer>
-
-    <!-- Tambahkan Font Awesome agar icon muncul -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <div class="footer">
+        Created by <span>ZinXploit</span> · Data Suro (1 Muharram)
+    </div>
 
     <script>
-        // --- SCRIPT MENU HAMBURGER ---
-        function toggleMenu() {
-            const nav = document.getElementById('navOverlay');
-            nav.classList.toggle('active');
-        }
+        // ========== DARK MODE TOGGLE ==========
+        const darkToggle = document.getElementById('darkModeToggle');
+        darkToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const icon = darkToggle.querySelector('i');
+            if(document.body.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
 
-        // --- KONFIGURASI KALENDER ---
-        const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        // ========== MENU HAMBURGER ==========
+        const hamburger = document.getElementById('hamburgerBtn');
+        const navOverlay = document.getElementById('navOverlay');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const menuLinks = document.querySelectorAll('.nav-overlay a');
+        function openMenu() { navOverlay.classList.add('active'); }
+        function closeMenu() { navOverlay.classList.remove('active'); }
+        hamburger.addEventListener('click', openMenu);
+        closeMenuBtn.addEventListener('click', closeMenu);
+        menuLinks.forEach(link => link.addEventListener('click', closeMenu));
+        document.addEventListener('click', (e) => {
+            if (!navOverlay.contains(e.target) && !hamburger.contains(e.target) && navOverlay.classList.contains('active')) closeMenu();
+        });
+
+        // ========== DATA KALENDER ==========
         const namaPasaran = ["Legi", "Pahing", "Pon", "Wage", "Kliwon"];
         const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
@@ -345,100 +447,82 @@
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
-        
-        // --- DATA LIBUR NASIONAL ---
+
+        // Data libur nasional
         const holidays = {
             2024: ["01-01", "02-10", "03-11", "03-12", "04-01", "04-09", "04-10", "04-11", "05-01", "05-09", "05-20", "06-01", "06-17", "06-18", "07-07", "08-17", "12-25"],
             2025: ["01-01", "01-28", "01-29", "03-30", "03-31", "04-01", "05-01", "06-01", "06-07", "08-17", "12-25"],
             2026: ["01-01", "02-17", "03-19", "03-20", "04-14", "05-01", "08-17", "12-25"]
         };
 
-        // --- DATA PUASA ---
-        // Fungsi Helper untuk membuat rentang tanggal Ramadhan
+        // Data puasa Ramadhan
         function generateRamadhanDates(year, startMonth, startDay, duration) {
             let dates = [];
-            let d = new Date(year, startMonth - 1, startDay);
-            for (let i = 0; i < duration; i++) {
-                let m = String(d.getMonth() + 1).padStart(2, '0');
-                let day = String(d.getDate()).padStart(2, '0');
+            let d = new Date(year, startMonth-1, startDay);
+            for(let i=0; i<duration; i++) {
+                let m = String(d.getMonth()+1).padStart(2,'0');
+                let day = String(d.getDate()).padStart(2,'0');
                 dates.push(`${m}-${day}`);
-                d.setDate(d.getDate() + 1);
+                d.setDate(d.getDate()+1);
             }
             return dates;
         }
-
         const puasaDays = {
-            // Tahun 2024: Ramadhan mulai 11 Maret (perkiraan umum), durasi 30 hari
-            2024: generateRamadhanDates(2024, 3, 11, 30), 
-            
-            // Tahun 2025: Ramadhan mulai 28 Februari (perkiraan), durasi 30 hari
+            2024: generateRamadhanDates(2024, 3, 11, 30),
             2025: generateRamadhanDates(2025, 2, 28, 30),
-            
-            // Tahun 2026: Ramadhan mulai 17 Februari (perkiraan), durasi 30 hari
             2026: generateRamadhanDates(2026, 2, 17, 30),
-            
-            // Bisa tambahkan tahun berikutnya di sini dengan pola yang sama
         };
 
-        // --- FUNGSI UTILITY ---
+        // Data tanggal 1 Suro (1 Muharram)
+        const suroDates = {
+            2024: "07-07",
+            2025: "06-26",
+            2026: "06-16",
+        };
+
+        // Neptu
+        const neptuHari = [5,4,3,7,8,6,9];
+        const neptuPasaran = [5,9,7,4,8];
 
         function getPasaran(date) {
-            const refDate = new Date(2024, 0, 1); // Senin Pahing
-            const diffTime = date - refDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            let pasaranIndex = (1 + diffDays) % 5;
-            if (pasaranIndex < 0) pasaranIndex += 5;
-            return namaPasaran[pasaranIndex];
+            const refDate = new Date(2024,0,1);
+            const diffDays = Math.floor((date - refDate) / 86400000);
+            let idx = (1 + diffDays) % 5;
+            if(idx<0) idx+=5;
+            return namaPasaran[idx];
         }
 
-        function getNeptu(hariIndex, pasaranIndex) {
-            const neptuHari = [5, 4, 3, 7, 8, 6, 9];
-            const neptuPasaran = [5, 9, 7, 4, 8];
-            return neptuHari[hariIndex] + neptuPasaran[pasaranIndex];
+        function getNeptuTotal(dayIndex, pasaranIndex) {
+            return neptuHari[dayIndex] + neptuPasaran[pasaranIndex];
         }
 
         function isHoliday(month, day, year) {
-            const mStr = String(month + 1).padStart(2, '0');
-            const dStr = String(day).padStart(2, '0');
-            const key = `${mStr}-${dStr}`;
-            return holidays[year] ? holidays[year].includes(key) : false;
+            const key = `${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            return holidays[year]?.includes(key) || false;
         }
 
         function isPuasa(month, day, year, dayIndex) {
-            const mStr = String(month + 1).padStart(2, '0');
-            const dStr = String(day).padStart(2, '0');
-            const key = `${mStr}-${dStr}`;
-            
-            // Cek apakah tanggal ini ada di data Ramadhan/Statis
-            const isStaticPuasa = puasaDays[year] ? puasaDays[year].includes(key) : false;
-
-            // Cek Puasa Sunnah Senin Kamis
-            let isSeninKamis = (dayIndex === 1 || dayIndex === 4); 
-
-            // Jika hari ini Libur Nasional, maka bukan hari puasa Sunnah Senin Kamis
-            // (Kecuali bulan Ramadhan yang memang wajib)
-            if (isHoliday(month, day, year)) {
-                if (!isStaticPuasa) isSeninKamis = false;
-            }
-
-            return isStaticPuasa || isSeninKamis;
+            const key = `${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            const isRamadhan = puasaDays[year]?.includes(key) || false;
+            const isSeninKamis = (dayIndex === 1 || dayIndex === 4);
+            if(isHoliday(month, day, year) && !isRamadhan) return false;
+            return isRamadhan || isSeninKamis;
         }
 
-        // --- RENDER ---
+        function isSuro(month, day, year) {
+            const key = `${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            return suroDates[year] === key;
+        }
 
         function populateSelects() {
-            namaBulan.forEach((bulan, index) => {
-                const opt = document.createElement('option');
-                opt.value = index;
-                opt.text = bulan;
+            namaBulan.forEach((bln,idx) => {
+                let opt = document.createElement('option');
+                opt.value = idx; opt.text = bln;
                 monthSelect.appendChild(opt);
             });
-            const startYear = currentYear - 50;
-            const endYear = currentYear + 50;
-            for (let i = startYear; i <= endYear; i++) {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.text = i;
+            for(let y=currentYear-50; y<=currentYear+50; y++) {
+                let opt = document.createElement('option');
+                opt.value = y; opt.text = y;
                 yearSelect.appendChild(opt);
             }
             monthSelect.value = currentMonth;
@@ -448,129 +532,102 @@
         function renderCalendar(month, year) {
             monthYearDisplay.textContent = `${namaBulan[month]} ${year}`;
             calendarBody.innerHTML = "";
-
-            const firstDayOfMonth = new Date(year, month, 1);
-            const lastDayOfMonth = new Date(year, month + 1, 0);
-            const daysInMonth = lastDayOfMonth.getDate();
-            let startDay = firstDayOfMonth.getDay(); 
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month+1, 0);
+            const daysInMonth = lastDay.getDate();
+            let startWeekday = firstDay.getDay();
             let date = 1;
 
-            for (let i = 0; i < 6; i++) {
-                const row = document.createElement('tr');
-                let hasDays = false; 
-
-                for (let j = 0; j < 7; j++) {
-                    const cell = document.createElement('td');
-
-                    if (i === 0 && j < startDay) {
-                        cell.classList.add('empty');
-                    } else if (date > daysInMonth) {
-                        cell.classList.add('empty');
+            for(let row=0; row<6; row++) {
+                const tr = document.createElement('tr');
+                let hasCell = false;
+                for(let col=0; col<7; col++) {
+                    const td = document.createElement('td');
+                    if(row===0 && col < startWeekday) {
+                        td.classList.add('empty');
+                    } else if(date > daysInMonth) {
+                        td.classList.add('empty');
                     } else {
-                        hasDays = true;
-                        const dateObj = new Date(year, month, date);
-                        const dayIndex = dateObj.getDay(); 
-                        const hariName = namaHari[dayIndex];
-                        const pasaranName = getPasaran(dateObj);
-                        const pasaranIndex = namaPasaran.indexOf(pasaranName);
-                        const neptu = getNeptu(dayIndex, pasaranIndex);
-
-                        // Cek Status
-                        const isSunday = (dayIndex === 0);
-                        const isNatHoliday = isHoliday(month, date, year);
+                        hasCell = true;
+                        const currentDateObj = new Date(year, month, date);
+                        const dayIndex = currentDateObj.getDay();
+                        const pasaran = getPasaran(currentDateObj);
+                        const pasaranIdx = namaPasaran.indexOf(pasaran);
+                        const neptuTotal = getNeptuTotal(dayIndex, pasaranIdx);
                         const isToday = (date === currentDate.getDate() && month === currentDate.getMonth() && year === currentDate.getFullYear());
-                        const isFastingDay = isPuasa(month, date, year, dayIndex);
+                        const isNatHoliday = isHoliday(month, date, year);
+                        const isFasting = isPuasa(month, date, year, dayIndex);
+                        const isSunday = (dayIndex === 0);
+                        const isSuroDay = isSuro(month, date, year);
 
-                        // Set Kelas CSS
                         let className = "";
-                        if (isToday) className += " today";
-                        if (isSunday || isNatHoliday) className += " holiday"; 
-                        if (isFastingDay && !isNatHoliday) className += " puasa"; 
+                        if(isToday) className += "today ";
+                        if(isSunday || isNatHoliday) className += "holiday ";
+                        if(isFasting && !isNatHoliday) className += "puasa ";
+                        if(className) td.className = className.trim();
 
-                        if (className) cell.className = className.trim();
+                        let html = `<span class="day-number">${date}</span>`;
+                        html += `<div class="pasaran">${pasaran}</div>`;
+                        html += `<div class="neptu-value">Neptu ${neptuTotal}</div>`;
 
-                        // Konten HTML
-                        let content = `<span class="day-number">${date}</span>`;
-                        content += `<div class="pasaran-info">
-                                        <span class="pasaran-name">${pasaranName}</span>
-                                        <span class="neptu-value">${neptu}</span>
-                                     </div>`;
-                        
-                        // Badge Event
-                        let badgeHtml = "";
-                        
-                        if (isNatHoliday) {
-                            badgeHtml = `<div class="event-badge badge-holiday">Libur</div>`;
-                        } else if (isFastingDay) {
-                            let labelPuasa = "Puasa";
-                            if (dayIndex === 1) labelPuasa = "Senin";
-                            else if (dayIndex === 4) labelPuasa = "Kamis";
-                            
-                            // Cek khusus apakah ini bulan Ramadhan dengan mengecek array
-                            const mStr = String(month + 1).padStart(2, '0');
-                            const dStr = String(date).padStart(2, '0');
-                            const key = `${mStr}-${dStr}`;
-                            const isRamadhan = puasaDays[year] && puasaDays[year].includes(key);
-
-                            if (isRamadhan) labelPuasa = "Ramadhan";
-                            
-                            badgeHtml = `<div class="event-badge badge-puasa">${labelPuasa}</div>`;
+                        let badge = "";
+                        if(isNatHoliday) {
+                            badge = `<div class="event-badge badge-holiday">Libur</div>`;
+                        } else if(isFasting) {
+                            let label = "Puasa";
+                            if(dayIndex === 1) label = "Senin";
+                            else if(dayIndex === 4) label = "Kamis";
+                            const key = `${String(month+1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+                            if(puasaDays[year]?.includes(key)) label = "Ramadhan";
+                            badge = `<div class="event-badge badge-puasa">${label}</div>`;
                         }
-
-                        cell.innerHTML = content + badgeHtml;
+                        if(isSuroDay && !isNatHoliday) {
+                            badge = `<div class="event-badge badge-suro">1 Suro</div>`;
+                        }
+                        td.innerHTML = html + badge;
                         date++;
                     }
-                    row.appendChild(cell);
+                    tr.appendChild(td);
                 }
-
-                if (!hasDays && i > 0) break;
-                calendarBody.appendChild(row);
+                if(!hasCell && row>0) break;
+                calendarBody.appendChild(tr);
             }
         }
 
-        // --- EVENT LISTENERS ---
-
-        prevBtn.addEventListener('click', () => {
-            currentMonth--;
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-            updateControlsAndRender();
-        });
-
-        nextBtn.addEventListener('click', () => {
-            currentMonth++;
-            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-            updateControlsAndRender();
-        });
-
-        monthSelect.addEventListener('change', (e) => {
-            currentMonth = parseInt(e.target.value);
-            renderCalendar(currentMonth, currentYear);
-        });
-
-        yearSelect.addEventListener('change', (e) => {
-            currentYear = parseInt(e.target.value);
-            renderCalendar(currentMonth, currentYear);
-        });
-
-        todayBtn.addEventListener('click', () => {
-            const now = new Date();
-            currentMonth = now.getMonth();
-            currentYear = now.getFullYear();
-            currentDate = now; 
-            updateControlsAndRender();
-        });
-
-        function updateControlsAndRender() {
+        function updateAndRender() {
             monthSelect.value = currentMonth;
             yearSelect.value = currentYear;
             renderCalendar(currentMonth, currentYear);
         }
 
+        prevBtn.addEventListener('click', () => {
+            currentMonth--;
+            if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+            updateAndRender();
+        });
+        nextBtn.addEventListener('click', () => {
+            currentMonth++;
+            if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+            updateAndRender();
+        });
+        monthSelect.addEventListener('change', (e) => {
+            currentMonth = parseInt(e.target.value);
+            renderCalendar(currentMonth, currentYear);
+        });
+        yearSelect.addEventListener('change', (e) => {
+            currentYear = parseInt(e.target.value);
+            renderCalendar(currentMonth, currentYear);
+        });
+        todayBtn.addEventListener('click', () => {
+            const now = new Date();
+            currentMonth = now.getMonth();
+            currentYear = now.getFullYear();
+            currentDate = now;
+            updateAndRender();
+        });
+
         populateSelects();
         renderCalendar(currentMonth, currentYear);
-
     </script>
 </body>
-
 </html>
-
