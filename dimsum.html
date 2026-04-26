@@ -3,28 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Kasir Dimsum Radja - ZinXploit</title>
+  <title>Kasir Dimsum Radja - ZinXploit (dengan Kalkulator)</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
+    /* Gaya sama seperti sebelumnya, tambahan untuk kalkulator */
     *{margin:0;padding:0;box-sizing:border-box}
     :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
     body{background:#0b1220;color:#e6eef6;font-family:'Segoe UI',system-ui,Inter}
     .app{display:flex;min-height:100vh}
-    /* sidebar biru */
-    .sidebar{
-      width:260px;
-      background:linear-gradient(180deg,#0d6efd,#0a58ca);
-      padding:20px;
-      box-shadow:2px 0 10px rgba(0,0,0,0.3);
-      transition:transform 0.2s ease;
-    }
+    .sidebar{width:260px;background:linear-gradient(180deg,#0d6efd,#0a58ca);padding:20px;box-shadow:2px 0 10px rgba(0,0,0,0.3);transition:transform 0.2s}
     .logo{font-weight:bold;font-size:20px;color:white;margin-bottom:12px;text-shadow:1px 1px 0 #00000030}
     .small-muted{color:#e0e0e0;font-size:13px}
-    .nav-link{
-      color:#f0f0f0;margin:8px 0;border-radius:10px;padding:10px;
-      transition:0.2s; text-decoration:none; display:block;
-    }
+    .nav-link{color:#f0f0f0;margin:8px 0;border-radius:10px;padding:10px;transition:0.2s;text-decoration:none;display:block}
     .nav-link:hover{background:rgba(255,255,255,0.2);color:white}
     .nav-link.active{background:rgba(255,255,255,0.3);color:white;font-weight:bold}
     main{flex:1;padding:22px}
@@ -34,24 +25,48 @@
     .btn-ghost:hover{background:#0a58ca}
     footer{color:#aaa;text-align:center;margin-top:20px;font-size:12px}
     @media (max-width:900px){
-      .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:1000;transform:translateX(-100%);}
+      .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:1000;transform:translateX(-100%)}
       .sidebar.open{transform:translateX(0)}
     }
-    #receiptContent{
-      font-family:'Courier New',monospace;
-      white-space:pre-wrap;
-      background:white;
-      color:black;
-      padding:20px;
-      border-radius:8px;
-    }
-    @media print{
-      body *{visibility:hidden}
-      #receiptModal,#receiptModal *{visibility:visible}
-      #receiptModal{position:absolute;left:0;top:0;width:100%}
-      #receiptActions{display:none}
-    }
+    #receiptContent{font-family:'Courier New',monospace;white-space:pre-wrap;background:white;color:black;padding:20px;border-radius:8px}
+    @media print{body *{visibility:hidden}#receiptModal,#receiptModal *{visibility:visible}#receiptModal{position:absolute;left:0;top:0;width:100%}#receiptActions{display:none}}
     .btn-xs{padding:0 6px;font-size:12px}
+    /* Kalkulator style */
+    .calculator{
+      background:rgba(0,0,0,0.3);
+      border-radius:16px;
+      padding:12px;
+      margin-top:16px;
+    }
+    .calc-display{
+      background:#1e293b;
+      border-radius:12px;
+      padding:12px;
+      text-align:right;
+      font-size:1.8rem;
+      font-family:monospace;
+      margin-bottom:12px;
+      word-wrap:break-word;
+    }
+    .calc-buttons{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+    }
+    .calc-buttons button{
+      background:#334155;
+      border:none;
+      border-radius:12px;
+      padding:12px;
+      color:white;
+      font-weight:bold;
+      font-size:1.2rem;
+      transition:0.1s;
+    }
+    .calc-buttons button:active{transform:scale(0.95);background:#475569}
+    .calc-buttons .btn-op{background:#f59e0b;color:#000}
+    .calc-buttons .btn-equal{background:#10b981}
+    .calc-buttons .btn-clear{background:#ef4444}
   </style>
 </head>
 <body>
@@ -114,6 +129,34 @@
               <div class="d-flex justify-content-between mt-2">
                 <div><div class="small-muted">Total</div><div id="cartTotal" class="fw-bold fs-5">Rp 0</div></div>
                 <div><button class="btn btn-success" id="checkoutBtn">💵 Checkout</button><button class="btn btn-outline-light ms-2" id="clearCartBtn">🗑 Kosongkan</button></div>
+              </div>
+            </div>
+            <!-- KALKULATOR DIMSUM -->
+            <div class="card p-3 mt-3">
+              <h5>🧮 Kalkulator Bantu</h5>
+              <div class="calculator">
+                <div class="calc-display" id="calcDisplay">0</div>
+                <div class="calc-buttons">
+                  <button class="btn-num" data-val="7">7</button>
+                  <button class="btn-num" data-val="8">8</button>
+                  <button class="btn-num" data-val="9">9</button>
+                  <button class="btn-op" data-op="/">÷</button>
+                  <button class="btn-num" data-val="4">4</button>
+                  <button class="btn-num" data-val="5">5</button>
+                  <button class="btn-num" data-val="6">6</button>
+                  <button class="btn-op" data-op="*">×</button>
+                  <button class="btn-num" data-val="1">1</button>
+                  <button class="btn-num" data-val="2">2</button>
+                  <button class="btn-num" data-val="3">3</button>
+                  <button class="btn-op" data-op="-">-</button>
+                  <button class="btn-num" data-val="0">0</button>
+                  <button class="btn-num" data-val=".">.</button>
+                  <button class="btn-clear" id="calcClear">C</button>
+                  <button class="btn-op" data-op="+">+</button>
+                  <button class="btn-equal" id="calcEqual">=</button>
+                  <button class="btn-clear" id="calcCE">CE</button>
+                </div>
+                <div class="small-muted mt-2 text-center">Tekan = untuk menghitung. Hasil bisa dipakai untuk pembayaran manual.</div>
               </div>
             </div>
           </div>
@@ -304,7 +347,7 @@
       let ig = $('#globalOriStock'); if(ig) ig.value = DB.data.globalOriStock;
     }
 
-    // Render daftar produk di kasir (tanpa stok)
+    // Render daftar produk di kasir
     function renderProductList(){
       const container = $('#productList');
       if(!container) return;
@@ -373,7 +416,7 @@
     }
     $('#clearCartBtn')?.addEventListener('click', ()=>{cart=[]; renderCart();});
 
-    // Produk Table (dengan stok awal & barang kembali)
+    // Produk Table (stok awal & barang kembali)
     function renderProductTable(){
       const tbody = $('#productTable tbody');
       if(!tbody) return;
@@ -392,7 +435,6 @@
         `;
         tbody.appendChild(tr);
       });
-      // Edit stok awal
       $$('.edit-initial').forEach(btn => btn.addEventListener('click', ()=>{
         let id = btn.dataset.id;
         let prod = DB.data.products.find(p=>p.id===id);
@@ -402,7 +444,6 @@
           saveData(); renderProductTable(); renderProductList();
         }
       }));
-      // Barang kembali (tambah stok saat ini)
       $$('.add-return').forEach(btn => btn.addEventListener('click', ()=>{
         let id = btn.dataset.id;
         let prod = DB.data.products.find(p=>p.id===id);
@@ -417,7 +458,6 @@
           } else alert('Jumlah tidak valid');
         } else if(prod && prod.isOri) alert('Untuk Dimsum Ori, tambah stok melalui menu Pengeluaran atau update stok global.');
       }));
-      // Edit produk
       $$('.edit-prod').forEach(btn => btn.addEventListener('click', ()=>{
         let id = btn.dataset.id;
         let prod = DB.data.products.find(p=>p.id===id);
@@ -445,7 +485,7 @@
       }));
     }
 
-    // Tambah produk via form
+    // Form tambah produk
     $('#productForm')?.addEventListener('submit', e=>{
       e.preventDefault();
       let name = $('#p_name').value.trim();
@@ -482,7 +522,7 @@
       alert('Stok Ori global diperbarui');
     });
 
-    // LAPORAN PENJUALAN (grafik + tabel)
+    // LAPORAN PENJUALAN
     function getSalesData(period){
       let map = new Map();
       DB.data.sales.forEach(sale => {
@@ -539,7 +579,7 @@
       }));
     }
 
-    // Struk dengan data outlet
+    // Struk
     function displayReceipt(sale){
       let settings = DB.data.settings;
       let outlet = settings.outletName || 'Dimsum Radja';
@@ -639,7 +679,7 @@ ${footerText}
       alert('Pengeluaran tersimpan');
     });
 
-    // Checkout & Payment
+    // Payment & Checkout
     const paymentModal = new bootstrap.Modal($('#paymentModal'));
     $('#checkoutBtn')?.addEventListener('click', ()=>{
       if(cart.length===0) return alert('Keranjang kosong');
@@ -701,7 +741,7 @@ ${footerText}
       displayReceipt(sale);
     });
 
-    // Pengaturan (QRIS, rekening, edit struk)
+    // Pengaturan QRIS & struk
     $('#qrisUpload')?.addEventListener('change', e=>{
       let file = e.target.files[0];
       if(file){
@@ -757,6 +797,70 @@ ${footerText}
       let url = URL.createObjectURL(blob);
       let a = document.createElement('a'); a.href=url; a.download=`struk_${Date.now()}.txt`; a.click(); URL.revokeObjectURL(url);
     });
+
+    // =============== KALKULATOR ===============
+    let calcDisplay = $('#calcDisplay');
+    let currentInput = '0';
+    let previousInput = '';
+    let operation = null;
+    function updateCalcDisplay(){
+      calcDisplay.innerText = currentInput;
+    }
+    function handleNumber(num){
+      if(currentInput === '0' && num !== '.') currentInput = num;
+      else currentInput += num;
+      updateCalcDisplay();
+    }
+    function handleOperator(op){
+      if(operation !== null) calculate();
+      previousInput = currentInput;
+      operation = op;
+      currentInput = '0';
+    }
+    function calculate(){
+      let prev = parseFloat(previousInput);
+      let curr = parseFloat(currentInput);
+      if(isNaN(prev) || isNaN(curr)) return;
+      let result;
+      switch(operation){
+        case '+': result = prev + curr; break;
+        case '-': result = prev - curr; break;
+        case '*': result = prev * curr; break;
+        case '/': result = prev / curr; break;
+        default: return;
+      }
+      currentInput = result.toString();
+      operation = null;
+      previousInput = '';
+      updateCalcDisplay();
+    }
+    function clearCalc(){
+      currentInput = '0';
+      previousInput = '';
+      operation = null;
+      updateCalcDisplay();
+    }
+    function clearEntry(){
+      currentInput = '0';
+      updateCalcDisplay();
+    }
+    // Event listeners untuk kalkulator
+    $$('.btn-num').forEach(btn => btn.addEventListener('click', ()=>{
+      let val = btn.getAttribute('data-val');
+      if(val === '.' && currentInput.includes('.')) return;
+      handleNumber(val);
+    }));
+    $$('.btn-op').forEach(btn => btn.addEventListener('click', ()=>{
+      let op = btn.getAttribute('data-op');
+      handleOperator(op === '÷' ? '/' : (op === '×' ? '*' : op));
+    }));
+    $('#calcEqual')?.addEventListener('click', ()=>{
+      if(operation && previousInput !== '') calculate();
+    });
+    $('#calcClear')?.addEventListener('click', clearCalc);
+    $('#calcCE')?.addEventListener('click', clearEntry);
+    // Initial calc display
+    updateCalcDisplay();
 
     // Navigation
     function showView(name){
