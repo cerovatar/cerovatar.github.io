@@ -7,7 +7,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    /* Gaya sama seperti sebelumnya, tambahan untuk kalkulator */
     *{margin:0;padding:0;box-sizing:border-box}
     :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
     body{background:#0b1220;color:#e6eef6;font-family:'Segoe UI',system-ui,Inter}
@@ -31,7 +30,6 @@
     #receiptContent{font-family:'Courier New',monospace;white-space:pre-wrap;background:white;color:black;padding:20px;border-radius:8px}
     @media print{body *{visibility:hidden}#receiptModal,#receiptModal *{visibility:visible}#receiptModal{position:absolute;left:0;top:0;width:100%}#receiptActions{display:none}}
     .btn-xs{padding:0 6px;font-size:12px}
-    /* Kalkulator style */
     .calculator{
       background:rgba(0,0,0,0.3);
       border-radius:16px;
@@ -76,7 +74,7 @@
     <div class="small-muted mb-2">Stok Ori global (desimal)</div>
     <nav class="nav flex-column mt-3" id="menu">
       <a href="#" class="nav-link active" data-view="kasir">Kasir</a>
-      <a href="#" class="nav-link" data-view="produk">Produk & Stok</a>
+      <a href="#" class="nav-link" data-view="produk">Barang Beku & Barang Balik</a>
       <a href="#" class="nav-link" data-view="laporan">Laporan Penjualan</a>
       <a href="#" class="nav-link" data-view="setoran">Setoran</a>
       <a href="#" class="nav-link" data-view="pengeluaran">Pengeluaran</a>
@@ -163,27 +161,27 @@
         </div>
       </div>
 
-      <!-- ===================== PRODUK & STOK ===================== -->
+      <!-- ===================== BARANG BEKU & BARANG BALIK ===================== -->
       <div class="view d-none" id="view-produk">
         <div class="card p-3">
-          <h5>📦 Manajemen Produk & Stok</h5>
+          <h5>❄️ Manajemen Barang Beku & Barang Balik</h5>
           <form id="productForm" class="row g-2 mb-3">
-            <div class="col-md-3"><input id="p_name" placeholder="Nama produk" class="form-control" required></div>
+            <div class="col-md-3"><input id="p_name" placeholder="Nama barang beku" class="form-control" required></div>
             <div class="col-md-2"><input id="p_price" type="number" step="any" placeholder="Harga" class="form-control" required></div>
-            <div class="col-md-2"><input id="p_initial_stock" type="number" step="any" placeholder="Stok Awal" class="form-control"></div>
-            <div class="col-md-2"><input id="p_return_stock" type="number" step="any" placeholder="Barang Kembali" class="form-control"></div>
+            <div class="col-md-2"><input id="p_initial_stock" type="number" step="any" placeholder="Stok awal (beku)" class="form-control"></div>
+            <div class="col-md-2"><input id="p_return_stock" type="number" step="any" placeholder="Barang balik (retur)" class="form-control"></div>
             <div class="col-md-2"><input id="p_unit" placeholder="Satuan" class="form-control"></div>
-            <div class="col-md-1"><div class="form-check"><input type="checkbox" id="p_isOri"> <label>Ori</label></div></div>
-            <div class="col-12 text-end"><button class="btn btn-primary">💾 Simpan Produk</button></div>
+            <div class="col-md-1"><div class="form-check"><input type="checkbox" id="p_isOri"> <label>Ori (stok global)</label></div></div>
+            <div class="col-12 text-end"><button class="btn btn-primary">💾 Simpan Barang</button></div>
           </form>
-          <div class="mb-2">🌍 Stok Global Dimsum Ori: <input type="number" id="globalOriStock" step="any" class="form-control d-inline w-auto" style="width:120px"> <button id="updateOriStock" class="btn btn-sm btn-warning">Update Stok Ori</button></div>
+          <div class="mb-2">🌍 Stok Global Dimsum Ori (beku): <input type="number" id="globalOriStock" step="any" class="form-control d-inline w-auto" style="width:120px"> <button id="updateOriStock" class="btn btn-sm btn-warning">Update Stok Ori</button></div>
           <div class="table-wrap">
             <table class="table table-sm text-light" id="productTable">
-              <thead><tr><th>Nama</th><th>Harga</th><th>Stok Awal</th><th>Barang Kembali</th><th>Stok Saat Ini</th><th>Satuan</th><th>Ori?</th><th>Aksi</th></tr></thead>
+              <thead><tr><th>Nama Barang Beku</th><th>Harga</th><th>Stok Awal (Beku)</th><th>Barang Balik (Retur)</th><th>Stok Saat Ini</th><th>Satuan</th><th>Ori?</th><th>Aksi</th></tr></thead>
               <tbody></tbody>
             </table>
           </div>
-          <div class="small-muted mt-2">📌 *Barang Kembali: tambah stok saat ini (klik ➕ di samping nilai)</div>
+          <div class="small-muted mt-2">📌 *Barang Balik: tambah stok saat ini (klik ➕ di samping nilai) untuk retur barang dari customer.</div>
         </div>
       </div>
 
@@ -298,14 +296,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   (function(){
-    // Helper
     const $ = s => document.querySelector(s);
     const $$ = s => Array.from(document.querySelectorAll(s));
     const money = v => 'Rp ' + (Number(v)||0).toLocaleString('id-ID');
     const formatStock = v => (Number(v)||0).toLocaleString('id-ID', {minimumFractionDigits:0, maximumFractionDigits:2});
     const uid = () => 'id'+Math.random().toString(36).substring(2,9);
 
-    // Data default
     const defaultData = {
       globalOriStock: 10.0,
       products: [
@@ -341,13 +337,11 @@
     let cart = [];
     let salesChart = null;
 
-    // UI updates
     function updateStokDisplay(){
       let el = $('#stokOriDisplay'); if(el) el.innerText = formatStock(DB.data.globalOriStock);
       let ig = $('#globalOriStock'); if(ig) ig.value = DB.data.globalOriStock;
     }
 
-    // Render daftar produk di kasir
     function renderProductList(){
       const container = $('#productList');
       if(!container) return;
@@ -416,7 +410,6 @@
     }
     $('#clearCartBtn')?.addEventListener('click', ()=>{cart=[]; renderCart();});
 
-    // Produk Table (stok awal & barang kembali)
     function renderProductTable(){
       const tbody = $('#productTable tbody');
       if(!tbody) return;
@@ -439,7 +432,7 @@
         let id = btn.dataset.id;
         let prod = DB.data.products.find(p=>p.id===id);
         if(prod){
-          let newVal = prompt('Stok Awal (desimal)', prod.initialStock);
+          let newVal = prompt('Stok Awal (beku)', prod.initialStock);
           if(newVal !== null && !isNaN(parseFloat(newVal))) prod.initialStock = parseFloat(newVal);
           saveData(); renderProductTable(); renderProductList();
         }
@@ -448,13 +441,13 @@
         let id = btn.dataset.id;
         let prod = DB.data.products.find(p=>p.id===id);
         if(prod && !prod.isOri){
-          let qty = prompt('Jumlah barang kembali (tambah stok)', 0);
+          let qty = prompt('Jumlah barang balik (retur) - menambah stok', 0);
           if(qty !== null && !isNaN(parseFloat(qty)) && parseFloat(qty)>0){
             let val = parseFloat(qty);
             prod.stock += val;
             prod.returnedStock += val;
             saveData(); renderProductTable(); renderProductList();
-            alert(`Stok ${prod.name} bertambah ${formatStock(val)}`);
+            alert(`Stok ${prod.name} bertambah ${formatStock(val)} karena retur/barang balik.`);
           } else alert('Jumlah tidak valid');
         } else if(prod && prod.isOri) alert('Untuk Dimsum Ori, tambah stok melalui menu Pengeluaran atau update stok global.');
       }));
@@ -465,12 +458,12 @@
           let newName = prompt('Nama baru', prod.name); if(newName) prod.name = newName;
           let newPrice = prompt('Harga baru', prod.price); if(newPrice) prod.price = parseFloat(newPrice);
           if(!prod.isOri){
-            let newStock = prompt('Stok saat ini', prod.stock); if(newStock !== null) prod.stock = parseFloat(newStock);
-            let newInitial = prompt('Stok Awal', prod.initialStock); if(newInitial !== null) prod.initialStock = parseFloat(newInitial);
-            let newReturn = prompt('Total Barang Kembali', prod.returnedStock); if(newReturn !== null) prod.returnedStock = parseFloat(newReturn);
+            let newStock = prompt('Stok saat ini (beku)', prod.stock); if(newStock !== null) prod.stock = parseFloat(newStock);
+            let newInitial = prompt('Stok Awal (beku)', prod.initialStock); if(newInitial !== null) prod.initialStock = parseFloat(newInitial);
+            let newReturn = prompt('Total Barang Balik (retur)', prod.returnedStock); if(newReturn !== null) prod.returnedStock = parseFloat(newReturn);
           } else {
             let newInitial = prompt('Stok Awal (catatan)', prod.initialStock); if(newInitial !== null) prod.initialStock = parseFloat(newInitial);
-            let newReturn = prompt('Total Barang Kembali (catatan)', prod.returnedStock); if(newReturn !== null) prod.returnedStock = parseFloat(newReturn);
+            let newReturn = prompt('Total Barang Balik (catatan)', prod.returnedStock); if(newReturn !== null) prod.returnedStock = parseFloat(newReturn);
           }
           saveData(); renderProductTable(); renderProductList();
         }
@@ -485,7 +478,6 @@
       }));
     }
 
-    // Form tambah produk
     $('#productForm')?.addEventListener('submit', e=>{
       e.preventDefault();
       let name = $('#p_name').value.trim();
@@ -513,7 +505,6 @@
       $('#quickAddForm').reset();
     });
 
-    // Update stok global Ori
     $('#updateOriStock')?.addEventListener('click', ()=>{
       let newStock = parseFloat($('#globalOriStock').value);
       if(isNaN(newStock)) return alert('Masukkan angka');
@@ -522,7 +513,6 @@
       alert('Stok Ori global diperbarui');
     });
 
-    // LAPORAN PENJUALAN
     function getSalesData(period){
       let map = new Map();
       DB.data.sales.forEach(sale => {
@@ -579,7 +569,6 @@
       }));
     }
 
-    // Struk
     function displayReceipt(sale){
       let settings = DB.data.settings;
       let outlet = settings.outletName || 'Dimsum Radja';
@@ -612,7 +601,6 @@ ${footerText}
       modal.show();
     }
 
-    // Setoran
     function renderSetoranTable(){
       let tbody = $('#setoranTable tbody');
       if(!tbody) return;
@@ -649,7 +637,6 @@ ${footerText}
       alert('Setoran tersimpan');
     });
 
-    // Pengeluaran
     function renderExpenseTable(){
       let tbody = $('#expenseTable tbody');
       if(!tbody) return;
@@ -679,7 +666,6 @@ ${footerText}
       alert('Pengeluaran tersimpan');
     });
 
-    // Payment & Checkout
     const paymentModal = new bootstrap.Modal($('#paymentModal'));
     $('#checkoutBtn')?.addEventListener('click', ()=>{
       if(cart.length===0) return alert('Keranjang kosong');
@@ -741,7 +727,6 @@ ${footerText}
       displayReceipt(sale);
     });
 
-    // Pengaturan QRIS & struk
     $('#qrisUpload')?.addEventListener('change', e=>{
       let file = e.target.files[0];
       if(file){
@@ -762,7 +747,6 @@ ${footerText}
       alert('Pengaturan tersimpan');
     });
 
-    // Export & Reset
     $('#exportBtn')?.addEventListener('click', ()=>{
       let dataStr = JSON.stringify(DB.data,null,2);
       let blob = new Blob([dataStr],{type:'application/json'});
@@ -785,7 +769,6 @@ ${footerText}
       }
     });
 
-    // Print & WA receipt
     $('#printReceipt')?.addEventListener('click', ()=> window.print());
     $('#sendWaReceipt')?.addEventListener('click', ()=>{
       let text = $('#receiptContent').innerText;
@@ -798,7 +781,6 @@ ${footerText}
       let a = document.createElement('a'); a.href=url; a.download=`struk_${Date.now()}.txt`; a.click(); URL.revokeObjectURL(url);
     });
 
-    // =============== KALKULATOR ===============
     let calcDisplay = $('#calcDisplay');
     let currentInput = '0';
     let previousInput = '';
@@ -844,7 +826,6 @@ ${footerText}
       currentInput = '0';
       updateCalcDisplay();
     }
-    // Event listeners untuk kalkulator
     $$('.btn-num').forEach(btn => btn.addEventListener('click', ()=>{
       let val = btn.getAttribute('data-val');
       if(val === '.' && currentInput.includes('.')) return;
@@ -859,23 +840,24 @@ ${footerText}
     });
     $('#calcClear')?.addEventListener('click', clearCalc);
     $('#calcCE')?.addEventListener('click', clearEntry);
-    // Initial calc display
     updateCalcDisplay();
 
-    // Navigation
     function showView(name){
       $$('.view').forEach(v=>v.classList.add('d-none'));
       $(`#view-${name}`)?.classList.remove('d-none');
       $$('#menu .nav-link').forEach(a=>a.classList.remove('active'));
       $(`#menu .nav-link[data-view="${name}"]`)?.classList.add('active');
-      $('#viewTitle').innerText = name.charAt(0).toUpperCase() + name.slice(1);
+      $('#viewTitle').innerText = name === 'produk' ? 'Barang Beku & Barang Balik' : (name.charAt(0).toUpperCase() + name.slice(1));
       if(name === 'laporan') { renderSalesTable(); renderChart($('#chartPeriod').value); }
       if(name === 'setoran') renderSetoranTable();
       if(name === 'pengeluaran') renderExpenseTable();
       if(name === 'pengaturan'){
-        $('#bankName').val = DB.data.settings.bankName; $('#bankAcc').val = DB.data.settings.bankAcc;
-        $('#outletName').val = DB.data.settings.outletName; $('#cashierName').val = DB.data.settings.cashierName;
-        $('#receiptHeader').val = DB.data.settings.receiptHeader; $('#receiptFooter').val = DB.data.settings.receiptFooter;
+        $('#bankName').value = DB.data.settings.bankName || '';
+        $('#bankAcc').value = DB.data.settings.bankAcc || '';
+        $('#outletName').value = DB.data.settings.outletName || '';
+        $('#cashierName').value = DB.data.settings.cashierName || '';
+        $('#receiptHeader').value = DB.data.settings.receiptHeader || '';
+        $('#receiptFooter').value = DB.data.settings.receiptFooter || '';
         if(DB.data.settings.qris) $('#qrisPreview').src = DB.data.settings.qris;
       }
     }
@@ -884,7 +866,6 @@ ${footerText}
     $('#chartPeriod')?.addEventListener('change', ()=> renderChart($('#chartPeriod').value));
     $('#refreshChart')?.addEventListener('click', ()=> renderChart($('#chartPeriod').value));
 
-    // Start
     renderProductList(); renderCart(); renderProductTable(); renderSalesTable(); renderSetoranTable(); renderExpenseTable(); updateStokDisplay();
     showView('kasir');
   })();
