@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Kasir Dimsum Radja - ZinXploit (dengan Kalkulator)</title>
+  <title>Kasir Dimsum Radja - ZinXploit</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -30,18 +30,11 @@
       .sidebar.open{
         transform:translateX(0);
       }
-      main{
-        width:100%;
-      }
+      main{ width:100%; }
     }
     @media (min-width:901px){
-      .sidebar{
-        transform:translateX(0) !important;
-        position:relative;
-      }
-      .toggle-sidebar-btn{
-        display:none !important;
-      }
+      .sidebar{ transform:translateX(0) !important; position:relative; }
+      .toggle-sidebar-btn{ display:none !important; }
     }
     .logo{font-weight:bold;font-size:20px;color:white;margin-bottom:12px;text-shadow:1px 1px 0 #00000030}
     .small-muted{color:#e0e0e0;font-size:13px}
@@ -92,16 +85,8 @@
     .calc-buttons .btn-op{background:#f59e0b;color:#000}
     .calc-buttons .btn-equal{background:#10b981}
     .calc-buttons .btn-clear{background:#ef4444}
-    /* biar harga terlihat bisa diklik */
-    .editable-price{
-      cursor:pointer;
-      text-decoration:underline;
-      text-decoration-style:dotted;
-    }
-    .editable-price:hover{
-      background:rgba(255,255,255,0.2);
-      border-radius:6px;
-    }
+    .editable-price{cursor:pointer;text-decoration:underline dotted}
+    .editable-price:hover{background:rgba(255,255,255,0.2);border-radius:6px}
   </style>
 </head>
 <body>
@@ -131,60 +116,21 @@
     </div>
 
     <section id="views">
-      <!-- KASIR (sama persis) -->
+      <!-- ===================== KASIR (sama) ===================== -->
       <div class="view" id="view-kasir">
         <div class="row">
           <div class="col-lg-6 mb-3">
-            <div class="card p-3">
-              <h5>🍜 Menu Dimsum</h5>
-              <div class="small-muted mb-2">Klik tombol untuk menambah ke keranjang</div>
-              <div id="productList" class="d-flex flex-wrap gap-2"></div>
-              <div class="mt-3 text-info">📦 Sisa stok Dimsum Ori: <strong id="stokOriDisplay">0</strong> porsi</div>
-            </div>
-            <div class="card p-3 mt-3">
-              <h5>➕ Tambah Produk Baru</h5>
-              <form id="quickAddForm" class="row g-2">
-                <div class="col-6"><input id="q_name" placeholder="Nama" class="form-control" required></div>
-                <div class="col-3"><input id="q_price" type="number" step="any" placeholder="Harga" class="form-control" required></div>
-                <div class="col-3"><input id="q_stock" type="number" step="any" placeholder="Stok awal" class="form-control" required></div>
-                <div class="col-12"><div class="form-check"><input type="checkbox" id="q_isOri"> <label>Varian Dimsum Ori (stok global)</label></div></div>
-                <div class="col-12 text-end"><button class="btn btn-primary btn-sm">➕ Tambah</button></div>
-              </form>
-            </div>
+            <div class="card p-3"><h5>🍜 Menu Dimsum</h5><div class="small-muted mb-2">Klik tombol untuk menambah ke keranjang</div><div id="productList" class="d-flex flex-wrap gap-2"></div><div class="mt-3 text-info">📦 Sisa stok Dimsum Ori: <strong id="stokOriDisplay">0</strong> porsi</div></div>
+            <div class="card p-3 mt-3"><h5>➕ Tambah Produk Baru</h5><form id="quickAddForm" class="row g-2"><div class="col-6"><input id="q_name" placeholder="Nama" class="form-control" required></div><div class="col-3"><input id="q_price" type="number" step="any" placeholder="Harga" class="form-control" required></div><div class="col-3"><input id="q_stock" type="number" step="any" placeholder="Stok awal" class="form-control" required></div><div class="col-12"><div class="form-check"><input type="checkbox" id="q_isOri"> <label>Varian Dimsum Ori (stok global)</label></div></div><div class="col-12 text-end"><button class="btn btn-primary btn-sm">➕ Tambah</button></div></form></div>
           </div>
           <div class="col-lg-6">
-            <div class="card p-3">
-              <h5>🛒 Keranjang Belanja</h5>
-              <div class="table-wrap">
-                <table class="table table-sm table-borderless text-light" id="cartTable">
-                  <thead><tr><th>Item</th><th>Qty</th><th>Harga</th><th>Subtotal</th><th></th></tr></thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-              <div class="d-flex justify-content-between mt-2">
-                <div><div class="small-muted">Total</div><div id="cartTotal" class="fw-bold fs-5">Rp 0</div></div>
-                <div><button class="btn btn-success" id="checkoutBtn">💵 Checkout</button><button class="btn btn-outline-light ms-2" id="clearCartBtn">🗑 Kosongkan</button></div>
-              </div>
-            </div>
-            <div class="card p-3 mt-3">
-              <h5>🧮 Kalkulator Bantu</h5>
-              <div class="calculator">
-                <div class="calc-display" id="calcDisplay">0</div>
-                <div class="calc-buttons">
-                  <button class="btn-num" data-val="7">7</button><button class="btn-num" data-val="8">8</button><button class="btn-num" data-val="9">9</button><button class="btn-op" data-op="/">÷</button>
-                  <button class="btn-num" data-val="4">4</button><button class="btn-num" data-val="5">5</button><button class="btn-num" data-val="6">6</button><button class="btn-op" data-op="*">×</button>
-                  <button class="btn-num" data-val="1">1</button><button class="btn-num" data-val="2">2</button><button class="btn-num" data-val="3">3</button><button class="btn-op" data-op="-">-</button>
-                  <button class="btn-num" data-val="0">0</button><button class="btn-num" data-val=".">.</button><button class="btn-clear" id="calcClear">C</button><button class="btn-op" data-op="+">+</button>
-                  <button class="btn-equal" id="calcEqual">=</button><button class="btn-clear" id="calcCE">CE</button>
-                </div>
-                <div class="small-muted mt-2 text-center">Tekan = untuk menghitung.</div>
-              </div>
-            </div>
+            <div class="card p-3"><h5>🛒 Keranjang Belanja</h5><div class="table-wrap"><table class="table table-sm table-borderless text-light" id="cartTable"><thead><tr><th>Item</th><th>Qty</th><th>Harga</th><th>Subtotal</th><th></th></tr></thead><tbody></tbody></table></div><div class="d-flex justify-content-between mt-2"><div><div class="small-muted">Total</div><div id="cartTotal" class="fw-bold fs-5">Rp 0</div></div><div><button class="btn btn-success" id="checkoutBtn">💵 Checkout</button><button class="btn btn-outline-light ms-2" id="clearCartBtn">🗑 Kosongkan</button></div></div></div>
+            <div class="card p-3 mt-3"><h5>🧮 Kalkulator Bantu</h5><div class="calculator"><div class="calc-display" id="calcDisplay">0</div><div class="calc-buttons"><button class="btn-num" data-val="7">7</button><button class="btn-num" data-val="8">8</button><button class="btn-num" data-val="9">9</button><button class="btn-op" data-op="/">÷</button><button class="btn-num" data-val="4">4</button><button class="btn-num" data-val="5">5</button><button class="btn-num" data-val="6">6</button><button class="btn-op" data-op="*">×</button><button class="btn-num" data-val="1">1</button><button class="btn-num" data-val="2">2</button><button class="btn-num" data-val="3">3</button><button class="btn-op" data-op="-">-</button><button class="btn-num" data-val="0">0</button><button class="btn-num" data-val=".">.</button><button class="btn-clear" id="calcClear">C</button><button class="btn-op" data-op="+">+</button><button class="btn-equal" id="calcEqual">=</button><button class="btn-clear" id="calcCE">CE</button></div><div class="small-muted mt-2 text-center">Tekan = untuk menghitung.</div></div></div>
           </div>
         </div>
       </div>
 
-      <!-- BARANG BEKU & BARANG BALIK (dengan fitur ubah harga double klik) -->
+      <!-- ===================== BARANG BEKU & BARANG BALIK ===================== -->
       <div class="view d-none" id="view-produk">
         <div class="card p-3">
           <h5>❄️ Manajemen Barang Beku & Barang Balik</h5>
@@ -200,41 +146,57 @@
           <div class="mb-2">🌍 Stok Global Dimsum Ori (beku): <input type="number" id="globalOriStock" step="any" class="form-control d-inline w-auto" style="width:120px"> <button id="updateOriStock" class="btn btn-sm btn-warning">Update Stok Ori</button></div>
           <div class="table-wrap">
             <table class="table table-sm text-light" id="productTable">
-              <thead>
-                <tr><th>Nama Barang Beku</th><th>Harga <span class="small-muted">(double klik untuk ubah)</span></th><th>Stok Awal (Beku)</th><th>Barang Balik (Retur)</th><th>Total Stok</th><th>Satuan</th><th>Ori?</th><th>Nilai (Rp)</th><th>Aksi</th></tr>
-              </thead>
+              <thead><tr><th>Nama Barang Beku</th><th>Harga <span class="small-muted">(double klik)</span></th><th>Stok Awal</th><th>Barang Balik</th><th>Total Stok</th><th>Satuan</th><th>Ori?</th><th>Nilai (Rp)</th><th>Aksi</th></tr></thead>
               <tbody></tbody>
-              <tfoot><tr class="table-active"><td colspan="7" class="text-end fw-bold">Total Nilai Seluruh Barang:</td><td id="totalNilaiAll" class="fw-bold">Rp 0</td><td></td></tr></tfoot>
+              <tfoot><tr class="table-active"><td colspan="7" class="text-end fw-bold">Total Nilai Seluruh Barang: </td><td id="totalNilaiAll" class="fw-bold">Rp 0</td><td></td></tr></tfoot>
             </table>
           </div>
-          <div class="small-muted mt-2">📌 *Double klik pada harga untuk mengubah harga per produk.</div>
+          <div class="small-muted mt-2">📌 Double klik pada harga untuk mengubah.</div>
         </div>
       </div>
 
-      <!-- LAPORAN -->
+      <!-- ===================== LAPORAN PENJUALAN ===================== -->
       <div class="view d-none" id="view-laporan">
-        <div class="card p-3 mb-3">
-          <h5>📊 Grafik Penjualan</h5>
-          <div class="row"><div class="col-md-6"><select id="chartPeriod" class="form-select mb-2"><option value="day">📅 Per Hari</option><option value="month">📆 Per Bulan</option><option value="year">📆 Per Tahun</option></select></div><div class="col-md-6"><button id="refreshChart" class="btn btn-primary btn-sm w-100">🔄 Refresh</button></div></div>
-          <canvas id="salesChart" height="200" style="max-height:300px"></canvas>
-        </div>
-        <div class="card p-3">
-          <h5>🧾 Daftar Transaksi</h5>
-          <div class="table-wrap"><table class="table table-sm text-light" id="salesTable"><thead><tr><th>Tanggal</th><th>Items</th><th>Total</th><th>Metode</th><th>Aksi</th></tr></thead><tbody></tbody></table></div>
-          <div class="mt-3"><strong>💰 Total Penjualan: </strong><span id="summarySales">Rp 0</span> &nbsp;|&nbsp; <strong>🍽 Total Porsi Terjual: </strong><span id="summaryQty">0</span></div>
-        </div>
+        <div class="card p-3 mb-3"><h5>📊 Grafik Penjualan</h5><div class="row"><div class="col-md-6"><select id="chartPeriod" class="form-select mb-2"><option value="day">📅 Per Hari</option><option value="month">📆 Per Bulan</option><option value="year">📆 Per Tahun</option></select></div><div class="col-md-6"><button id="refreshChart" class="btn btn-primary btn-sm w-100">🔄 Refresh</button></div></div><canvas id="salesChart" height="200" style="max-height:300px"></canvas></div>
+        <div class="card p-3"><h5>🧾 Daftar Transaksi</h5><div class="table-wrap"><table class="table table-sm text-light" id="salesTable"><thead><tr><th>Tanggal</th><th>Items</th><th>Total</th><th>Metode</th><th>Aksi</th></tr></thead><tbody></tbody></table></div><div class="mt-3"><strong>💰 Total Penjualan: </strong><span id="summarySales">Rp 0</span> &nbsp;|&nbsp; <strong>🍽 Total Porsi Terjual: </strong><span id="summaryQty">0</span></div></div>
       </div>
 
-      <!-- SETORAN -->
+      <!-- ===================== SETORAN (format slip sesuai gambar) ===================== -->
       <div class="view d-none" id="view-setoran">
-        <div class="card p-3"><h5>📥 Setoran Harian</h5><form id="setoranForm" class="row g-2 align-items-end"><div class="col-md-4"><label>Harga per porsi (Rp)</label><input id="s_price" type="number" step="any" class="form-control" required></div><div class="col-md-4"><label>Jumlah porsi</label><input id="s_qty" type="number" step="any" class="form-control" required></div><div class="col-md-4"><label>Total</label><input id="s_total" class="form-control" readonly></div><div class="col-12 text-end"><button class="btn btn-primary">💾 Simpan Setoran</button></div></form><div class="table-wrap mt-3"><table class="table table-sm text-light" id="setoranTable"><thead><tr><th>Tanggal</th><th>Harga/porsi</th><th>Qty</th><th>Total</th><th>Aksi</th></tr></thead><tbody></tbody></table></div></div>
+        <div class="card p-3">
+          <h5>📋 SLIP SETORAN</h5>
+          <form id="setoranForm" class="row g-3">
+            <div class="col-md-6"><label class="form-label">TANGGAL</label><input type="date" id="s_tanggal" class="form-control" required></div>
+            <div class="col-md-6"><label class="form-label">NAMA</label><input type="text" id="s_nama" class="form-control" placeholder="Nama penyetor" required></div>
+            <div class="col-md-6"><label class="form-label">LAPAK</label><input type="text" id="s_lapak" class="form-control" placeholder="Nama lapak" required></div>
+            <div class="col-md-6"><label class="form-label">NAMA BARANG</label><input type="text" id="s_namabarang" class="form-control" placeholder="Contoh: Dimsum Ori"></div>
+            <div class="col-md-4"><label class="form-label">BARANG DI BAWA</label><input type="number" step="any" id="s_dibawa" class="form-control" value="0"></div>
+            <div class="col-md-4"><label class="form-label">BARANG KEMBALI</label><input type="number" step="any" id="s_kembali" class="form-control" value="0"></div>
+            <div class="col-md-4"><label class="form-label">PENDAPATAN (Rp)</label><input type="number" step="any" id="s_pendapatan" class="form-control" value="0"></div>
+            
+            <div class="col-12"><hr><h6>S : M C K</h6></div>
+            <div class="col-md-3"><label class="form-label">M (Modal)</label><input type="number" step="any" id="s_m" class="form-control" value="0"></div>
+            <div class="col-md-3"><label class="form-label">K (Keuntungan)</label><input type="number" step="any" id="s_k" class="form-control" value="0"></div>
+            <div class="col-md-3"><label class="form-label">C (Cash)</label><input type="number" step="any" id="s_c" class="form-control" value="0"></div>
+            <div class="col-md-3"><label class="form-label">R (Retur)</label><input type="number" step="any" id="s_r" class="form-control" value="0"></div>
+            
+            <div class="col-md-6"><label class="form-label">PENGELUARAN (Rp)</label><input type="number" step="any" id="s_pengeluaran" class="form-control" value="0"></div>
+            <div class="col-md-6"><label class="form-label">JUMLAH (otomatis)</label><input type="text" id="s_jumlah" class="form-control" readonly></div>
+            
+            <div class="col-md-6"><label class="form-label">PENJUAL</label><input type="text" id="s_penjual" class="form-control" placeholder="Nama penjual"></div>
+            <div class="col-md-6"><label class="form-label">PENERIMA</label><input type="text" id="s_penerima" class="form-control" placeholder="Nama penerima"></div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="s_ttd_penjual"> <label>TTD Penjual (setuju)</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="s_ttd_penerima"> <label>TTD Penerima (setuju)</label></div></div>
+            <div class="col-12 text-end"><button class="btn btn-primary">💾 Simpan Setoran</button></div>
+          </form>
+          <div class="mt-4"><h6>📜 Riwayat Setoran</h6><div class="table-wrap"><table class="table table-sm text-light" id="setoranTable"><thead><tr><th>Tanggal</th><th>Nama</th><th>Lapak</th><th>Pendapatan</th><th>Pengeluaran</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody></tbody></table></div></div>
+        </div>
       </div>
 
-      <!-- PENGELUARAN -->
+      <!-- ===================== PENGELUARAN ===================== -->
       <div class="view d-none" id="view-pengeluaran"><div class="card p-3"><h5>📤 Pengeluaran / Pembelian Stok</h5><form id="expenseForm" class="row g-2 mb-3"><div class="col-md-5"><input id="e_desc" placeholder="Keterangan" class="form-control" required></div><div class="col-md-3"><input id="e_amount" type="number" step="any" placeholder="Jumlah (Rp)" class="form-control" required></div><div class="col-md-2"><input id="e_qty" type="number" step="any" placeholder="Tambah stok Ori" class="form-control"></div><div class="col-md-2 text-end"><button class="btn btn-warning">➕ Catat</button></div></form><div class="table-wrap"><table class="table table-sm text-light" id="expenseTable"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Jumlah (Rp)</th><th>Tambah Stok Ori</th><th>Aksi</th></tr></thead><tbody></tbody></table></div></div></div>
 
-      <!-- PENGATURAN -->
-      <div class="view d-none" id="view-pengaturan"><div class="card p-3"><h5>⚙ Pengaturan QRIS & Rekening</h5><form id="settingsForm"><div class="mb-2"><label>📷 Upload QRIS</label><input type="file" id="qrisUpload" accept="image/*" class="form-control"><img id="qrisPreview" style="max-width:100px; margin-top:5px; display:none;"></div><div class="mb-2"><label>🏦 Bank/E-wallet</label><input id="bankName" class="form-control" placeholder="Nama bank"></div><div class="mb-2"><label>🔢 Nomor Rekening</label><input id="bankAcc" class="form-control" placeholder="No rekening"></div><hr><h5>✍ Edit Struk & Outlet</h5><div class="mb-2"><label>🏪 Nama outlet / toko</label><input id="outletName" class="form-control" placeholder="Nama toko"></div><div class="mb-2"><label>🧑‍💼 Nama kasir / penjaga</label><input id="cashierName" class="form-control" placeholder="Nama penjaga"></div><div class="mb-2"><label>📄 Header struk</label><textarea id="receiptHeader" rows="2" class="form-control"></textarea></div><div class="mb-2"><label>📄 Footer struk</label><textarea id="receiptFooter" rows="2" class="form-control"></textarea></div><button class="btn btn-success">💾 Simpan Pengaturan</button></form></div><footer>Created by ZinXploit</footer></div>
+      <!-- ===================== PENGATURAN ===================== -->
+      <div class="view d-none" id="view-pengaturan"><div class="card p-3"><h5>⚙ Pengaturan QRIS & Rekening</h5><form id="settingsForm"><div class="mb-2"><label>📷 Upload QRIS</label><input type="file" id="qrisUpload" accept="image/*" class="form-control"><img id="qrisPreview" style="max-width:100px; margin-top:5px; display:none;"></div><div class="mb-2"><label>🏦 Bank/E-wallet</label><input id="bankName" class="form-control" placeholder="Nama bank"></div><div class="mb-2"><label>🔢 Nomor Rekening</label><input id="bankAcc" class="form-control" placeholder="No rekening"></div><hr><h5>✍ Edit Struk & Outlet</h5><div class="mb-2"><label>🏪 Nama outlet</label><input id="outletName" class="form-control"></div><div class="mb-2"><label>🧑‍💼 Nama kasir</label><input id="cashierName" class="form-control"></div><div class="mb-2"><label>📄 Header struk</label><textarea id="receiptHeader" rows="2" class="form-control"></textarea></div><div class="mb-2"><label>📄 Footer struk</label><textarea id="receiptFooter" rows="2" class="form-control"></textarea></div><button class="btn btn-success">💾 Simpan Pengaturan</button></form></div><footer>Created by ZinXploit</footer></div>
     </section>
   </main>
 </div>
@@ -252,6 +214,7 @@
   const formatStock = v => (Number(v)||0).toLocaleString('id-ID', {minimumFractionDigits:0, maximumFractionDigits:2});
   const uid = () => 'id'+Math.random().toString(36).substring(2,9);
 
+  // Default Data
   const defaultData = {
     globalOriStock: 10.0,
     products: [
@@ -260,7 +223,9 @@
       { id: uid(), name: "Dimsum Ori (8pcs)", price: 22000, unit: "porsi", isOri: true, stock: 0, initialStock: 0, returnedStock: 0 },
       { id: uid(), name: "Dimsum Mentai (4pcs)", price: 16000, unit: "porsi", isOri: false, stock: 40, initialStock: 40, returnedStock: 0 }
     ],
-    sales: [], setoran: [], expenses: [],
+    sales: [],
+    setoran: [],  // array of objects sesuai form slip
+    expenses: [],
     settings: { qris: null, bankName: 'BCA', bankAcc: '1234567890', outletName: 'Dimsum Radja', cashierName: 'Kasir', receiptHeader: 'Terima kasih', receiptFooter: 'Selamat menikmati' }
   };
   let DB = { data: null };
@@ -331,199 +296,119 @@
   }
   $('#clearCartBtn')?.addEventListener('click', ()=>{cart=[]; renderCart();});
 
+  // Produk table (sama seperti sebelumnya + double klik harga)
   function hitungNilaiProduk(p){ let stokTotal = (p.initialStock||0)+(p.returnedStock||0); let nilai = stokTotal * (p.price||0); return { stokTotal, nilai }; }
-
   function renderProductTable(){
     const tbody = $('#productTable tbody'); if(!tbody) return;
     tbody.innerHTML = ''; let totalAll = 0;
     DB.data.products.forEach(p => {
       let { stokTotal, nilai } = hitungNilaiProduk(p); totalAll += nilai;
       let tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${p.name}</td>
-        <td class="editable-price" data-id="${p.id}" data-price="${p.price}">${money(p.price)}</td>
-        <td>${formatStock(p.initialStock)} <button class="btn btn-xs btn-outline-light edit-initial" data-id="${p.id}">✏️</button></td>
-        <td>${formatStock(p.returnedStock)} <button class="btn btn-xs btn-outline-light add-return" data-id="${p.id}">➕</button></td>
-        <td>${formatStock(stokTotal)}</td>
-        <td>${p.unit || 'porsi'}</td>
-        <td>${p.isOri ? 'Ya' : 'Tidak'}</td>
-        <td>${money(nilai)}</td>
-        <td><button class="btn btn-sm btn-outline-light edit-prod" data-id="${p.id}">Edit</button> <button class="btn btn-sm btn-danger del-prod" data-id="${p.id}">Hapus</button></td>
-      `;
+      tr.innerHTML = `<td>${p.name}</td><td class="editable-price" data-id="${p.id}" data-price="${p.price}">${money(p.price)}</td><td>${formatStock(p.initialStock)} <button class="btn btn-xs btn-outline-light edit-initial" data-id="${p.id}">✏️</button></td><td>${formatStock(p.returnedStock)} <button class="btn btn-xs btn-outline-light add-return" data-id="${p.id}">➕</button></td><td>${formatStock(stokTotal)}</td><td>${p.unit||'porsi'}</td><td>${p.isOri?'Ya':'Tidak'}</td><td>${money(nilai)}</td><td><button class="btn btn-sm btn-outline-light edit-prod" data-id="${p.id}">Edit</button> <button class="btn btn-sm btn-danger del-prod" data-id="${p.id}">Hapus</button></td>`;
       tbody.appendChild(tr);
     });
     $('#totalNilaiAll').innerHTML = money(totalAll);
-
-    // Event double klik pada harga
-    $$('.editable-price').forEach(el => {
-      el.addEventListener('dblclick', (e) => {
-        let id = el.dataset.id;
-        let prod = DB.data.products.find(p => p.id === id);
-        if(prod){
-          let newPrice = prompt('Masukkan harga baru (Rp)', prod.price);
-          if(newPrice !== null && !isNaN(parseFloat(newPrice)) && parseFloat(newPrice) >= 0){
-            prod.price = parseFloat(newPrice);
-            saveData();
-            // refresh tampilan produk di kasir dan tabel
-            renderProductTable();
-            renderProductList();
-            renderCart(); // update keranjang karena harga berubah
-            // Jika laporan terbuka, refresh juga
-            if($('#view-laporan').classList.contains('d-none') === false) renderSalesTable();
-          } else alert('Harga tidak valid');
-        }
-      });
-    });
-
-    // Event lainnya (edit initial, add return, edit prod, del prod) sama seperti sebelumnya
-    $$('.edit-initial').forEach(btn => btn.addEventListener('click', ()=>{
-      let id = btn.dataset.id; let prod = DB.data.products.find(p=>p.id===id);
+    $$('.editable-price').forEach(el => el.addEventListener('dblclick', (e) => {
+      let id = el.dataset.id; let prod = DB.data.products.find(p=>p.id===id);
       if(prod){
-        let newVal = prompt('Stok Awal (beku)', prod.initialStock);
-        if(newVal !== null && !isNaN(parseFloat(newVal))) prod.initialStock = parseFloat(newVal);
-        if(!prod.isOri) prod.stock = prod.initialStock + prod.returnedStock;
-        saveData(); renderProductTable(); renderProductList();
+        let newPrice = prompt('Masukkan harga baru (Rp)', prod.price);
+        if(newPrice !== null && !isNaN(parseFloat(newPrice)) && parseFloat(newPrice) >= 0){
+          prod.price = parseFloat(newPrice); saveData(); renderProductTable(); renderProductList(); renderCart();
+        } else alert('Harga tidak valid');
       }
     }));
-    $$('.add-return').forEach(btn => btn.addEventListener('click', ()=>{
-      let id = btn.dataset.id; let prod = DB.data.products.find(p=>p.id===id);
-      if(prod && !prod.isOri){
-        let qty = prompt('Jumlah barang balik (retur) - menambah stok', 0);
-        if(qty !== null && !isNaN(parseFloat(qty)) && parseFloat(qty)>0){
-          let val = parseFloat(qty);
-          prod.returnedStock += val; prod.stock += val;
-          saveData(); renderProductTable(); renderProductList();
-          alert(`Stok ${prod.name} bertambah ${formatStock(val)} karena retur.`);
-        } else alert('Jumlah tidak valid');
-      } else if(prod && prod.isOri) alert('Untuk Dimsum Ori, tambah stok melalui menu Pengeluaran.');
-    }));
-    $$('.edit-prod').forEach(btn => btn.addEventListener('click', ()=>{
-      let id = btn.dataset.id; let prod = DB.data.products.find(p=>p.id===id);
-      if(prod){
-        let newName = prompt('Nama baru', prod.name); if(newName) prod.name = newName;
-        let newPrice = prompt('Harga baru', prod.price); if(newPrice && !isNaN(parseFloat(newPrice))) prod.price = parseFloat(newPrice);
-        if(!prod.isOri){
-          let newStock = prompt('Stok saat ini (beku)', prod.stock); if(newStock !== null) prod.stock = parseFloat(newStock);
-          let newInitial = prompt('Stok Awal (beku)', prod.initialStock); if(newInitial !== null) prod.initialStock = parseFloat(newInitial);
-          let newReturn = prompt('Total Barang Balik', prod.returnedStock); if(newReturn !== null) prod.returnedStock = parseFloat(newReturn);
-        } else {
-          let newInitial = prompt('Stok Awal (catatan)', prod.initialStock); if(newInitial !== null) prod.initialStock = parseFloat(newInitial);
-          let newReturn = prompt('Total Barang Balik (catatan)', prod.returnedStock); if(newReturn !== null) prod.returnedStock = parseFloat(newReturn);
-        }
-        saveData(); renderProductTable(); renderProductList();
-      }
-    }));
-    $$('.del-prod').forEach(btn => btn.addEventListener('click', ()=>{
-      if(confirm('Hapus produk?')){
-        let id = btn.dataset.id;
-        DB.data.products = DB.data.products.filter(p=>p.id !== id);
-        cart = cart.filter(i=>i.id !== id);
-        saveData(); renderProductTable(); renderProductList(); renderCart();
-      }
-    }));
+    $$('.edit-initial').forEach(btn => btn.addEventListener('click', ()=>{ let id=btn.dataset.id; let prod=DB.data.products.find(p=>p.id===id); if(prod){ let newVal=prompt('Stok Awal', prod.initialStock); if(newVal !== null && !isNaN(parseFloat(newVal))) prod.initialStock=parseFloat(newVal); if(!prod.isOri) prod.stock = prod.initialStock+prod.returnedStock; saveData(); renderProductTable(); renderProductList(); } }));
+    $$('.add-return').forEach(btn => btn.addEventListener('click', ()=>{ let id=btn.dataset.id; let prod=DB.data.products.find(p=>p.id===id); if(prod && !prod.isOri){ let qty=prompt('Jumlah barang balik (retur)',0); if(qty !== null && !isNaN(parseFloat(qty)) && parseFloat(qty)>0){ let val=parseFloat(qty); prod.returnedStock+=val; prod.stock+=val; saveData(); renderProductTable(); renderProductList(); alert(`Stok ${prod.name} bertambah ${formatStock(val)}`); } } else if(prod && prod.isOri) alert('Untuk Ori, tambah stok melalui Pengeluaran.'); }));
+    $$('.edit-prod').forEach(btn => btn.addEventListener('click', ()=>{ let id=btn.dataset.id; let prod=DB.data.products.find(p=>p.id===id); if(prod){ let newName=prompt('Nama baru',prod.name); if(newName) prod.name=newName; let newPrice=prompt('Harga baru',prod.price); if(newPrice && !isNaN(parseFloat(newPrice))) prod.price=parseFloat(newPrice); if(!prod.isOri){ let newStock=prompt('Stok saat ini',prod.stock); if(newStock !== null) prod.stock=parseFloat(newStock); let newInitial=prompt('Stok Awal',prod.initialStock); if(newInitial !== null) prod.initialStock=parseFloat(newInitial); let newReturn=prompt('Total Barang Balik',prod.returnedStock); if(newReturn !== null) prod.returnedStock=parseFloat(newReturn); } else { let newInitial=prompt('Stok Awal (catatan)',prod.initialStock); if(newInitial !== null) prod.initialStock=parseFloat(newInitial); let newReturn=prompt('Total Barang Balik (catatan)',prod.returnedStock); if(newReturn !== null) prod.returnedStock=parseFloat(newReturn); } saveData(); renderProductTable(); renderProductList(); } }));
+    $$('.del-prod').forEach(btn => btn.addEventListener('click', ()=>{ if(confirm('Hapus produk?')){ let id=btn.dataset.id; DB.data.products=DB.data.products.filter(p=>p.id!==id); cart=cart.filter(i=>i.id!==id); saveData(); renderProductTable(); renderProductList(); renderCart(); } }));
   }
+  $('#productForm')?.addEventListener('submit', e=>{ e.preventDefault(); let name=$('#p_name').value.trim(); let price=parseFloat($('#p_price').value); let initial=parseFloat($('#p_initial_stock').value)||0; let returnStock=parseFloat($('#p_return_stock').value)||0; let unit=$('#p_unit').value.trim()||'porsi'; let isOri=$('#p_isOri').checked; if(!name||isNaN(price)) return alert('Lengkapi'); let stock=isOri?0:initial+returnStock; DB.data.products.push({id:uid(),name,price,stock,unit,isOri,initialStock:initial,returnedStock:returnStock}); saveData(); renderProductList(); renderProductTable(); $('#productForm').reset(); });
+  $('#quickAddForm')?.addEventListener('submit', e=>{ e.preventDefault(); let name=$('#q_name').value.trim(); let price=parseFloat($('#q_price').value); let initial=parseFloat($('#q_stock').value)||0; let isOri=$('#q_isOri').checked; if(!name||isNaN(price)) return alert('Lengkapi'); let stock=isOri?0:initial; DB.data.products.push({id:uid(),name,price,stock,unit:'porsi',isOri,initialStock:initial,returnedStock:0}); saveData(); renderProductList(); renderProductTable(); $('#quickAddForm').reset(); });
+  $('#updateOriStock')?.addEventListener('click', ()=>{ let newStock=parseFloat($('#globalOriStock').value); if(isNaN(newStock)) return alert('Masukkan angka'); DB.data.globalOriStock=newStock; saveData(); updateStokDisplay(); renderProductList(); alert('Stok Ori diperbarui'); });
 
-  // Form tambah produk
-  $('#productForm')?.addEventListener('submit', e=>{
-    e.preventDefault();
-    let name = $('#p_name').value.trim();
-    let price = parseFloat($('#p_price').value);
-    let initial = parseFloat($('#p_initial_stock').value) || 0;
-    let returnStock = parseFloat($('#p_return_stock').value) || 0;
-    let unit = $('#p_unit').value.trim() || 'porsi';
-    let isOri = $('#p_isOri').checked;
-    if(!name || isNaN(price)) return alert('Nama dan harga harus diisi');
-    let stock = isOri ? 0 : initial + returnStock;
-    DB.data.products.push({ id: uid(), name, price, stock, unit, isOri, initialStock: initial, returnedStock: returnStock });
-    saveData(); renderProductList(); renderProductTable();
-    $('#productForm').reset();
-  });
-  $('#quickAddForm')?.addEventListener('submit', e=>{
-    e.preventDefault();
-    let name = $('#q_name').value.trim();
-    let price = parseFloat($('#q_price').value);
-    let initial = parseFloat($('#q_stock').value) || 0;
-    let isOri = $('#q_isOri').checked;
-    if(!name || isNaN(price)) return alert('Lengkapi data');
-    let stock = isOri ? 0 : initial;
-    DB.data.products.push({ id: uid(), name, price, stock, unit:'porsi', isOri, initialStock: initial, returnedStock: 0 });
-    saveData(); renderProductList(); renderProductTable();
-    $('#quickAddForm').reset();
-  });
-
-  $('#updateOriStock')?.addEventListener('click', ()=>{
-    let newStock = parseFloat($('#globalOriStock').value);
-    if(isNaN(newStock)) return alert('Masukkan angka');
-    DB.data.globalOriStock = newStock;
-    saveData(); updateStokDisplay(); renderProductList();
-    alert('Stok Ori global diperbarui');
-  });
-
-  // Laporan & grafik
+  // Laporan (sama)
   function getSalesData(period){
-    let map = new Map();
-    DB.data.sales.forEach(sale => {
-      let key = period === 'day' ? sale.date.slice(0,10) : (period === 'month' ? sale.date.slice(0,7) : sale.date.slice(0,4));
-      map.set(key, (map.get(key)||0) + sale.total);
-    });
-    let sorted = Array.from(map.entries()).sort((a,b)=>a[0].localeCompare(b[0]));
-    return { labels: sorted.map(v=>v[0]), data: sorted.map(v=>v[1]) };
+    let map=new Map(); DB.data.sales.forEach(sale=>{ let key=period==='day'?sale.date.slice(0,10):(period==='month'?sale.date.slice(0,7):sale.date.slice(0,4)); map.set(key,(map.get(key)||0)+sale.total); });
+    let sorted=Array.from(map.entries()).sort((a,b)=>a[0].localeCompare(b[0])); return {labels:sorted.map(v=>v[0]), data:sorted.map(v=>v[1])};
   }
-  function renderChart(period){
-    let canvas = $('#salesChart'); if(!canvas) return;
-    let {labels, data} = getSalesData(period);
-    if(salesChart) salesChart.destroy();
-    salesChart = new Chart(canvas.getContext('2d'), { type:'bar', data:{ labels: labels.length?labels:['Belum ada data'], datasets:[{ label:'Penjualan (Rp)', data: data.length?data:[0], backgroundColor:'rgba(6,182,212,0.5)', borderColor:'#06b6d4', borderWidth:1 }] }, options:{ responsive:true, maintainAspectRatio:true, scales:{ y:{ ticks:{ callback: v=>v.toLocaleString('id-ID') } } } } });
+  function renderChart(period){ let canvas=$('#salesChart'); if(!canvas) return; let {labels,data}=getSalesData(period); if(salesChart) salesChart.destroy(); salesChart=new Chart(canvas.getContext('2d'),{type:'bar',data:{labels:labels.length?labels:['Belum ada data'], datasets:[{label:'Penjualan (Rp)',data:data.length?data:[0],backgroundColor:'rgba(6,182,212,0.5)',borderColor:'#06b6d4',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:true,scales:{y:{ticks:{callback:v=>v.toLocaleString('id-ID')}}}}}); }
+  function renderSalesTable(){ let tbody=$('#salesTable tbody'); if(!tbody) return; tbody.innerHTML=''; let totalSales=0,totalQty=0; [...DB.data.sales].reverse().forEach(s=>{ totalSales+=s.total; totalQty+=s.items.reduce((a,b)=>a+b.qty,0); let tr=document.createElement('tr'); tr.innerHTML=`<td>${new Date(s.date).toLocaleString()}</td><td>${s.items.map(i=>i.name+' x'+i.qty).join(', ')}</td><td>${money(s.total)}</td><td>${s.paymentMethod}</td><td><button class="btn btn-sm btn-outline-light view-receipt" data-id="${s.id}">🧾</button> <button class="btn btn-sm btn-danger del-sale" data-id="${s.id}">✖</button></td>`; tbody.appendChild(tr); }); $('#summarySales').innerText=money(totalSales); $('#summaryQty').innerText=totalQty; $$('.view-receipt').forEach(btn=>btn.addEventListener('click',()=>{ let sale=DB.data.sales.find(s=>s.id===btn.dataset.id); if(sale) displayReceipt(sale); })); $$('.del-sale').forEach(btn=>btn.addEventListener('click',()=>{ if(confirm('Hapus transaksi?')){ DB.data.sales=DB.data.sales.filter(s=>s.id!==btn.dataset.id); saveData(); renderSalesTable(); renderChart($('#chartPeriod').value); } })); }
+  function displayReceipt(sale){ let settings=DB.data.settings; let outlet=settings.outletName||'Dimsum Radja'; let cashier=settings.cashierName||'Kasir'; let headerText=settings.receiptHeader||''; let footerText=settings.receiptFooter||'Selamat menikmati'; let itemsStr=sale.items.map(i=>`${i.name.padEnd(20)} ${i.qty} x ${money(i.price).padStart(10)} = ${money(i.qty*i.price).padStart(12)}`).join('\n'); let change=sale.amountPaid-sale.total; let payDetail=sale.paymentMethod==='cash'?`Uang Diterima: ${money(sale.amountPaid)}\nKembalian: ${money(change)}`:`Metode: ${sale.paymentMethod.toUpperCase()}`; let receipt=`================================\n      ${outlet.toUpperCase()}\n      ${cashier} (penjaga)\n${headerText?'--------------------------------\n'+headerText:''}\n================================\nTanggal: ${new Date(sale.date).toLocaleString('id-ID')}\nNo. Struk: ${sale.id}\n--------------------------------\n${itemsStr}\n--------------------------------\nSubtotal:      ${money(sale.total).padStart(12)}\n${payDetail}\n--------------------------------\n${footerText}\n================================`; $('#receiptContent').innerText=receipt; new bootstrap.Modal($('#receiptModal')).show(); }
+
+  // ===================== SETORAN (format slip) =====================
+  function hitungJumlahSetoran(){
+    let pendapatan = parseFloat($('#s_pendapatan').value) || 0;
+    let pengeluaran = parseFloat($('#s_pengeluaran').value) || 0;
+    let jumlah = pendapatan - pengeluaran;
+    $('#s_jumlah').val(money(jumlah));
+    return jumlah;
   }
-  function renderSalesTable(){
-    let tbody = $('#salesTable tbody'); if(!tbody) return;
-    tbody.innerHTML = ''; let totalSales=0, totalQty=0;
-    [...DB.data.sales].reverse().forEach(s => {
-      totalSales += s.total; totalQty += s.items.reduce((a,b)=>a+b.qty,0);
-      let tr = document.createElement('tr');
-      tr.innerHTML = `<td>${new Date(s.date).toLocaleString()}</td><td>${s.items.map(i=>i.name+' x'+i.qty).join(', ')}</td><td>${money(s.total)}</td><td>${s.paymentMethod}</td><td><button class="btn btn-sm btn-outline-light view-receipt" data-id="${s.id}">🧾</button> <button class="btn btn-sm btn-danger del-sale" data-id="${s.id}">✖</button></td>`;
-      tbody.appendChild(tr);
-    });
-    $('#summarySales').innerText = money(totalSales); $('#summaryQty').innerText = totalQty;
-    $$('.view-receipt').forEach(btn => btn.addEventListener('click', ()=>{ let sale = DB.data.sales.find(s=>s.id===btn.dataset.id); if(sale) displayReceipt(sale); }));
-    $$('.del-sale').forEach(btn => btn.addEventListener('click', ()=>{ if(confirm('Hapus transaksi?')){ DB.data.sales = DB.data.sales.filter(s=>s.id !== btn.dataset.id); saveData(); renderSalesTable(); renderChart($('#chartPeriod').value); } }));
-  }
-  function displayReceipt(sale){
-    let settings = DB.data.settings;
-    let outlet = settings.outletName || 'Dimsum Radja';
-    let cashier = settings.cashierName || 'Kasir';
-    let headerText = settings.receiptHeader || '';
-    let footerText = settings.receiptFooter || 'Selamat menikmati';
-    let itemsStr = sale.items.map(i => `${i.name.padEnd(20)} ${i.qty} x ${money(i.price).padStart(10)} = ${money(i.qty*i.price).padStart(12)}`).join('\n');
-    let change = sale.amountPaid - sale.total;
-    let payDetail = sale.paymentMethod === 'cash' ? `Uang Diterima: ${money(sale.amountPaid)}\nKembalian: ${money(change)}` : `Metode: ${sale.paymentMethod.toUpperCase()}`;
-    let receipt = `================================\n      ${outlet.toUpperCase()}\n      ${cashier} (penjaga)\n${headerText?'--------------------------------\n'+headerText:''}\n================================\nTanggal: ${new Date(sale.date).toLocaleString('id-ID')}\nNo. Struk: ${sale.id}\n--------------------------------\n${itemsStr}\n--------------------------------\nSubtotal:      ${money(sale.total).padStart(12)}\n${payDetail}\n--------------------------------\n${footerText}\n================================`;
-    $('#receiptContent').innerText = receipt;
-    new bootstrap.Modal($('#receiptModal')).show();
-  }
+  $('#s_pendapatan, #s_pengeluaran').addEventListener('input', hitungJumlahSetoran);
   function renderSetoranTable(){
     let tbody = $('#setoranTable tbody'); if(!tbody) return;
     tbody.innerHTML = '';
-    if(!DB.data.setoran.length){ tbody.innerHTML = '<tr><td colspan="5" class="text-muted">Belum ada data</td></tr>'; return; }
-    DB.data.setoran.slice().reverse().forEach(s => { let tr = document.createElement('tr'); tr.innerHTML = `<td>${new Date(s.date).toLocaleString()}</td><td>${money(s.price)}</td><td>${formatStock(s.qty)}</td><td>${money(s.total)}</td><td><button class="btn btn-sm btn-danger del-setoran" data-id="${s.id}">Hapus</button></td>`; tbody.appendChild(tr); });
+    if(!DB.data.setoran.length){ tbody.innerHTML = '<tr><td colspan="7" class="text-muted">Belum ada data setoran</td></tr>'; return; }
+    DB.data.setoran.slice().reverse().forEach(s => {
+      let tr = document.createElement('tr');
+      tr.innerHTML = `<td>${s.tanggal}</td><td>${s.nama}</td><td>${s.lapak}</td><td>${money(s.pendapatan)}</td><td>${money(s.pengeluaran)}</td><td>${money(s.jumlah)}</td><td><button class="btn btn-sm btn-danger del-setoran" data-id="${s.id}">Hapus</button></td>`;
+      tbody.appendChild(tr);
+    });
     $$('.del-setoran').forEach(btn => btn.addEventListener('click', ()=>{ if(confirm('Hapus setoran?')){ DB.data.setoran = DB.data.setoran.filter(x=>x.id !== btn.dataset.id); saveData(); renderSetoranTable(); } }));
   }
-  function calcSetoran(){ let price = parseFloat($('#s_price').value||0); let qty = parseFloat($('#s_qty').value||0); $('#s_total').value = price*qty; }
-  $('#s_price')?.addEventListener('input', calcSetoran); $('#s_qty')?.addEventListener('input', calcSetoran);
-  $('#setoranForm')?.addEventListener('submit', e=>{ e.preventDefault(); let price = parseFloat($('#s_price').value); let qty = parseFloat($('#s_qty').value); if(isNaN(price)||isNaN(qty)) return alert('Isi harga dan jumlah'); let total = price*qty; DB.data.setoran.push({ id:uid(), date:new Date().toISOString(), price, qty, total }); saveData(); renderSetoranTable(); $('#setoranForm').reset(); $('#s_total').value=''; alert('Setoran tersimpan'); });
+  $('#setoranForm')?.addEventListener('submit', e=>{
+    e.preventDefault();
+    let tanggal = $('#s_tanggal').value;
+    if(!tanggal) return alert('Tanggal harus diisi');
+    let nama = $('#s_nama').value.trim(); if(!nama) return alert('Nama harus diisi');
+    let lapak = $('#s_lapak').value.trim(); if(!lapak) return alert('Lapak harus diisi');
+    let namabarang = $('#s_namabarang').value.trim();
+    let dibawa = parseFloat($('#s_dibawa').value) || 0;
+    let kembali = parseFloat($('#s_kembali').value) || 0;
+    let pendapatan = parseFloat($('#s_pendapatan').value) || 0;
+    let m = parseFloat($('#s_m').value) || 0;
+    let k = parseFloat($('#s_k').value) || 0;
+    let c = parseFloat($('#s_c').value) || 0;
+    let r = parseFloat($('#s_r').value) || 0;
+    let pengeluaran = parseFloat($('#s_pengeluaran').value) || 0;
+    let jumlah = pendapatan - pengeluaran;
+    let penjual = $('#s_penjual').value.trim();
+    let penerima = $('#s_penerima').value.trim();
+    let ttd_penjual = $('#s_ttd_penjual').checked;
+    let ttd_penerima = $('#s_ttd_penerima').checked;
+    let setoranObj = {
+      id: uid(), tanggal, nama, lapak, namabarang, dibawa, kembali, pendapatan, m, k, c, r, pengeluaran, jumlah, penjual, penerima, ttd_penjual, ttd_penerima
+    };
+    DB.data.setoran.push(setoranObj);
+    saveData();
+    renderSetoranTable();
+    // reset form tapi biarkan default
+    $('#setoranForm').reset();
+    $('#s_tanggal').value = new Date().toISOString().slice(0,10);
+    $('#s_jumlah').val('');
+    alert('Setoran tersimpan');
+  });
+  // set tanggal default hari ini
+  $('#s_tanggal').value = new Date().toISOString().slice(0,10);
+
+  // ===================== PENGELUARAN =====================
   function renderExpenseTable(){
     let tbody = $('#expenseTable tbody'); if(!tbody) return;
     tbody.innerHTML = '';
-    DB.data.expenses.slice().reverse().forEach(e => { let tr = document.createElement('tr'); tr.innerHTML = `<td>${new Date(e.date).toLocaleString()}</td><td>${e.desc}</td><td>${money(e.amount)}</td><td>${e.addOriStock ? formatStock(e.addOriStock) : '-'}</td><td><button class="btn btn-sm btn-danger del-expense" data-id="${e.id}">Hapus</button></td>`; tbody.appendChild(tr); });
+    DB.data.expenses.slice().reverse().forEach(e => {
+      let tr = document.createElement('tr');
+      tr.innerHTML = `<td>${new Date(e.date).toLocaleString()}</td><td>${e.desc}</td><td>${money(e.amount)}</td><td>${e.addOriStock ? formatStock(e.addOriStock) : '-'}</td><td><button class="btn btn-sm btn-danger del-expense" data-id="${e.id}">Hapus</button></td>`;
+      tbody.appendChild(tr);
+    });
     $$('.del-expense').forEach(btn => btn.addEventListener('click', ()=>{ if(confirm('Hapus pengeluaran?')){ DB.data.expenses = DB.data.expenses.filter(x=>x.id !== btn.dataset.id); saveData(); renderExpenseTable(); } }));
   }
   $('#expenseForm')?.addEventListener('submit', e=>{ e.preventDefault(); let desc = $('#e_desc').value.trim(); let amount = parseFloat($('#e_amount').value); let addOri = parseFloat($('#e_qty').value) || 0; if(!desc || isNaN(amount)) return alert('Lengkapi data'); DB.data.expenses.push({ id:uid(), date:new Date().toISOString(), desc, amount, addOriStock:addOri }); if(addOri > 0) { DB.data.globalOriStock += addOri; updateStokDisplay(); renderProductList(); } saveData(); renderExpenseTable(); $('#expenseForm').reset(); alert('Pengeluaran tersimpan'); });
 
+  // PAYMENT & CHECKOUT (sama)
   const paymentModal = new bootstrap.Modal($('#paymentModal'));
   $('#checkoutBtn')?.addEventListener('click', ()=>{
     if(cart.length===0) return alert('Keranjang kosong');
     let totalOri = cart.filter(i=>i.isOri).reduce((s,i)=>s+i.qty,0);
-    if(totalOri > DB.data.globalOriStock) return alert(`Stok Ori tidak cukup. Tersisa ${formatStock(DB.data.globalOriStock)} porsi, anda pesan ${formatStock(totalOri)}`);
+    if(totalOri > DB.data.globalOriStock) return alert(`Stok Ori tidak cukup. Tersisa ${formatStock(DB.data.globalOriStock)} porsi`);
     let total = cart.reduce((s,i)=>s+i.qty*i.price,0);
     $('#modalTotal').innerText = money(total);
     $('#cashAmount').value = ''; $('#cashChange').innerText = 'Rp 0';
@@ -558,6 +443,7 @@
     displayReceipt(sale);
   });
 
+  // Pengaturan & lainnya
   $('#qrisUpload')?.addEventListener('change', e=>{ let file = e.target.files[0]; if(file){ let reader = new FileReader(); reader.onload = ev => { DB.data.settings.qris = ev.target.result; $('#qrisPreview').src = ev.target.result; $('#qrisPreview').style.display='block'; saveData(); }; reader.readAsDataURL(file); } });
   $('#settingsForm')?.addEventListener('submit', e=>{ e.preventDefault(); DB.data.settings.bankName = $('#bankName').value; DB.data.settings.bankAcc = $('#bankAcc').value; DB.data.settings.outletName = $('#outletName').value; DB.data.settings.cashierName = $('#cashierName').value; DB.data.settings.receiptHeader = $('#receiptHeader').value; DB.data.settings.receiptFooter = $('#receiptFooter').value; saveData(); alert('Pengaturan tersimpan'); });
   $('#exportBtn')?.addEventListener('click', ()=>{ let dataStr = JSON.stringify(DB.data,null,2); let blob = new Blob([dataStr],{type:'application/json'}); let url = URL.createObjectURL(blob); let a = document.createElement('a'); a.href=url; a.download='kasir_dimsum_data.json'; a.click(); URL.revokeObjectURL(url); });
@@ -573,14 +459,13 @@
   function handleOperator(op){ if(operation !== null) calculate(); previousInput = currentInput; operation = op; currentInput = '0'; }
   function calculate(){ let prev = parseFloat(previousInput), curr = parseFloat(currentInput); if(isNaN(prev)||isNaN(curr)) return; let result; switch(operation){ case '+': result=prev+curr; break; case '-': result=prev-curr; break; case '*': result=prev*curr; break; case '/': result=prev/curr; break; default: return; } currentInput = result.toString(); operation=null; previousInput=''; updateCalcDisplay(); }
   function clearCalc(){ currentInput='0'; previousInput=''; operation=null; updateCalcDisplay(); }
-  function clearEntry(){ currentInput='0'; updateCalcDisplay(); }
   $$('.btn-num').forEach(btn => btn.addEventListener('click', ()=>{ let val = btn.getAttribute('data-val'); if(val === '.' && currentInput.includes('.')) return; handleNumber(val); }));
   $$('.btn-op').forEach(btn => btn.addEventListener('click', ()=>{ let op = btn.getAttribute('data-op'); handleOperator(op === '÷' ? '/' : (op === '×' ? '*' : op)); }));
   $('#calcEqual')?.addEventListener('click', ()=>{ if(operation && previousInput !== '') calculate(); });
-  $('#calcClear')?.addEventListener('click', clearCalc); $('#calcCE')?.addEventListener('click', clearEntry);
+  $('#calcClear')?.addEventListener('click', clearCalc); $('#calcCE')?.addEventListener('click', ()=>{ currentInput='0'; updateCalcDisplay(); });
   updateCalcDisplay();
 
-  // NAVIGASI & TOGGLE SIDEBAR
+  // NAVIGASI
   function showView(name){
     $$('.view').forEach(v=>v.classList.add('d-none'));
     $(`#view-${name}`)?.classList.remove('d-none');
@@ -597,8 +482,7 @@
       if(DB.data.settings.qris) $('#qrisPreview').src = DB.data.settings.qris;
     }
   }
-  const toggleBtn = $('#toggleSidebar');
-  if(toggleBtn) toggleBtn.addEventListener('click', (e) => { e.preventDefault(); $('#sidebar').classList.toggle('open'); });
+  const toggleBtn = $('#toggleSidebar'); if(toggleBtn) toggleBtn.addEventListener('click', (e) => { e.preventDefault(); $('#sidebar').classList.toggle('open'); });
   $$('#menu .nav-link').forEach(link => link.addEventListener('click', e=>{ e.preventDefault(); showView(link.dataset.view); if(window.innerWidth<900) $('#sidebar').classList.remove('open'); }));
   $('#chartPeriod')?.addEventListener('change', ()=> renderChart($('#chartPeriod').value));
   $('#refreshChart')?.addEventListener('click', ()=> renderChart($('#chartPeriod').value));
