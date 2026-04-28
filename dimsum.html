@@ -11,7 +11,40 @@
     :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
     body{background:#0b1220;color:#e6eef6;font-family:'Segoe UI',system-ui,Inter}
     .app{display:flex;min-height:100vh}
-    .sidebar{width:260px;background:linear-gradient(180deg,#0d6efd,#0a58ca);padding:20px;box-shadow:2px 0 10px rgba(0,0,0,0.3);transition:transform 0.2s}
+    .sidebar{
+      width:260px;
+      background:linear-gradient(180deg,#0d6efd,#0a58ca);
+      padding:20px;
+      box-shadow:2px 0 10px rgba(0,0,0,0.3);
+      transition:transform 0.3s ease;
+      z-index:1000;
+    }
+    /* Mode mobile: sidebar tersembunyi di kiri */
+    @media (max-width:900px){
+      .sidebar{
+        position:fixed;
+        left:0;
+        top:0;
+        bottom:0;
+        transform:translateX(-100%);
+      }
+      .sidebar.open{
+        transform:translateX(0);
+      }
+      main{
+        width:100%;
+      }
+    }
+    /* Mode desktop: sidebar selalu terbuka */
+    @media (min-width:901px){
+      .sidebar{
+        transform:translateX(0) !important;
+        position:relative;
+      }
+      .toggle-sidebar-btn{
+        display:none !important;
+      }
+    }
     .logo{font-weight:bold;font-size:20px;color:white;margin-bottom:12px;text-shadow:1px 1px 0 #00000030}
     .small-muted{color:#e0e0e0;font-size:13px}
     .nav-link{color:#f0f0f0;margin:8px 0;border-radius:10px;padding:10px;transition:0.2s;text-decoration:none;display:block}
@@ -23,10 +56,6 @@
     .btn-ghost{background:#0d6efd;border:none;color:white;padding:6px 12px;border-radius:8px}
     .btn-ghost:hover{background:#0a58ca}
     footer{color:#aaa;text-align:center;margin-top:20px;font-size:12px}
-    @media (max-width:900px){
-      .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:1000;transform:translateX(-100%)}
-      .sidebar.open{transform:translateX(0)}
-    }
     #receiptContent{font-family:'Courier New',monospace;white-space:pre-wrap;background:white;color:black;padding:20px;border-radius:8px}
     @media print{body *{visibility:hidden}#receiptModal,#receiptModal *{visibility:visible}#receiptModal{position:absolute;left:0;top:0;width:100%}#receiptActions{display:none}}
     .btn-xs{padding:0 6px;font-size:12px}
@@ -89,7 +118,7 @@
 
   <main>
     <div class="d-flex align-items-center mb-3">
-      <button class="btn btn-ghost me-3 d-lg-none" id="toggleSidebar">☰</button>
+      <button class="btn btn-ghost me-3 toggle-sidebar-btn" id="toggleSidebar">☰</button>
       <h3 id="viewTitle">Kasir</h3>
     </div>
 
@@ -129,7 +158,6 @@
                 <div><button class="btn btn-success" id="checkoutBtn">💵 Checkout</button><button class="btn btn-outline-light ms-2" id="clearCartBtn">🗑 Kosongkan</button></div>
               </div>
             </div>
-            <!-- KALKULATOR DIMSUM -->
             <div class="card p-3 mt-3">
               <h5>🧮 Kalkulator Bantu</h5>
               <div class="calculator">
@@ -177,11 +205,18 @@
           <div class="mb-2">🌍 Stok Global Dimsum Ori (beku): <input type="number" id="globalOriStock" step="any" class="form-control d-inline w-auto" style="width:120px"> <button id="updateOriStock" class="btn btn-sm btn-warning">Update Stok Ori</button></div>
           <div class="table-wrap">
             <table class="table table-sm text-light" id="productTable">
-              <thead><tr><th>Nama Barang Beku</th><th>Harga</th><th>Stok Awal (Beku)</th><th>Barang Balik (Retur)</th><th>Stok Saat Ini</th><th>Satuan</th><th>Ori?</th><th>Aksi</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Nama Barang Beku</th><th>Harga</th><th>Stok Awal (Beku)</th><th>Barang Balik (Retur)</th><th>Total Stok (Awal+Balik)</th><th>Satuan</th><th>Ori?</th><th>Nilai (Rp)</th><th>Aksi</th>
+                </tr>
+              </thead>
               <tbody></tbody>
+              <tfoot id="productTableFoot">
+                <tr class="table-active"><td colspan="7" class="text-end fw-bold">Total Nilai Seluruh Barang:</td><td id="totalNilaiAll" class="fw-bold">Rp 0</td><td></td></tr>
+              </tfoot>
             </table>
           </div>
-          <div class="small-muted mt-2">📌 *Barang Balik: tambah stok saat ini (klik ➕ di samping nilai) untuk retur barang dari customer.</div>
+          <div class="small-muted mt-2">📌 *Barang Balik: tambah stok saat ini (klik ➕) untuk retur. Nilai = (Stok Awal + Barang Balik) × Harga.</div>
         </div>
       </div>
 
@@ -302,6 +337,7 @@
     const formatStock = v => (Number(v)||0).toLocaleString('id-ID', {minimumFractionDigits:0, maximumFractionDigits:2});
     const uid = () => 'id'+Math.random().toString(36).substring(2,9);
 
+    // Default data (sama seperti sebelumnya)
     const defaultData = {
       globalOriStock: 10.0,
       products: [
@@ -410,30 +446,44 @@
     }
     $('#clearCartBtn')?.addEventListener('click', ()=>{cart=[]; renderCart();});
 
+    function hitungNilaiProduk(p){
+      let stokTotal = (p.initialStock || 0) + (p.returnedStock || 0);
+      let nilai = stokTotal * (p.price || 0);
+      return { stokTotal, nilai };
+    }
+
     function renderProductTable(){
       const tbody = $('#productTable tbody');
       if(!tbody) return;
       tbody.innerHTML = '';
+      let totalAll = 0;
       DB.data.products.forEach(p => {
+        let { stokTotal, nilai } = hitungNilaiProduk(p);
+        totalAll += nilai;
         let tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${p.name}</td>
           <td>${money(p.price)}</td>
           <td>${formatStock(p.initialStock)} <button class="btn btn-xs btn-outline-light edit-initial" data-id="${p.id}">✏️</button></td>
           <td>${formatStock(p.returnedStock)} <button class="btn btn-xs btn-outline-light add-return" data-id="${p.id}">➕</button></td>
-          <td>${p.isOri ? 'Stok Global' : formatStock(p.stock)}</td>
+          <td>${formatStock(stokTotal)}</td>
           <td>${p.unit || 'porsi'}</td>
           <td>${p.isOri ? 'Ya' : 'Tidak'}</td>
+          <td>${money(nilai)}</td>
           <td><button class="btn btn-sm btn-outline-light edit-prod" data-id="${p.id}">Edit</button> <button class="btn btn-sm btn-danger del-prod" data-id="${p.id}">Hapus</button></td>
         `;
         tbody.appendChild(tr);
       });
+      $('#totalNilaiAll').innerHTML = money(totalAll);
+      
+      // Event listeners untuk edit
       $$('.edit-initial').forEach(btn => btn.addEventListener('click', ()=>{
         let id = btn.dataset.id;
         let prod = DB.data.products.find(p=>p.id===id);
         if(prod){
           let newVal = prompt('Stok Awal (beku)', prod.initialStock);
           if(newVal !== null && !isNaN(parseFloat(newVal))) prod.initialStock = parseFloat(newVal);
+          if(!prod.isOri) prod.stock = prod.initialStock + prod.returnedStock;
           saveData(); renderProductTable(); renderProductList();
         }
       }));
@@ -444,8 +494,8 @@
           let qty = prompt('Jumlah barang balik (retur) - menambah stok', 0);
           if(qty !== null && !isNaN(parseFloat(qty)) && parseFloat(qty)>0){
             let val = parseFloat(qty);
-            prod.stock += val;
             prod.returnedStock += val;
+            prod.stock += val;
             saveData(); renderProductTable(); renderProductList();
             alert(`Stok ${prod.name} bertambah ${formatStock(val)} karena retur/barang balik.`);
           } else alert('Jumlah tidak valid');
@@ -847,7 +897,7 @@ ${footerText}
       $(`#view-${name}`)?.classList.remove('d-none');
       $$('#menu .nav-link').forEach(a=>a.classList.remove('active'));
       $(`#menu .nav-link[data-view="${name}"]`)?.classList.add('active');
-      $('#viewTitle').innerText = name === 'produk' ? 'Barang Beku & Barang Balik' : (name.charAt(0).toUpperCase() + name.slice(1));
+      $('#viewTitle').innerHTML = name === 'produk' ? 'Barang Beku & Barang Balik' : (name.charAt(0).toUpperCase() + name.slice(1));
       if(name === 'laporan') { renderSalesTable(); renderChart($('#chartPeriod').value); }
       if(name === 'setoran') renderSetoranTable();
       if(name === 'pengeluaran') renderExpenseTable();
@@ -861,8 +911,17 @@ ${footerText}
         if(DB.data.settings.qris) $('#qrisPreview').src = DB.data.settings.qris;
       }
     }
+    // Event toggle sidebar (dengan pengecekan lebar layar)
+    const toggleBtn = $('#toggleSidebar');
+    if(toggleBtn) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sidebar = $('#sidebar');
+        sidebar.classList.toggle('open');
+      });
+    }
+    // Navigasi menu
     $$('#menu .nav-link').forEach(link => link.addEventListener('click', e=>{ e.preventDefault(); showView(link.dataset.view); if(window.innerWidth<900) $('#sidebar').classList.remove('open'); }));
-    $('#toggleSidebar')?.addEventListener('click', ()=> $('#sidebar').classList.toggle('open'));
     $('#chartPeriod')?.addEventListener('change', ()=> renderChart($('#chartPeriod').value));
     $('#refreshChart')?.addEventListener('click', ()=> renderChart($('#chartPeriod').value));
 
