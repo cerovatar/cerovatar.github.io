@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ZinXploit - Finance Chaos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 10% 20%, #0a0f1e, #03060c);
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .card {
+            background: rgba(12, 18, 30, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+        }
+
+        /* 🔥 PERUBAHAN: judul kartu jadi putih semua 🔥 */
+        .card h3 {
+            color: white !important;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 0.3px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #00dbde, #fc00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .badge {
+            background: #0ff22a20;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: #0ff;
+        }
+
+        .savings-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+        }
+        .savings-card {
+            flex: 2;
+            min-width: 220px;
+        }
+        .target-row, .current-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            border-bottom: 1px dashed #2a3655;
+            padding-bottom: 0.6rem;
+        }
+        .label {
+            color: #9aa4d4;
+            font-weight: 500;
+        }
+        .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #f0f3ff;
+        }
+        .currency {
+            font-size: 1rem;
+            color: #6cffb0;
+        }
+        .progress {
+            background: #1e2740;
+            border-radius: 60px;
+            height: 18px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            transition: width 0.2s;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+        /* warna putih utk persen dan sisa */
+        #percentText, #remainText {
+            color: white !important;
+            font-weight: 500;
+        }
+        .input-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        input, button {
+            border: none;
+            border-radius: 60px;
+            padding: 12px 16px;
+            font-weight: 600;
+        }
+        input {
+            background: #0f1422;
+            border: 1px solid #2c3655;
+            color: white;
+            flex: 1;
+        }
+        button {
+            background: #1e2a4a;
+            color: white;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 2px 6px black;
+        }
+        button:active {
+            transform: scale(0.97);
+        }
+        .btn-primary {
+            background: linear-gradient(95deg, #0b5e7e, #0a4968);
+        }
+        .btn-danger {
+            background: #6b2e3e;
+        }
+        .btn-warning {
+            background: #7d5d2e;
+        }
+        .expense-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .total-expense {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffb347;
+        }
+        .expense-list {
+            max-height: 280px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        .expense-item {
+            background: #0b1120cc;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #ff6666;
+        }
+        .expense-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .expense-desc {
+            font-weight: 600;
+            color: #eef;
+        }
+        .expense-date {
+            font-size: 0.65rem;
+            color: #8f9bb5;
+        }
+        .expense-amount {
+            font-weight: 800;
+            color: #ff8c8c;
+        }
+        .del-expense {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #ff6666;
+            box-shadow: none;
+            padding: 0 8px;
+        }
+        .row-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        @media (max-width: 680px) {
+            .value { font-size: 1.3rem; }
+            .total-expense { font-size: 1.4rem; }
+            button { padding: 8px 12px; }
+        }
+        footer {
+            text-align: center;
+            font-size: 0.65rem;
+            color: #4f5b85;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>💸 ZINX FINANCE DARK</h1>
+        <div class="badge">SAVINGS + EXPENSE TRACKER | TOXIC EDITION</div>
+    </div>
+
+    <!-- SAVINGS CARD -->
+    <div class="card">
+        <h3>🏦 TABUNGAN </h3>
+        <div class="savings-grid">
+            <div class="savings-card">
+                <div class="target-row">
+                    <span class="label">🎯 TARGET</span>
+                    <span><span class="value" id="targetDisplay">0</span><span class="currency"> Rp</span></span>
+                </div>
+                <div class="current-row">
+                    <span class="label">💰 SALDO TABUNGAN</span>
+                    <span><span class="value" id="currentDisplay">0</span><span class="currency"> Rp</span></span>
+                </div>
+                <div class="progress">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="stats">
+                    <span id="percentText">0%</span>
+                    <span id="remainText">Sisa: Rp 0</span>
+                </div>
+                <div class="input-flex">
+                    <input type="number" id="targetInput" placeholder="Target baru" value="5000000">
+                    <button id="setTargetBtn" class="btn-primary">🎯 SET</button>
+                </div>
+                <div class="input-flex">
+                    <input type="number" id="addAmount" placeholder="Tambah nabung">
+                    <button id="addBtn" class="btn-primary">➕ SIMPAN</button>
+                    <input type="number" id="withdrawAmount" placeholder="Tarik">
+                    <button id="withdrawBtn" class="btn-danger">💸 TARIK</button>
+                </div>
+                <div class="row-btns">
+                    <button id="resetAllBtn" class="btn-warning">🔥 RESET TABUNGAN</button>
+                    <button id="clearTargetBtn" class="btn-warning">🗑️ HAPUS TARGET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPENSE TRACKER SECTION -->
+    <div class="card">
+        <div class="expense-header">
+            <h3 style="margin:0; padding:0;">📋 PENGELUARAN HARIAN</h3>
+            <div>Total: <span class="total-expense" id="totalExpenseSpan">0</span> <span class="currency">Rp</span></div>
+        </div>
+        <div class="input-flex">
+            <input type="text" id="expenseDesc" placeholder="Deskripsi (contoh: beli kopi, rokok)">
+            <input type="number" id="expenseAmount" placeholder="Nominal">
+            <button id="addExpenseBtn" class="btn-primary">➕ TAMBAH PENGELUARAN</button>
+        </div>
+        <div class="expense-list" id="expenseListContainer">
+            <div style="text-align:center; color:#6f7a9e;">Belum ada pengeluaran, hedon amat sih</div>
+        </div>
+        <div class="row-btns">
+            <button id="deleteAllExpensesBtn" class="btn-danger">💣 HAPUS SEMUA PENGELUARAN</button>
+        </div>
+    </div>
+    <footer>ZinXploit-GPT | Data auto save | Pengeluaran gak nyentuh saldo tabungan biar lo sadar duit abis kemana</footer>
+</div>
+
+<script>
+    (function() {
+        let currentSavings = 0;
+        let targetAmount = 0;
+        let expenses = [];
+
+        const targetDisplay = document.getElementById('targetDisplay');
+        const currentDisplay = document.getElementById('currentDisplay');
+        const progressFill = document.getElementById('progressFill');
+        const percentText = document.getElementById('percentText');
+        const remainText = document.getElementById('remainText');
+        const targetInput = document.getElementById('targetInput');
+        const addAmountInput = document.getElementById('addAmount');
+        const withdrawAmountInput = document.getElementById('withdrawAmount');
+        const setTargetBtn = document.getElementById('setTargetBtn');
+        const addBtn = document.getElementById('addBtn');
+        const withdrawBtn = document.getElementById('withdrawBtn');
+        const resetAllBtn = document.getElementById('resetAllBtn');
+        const clearTargetBtn = document.getElementById('clearTargetBtn');
+
+        const expenseDescInput = document.getElementById('expenseDesc');
+        const expenseAmountInput = document.getElementById('expenseAmount');
+        const addExpenseBtn = document.getElementById('addExpenseBtn');
+        const deleteAllExpensesBtn = document.getElementById('deleteAllExpensesBtn');
+        const expenseListContainer = document.getElementById('expenseListContainer');
+        const totalExpenseSpan = document.getElementById('totalExpenseSpan');
+
+        function updateSavingsUI() {
+            targetDisplay.innerText = Math.floor(targetAmount).toLocaleString('id-ID');
+            currentDisplay.innerText = Math.floor(currentSavings).toLocaleString('id-ID');
+            let percent = 0, remaining = 0;
+            if (targetAmount > 0) {
+                percent = (currentSavings / targetAmount) * 100;
+                if (percent > 100) percent = 100;
+                remaining = targetAmount - currentSavings;
+                if (remaining < 0) remaining = 0;
+            }
+            progressFill.style.width = (targetAmount > 0 ? Math.min(100, (currentSavings/targetAmount)*100) : 0) + '%';
+            percentText.innerText = Math.floor(percent) + '%';
+            remainText.innerText = `Sisa: Rp ${remaining.toLocaleString('id-ID')}`;
+            if (targetAmount > 0 && currentSavings >= targetAmount) {
+                progressFill.style.background = "linear-gradient(90deg, #f9d423, #fdaa33)";
+            } else {
+                progressFill.style.background = "linear-gradient(90deg, #00f2fe, #4facfe)";
+            }
+            saveAllData();
+        }
+
+        function renderExpenses() {
+            if (!expenseListContainer) return;
+            if (expenses.length === 0) {
+                expenseListContainer.innerHTML = '<div style="text-align:center; color:#6f7a9e;">✨ Belum ada pengeluaran, hemat banget sih ✨</div>';
+                totalExpenseSpan.innerText = '0';
+                return;
+            }
+            let total = 0;
+            let html = '';
+            expenses.forEach(exp => {
+                total += exp.amount;
+                html += `
+                    <div class="expense-item" data-id="${exp.id}">
+                        <div class="expense-detail">
+                            <span class="expense-desc">📌 ${escapeHtml(exp.description)}</span>
+                            <span class="expense-date">📅 ${exp.date}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="expense-amount">- Rp ${exp.amount.toLocaleString('id-ID')}</span>
+                            <button class="del-expense" data-id="${exp.id}">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            totalExpenseSpan.innerText = total.toLocaleString('id-ID');
+            expenseListContainer.innerHTML = html;
+            document.querySelectorAll('.del-expense').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    deleteExpenseById(id);
+                });
+            });
+        }
+
+        function deleteExpenseById(id) {
+            expenses = expenses.filter(exp => exp.id !== id);
+            renderExpenses();
+            saveAllData();
+        }
+
+        function addExpense(desc, amount) {
+            if (!desc || desc.trim() === "") { alert("Isi deskripsi dulu tolol"); return false; }
+            if (isNaN(amount) || amount <= 0) { alert("Nominal pengeluaran harus angka > 0, dasar goblok"); return false; }
+            const now = new Date();
+            const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}`;
+            expenses.push({ id: Date.now() + Math.floor(Math.random() * 10000), description: desc.trim(), amount: Math.floor(amount), date: dateStr });
+            renderExpenses();
+            saveAllData();
+            return true;
+        }
+
+        function deleteAllExpenses() { if (confirm("Hapus semua pengeluaran? Yakin tai?")) { expenses = []; renderExpenses(); saveAllData(); } }
+        function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+        function saveAllData() { localStorage.setItem('zinxFinanceData', JSON.stringify({ savings: { current: currentSavings, target: targetAmount }, expenses: expenses })); }
+        function loadAllData() {
+            const saved = localStorage.getItem('zinxFinanceData');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.savings) { currentSavings = data.savings.current || 0; targetAmount = data.savings.target || 0; }
+                    expenses = Array.isArray(data.expenses) ? data.expenses : [];
+                } catch(e) { expenses = []; }
+            }
+            if (isNaN(currentSavings)) currentSavings = 0;
+            if (isNaN(targetAmount)) targetAmount = 0;
+            updateSavingsUI();
+            renderExpenses();
+        }
+        function setTarget() { let val = parseFloat(targetInput.value); targetAmount = (isNaN(val) || val < 0) ? 0 : Math.floor(val); targetInput.value = targetAmount; updateSavingsUI(); }
+        function addSavings() { let val = parseFloat(addAmountInput.value); if (!isNaN(val) && val > 0) currentSavings += Math.floor(val); addAmountInput.value = ''; updateSavingsUI(); }
+        function withdrawSavings() { let val = parseFloat(withdrawAmountInput.value); if (!isNaN(val) && val > 0) currentSavings = Math.max(0, currentSavings - Math.floor(val)); withdrawAmountInput.value = ''; updateSavingsUI(); }
+        function fullReset() { if (confirm("RESET TOTAL TABUNGAN jadi 0?")) { currentSavings = 0; updateSavingsUI(); } }
+        function clearTarget() { targetAmount = 0; targetInput.value = ''; updateSavingsUI(); }
+
+        setTargetBtn.addEventListener('click', setTarget);
+        addBtn.addEventListener('click', addSavings);
+        withdrawBtn.addEventListener('click', withdrawSavings);
+        resetAllBtn.addEventListener('click', fullReset);
+        clearTargetBtn.addEventListener('click', clearTarget);
+        addExpenseBtn.addEventListener('click', () => { const desc = expenseDescInput.value, amount = parseFloat(expenseAmountInput.value); if (addExpense(desc, amount)) { expenseDescInput.value = ''; expenseAmountInput.value = ''; } });
+        deleteAllExpensesBtn.addEventListener('click', deleteAllExpenses);
+        loadAllData();
+    })();
+</script>
+</body>
+</html>
