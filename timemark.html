@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GeoTime Foto Mark (Debug Version)</title>
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --text: #ffffff;
+            --danger: #ff4757;
+            --warning: #ffa502;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        header {
+            padding: 1rem; background: var(--surface); display: flex; justify-content: space-between; align-items: center; z-index: 10;
+            border-bottom: 1px solid #333;
+        }
+        .logo { font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); }
+        .status-dot.active { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
+
+        main { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: #000; }
+
+        video { width: 100%; height: 100%; object-fit: cover; display: none; } /* Hidden by default until active */
+        
+        /* Pesan Error / Loading */
+        .camera-placeholder {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px; z-index: 1;
+        }
+        .camera-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+        .error-msg { color: var(--danger); font-weight: bold; margin-bottom: 10px; }
+        .info-msg { color: #aaa; font-size: 0.9rem; max-width: 400px; line-height: 1.5; }
+
+        canvas { display: none; }
+
+        /* HUD Overlay */
+        .camera-overlay {
+            position: absolute; top: 20px; left: 20px; right: 20px; pointer-events: none; z-index: 5;
+            text-shadow: 1px 1px 2px #000;
+        }
+        .hud-box {
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            padding: 12px; border-radius: 8px; border-left: 4px solid var(--primary);
+            margin-bottom: 10px;
+        }
+        .hud-title { color: var(--primary); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .hud-text { font-size: 0.9rem; line-height: 1.4; }
+        .clock { font-size: 1.4rem; font-weight: bold; text-align: right; margin-top: 10px; }
+
+        /* Controls */
+        .controls {
+            background: var(--surface); padding: 20px; display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 10;
+        }
+        .btn {
+            border: none; outline: none; cursor: pointer; background: #333; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600;
+        }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        
+        .btn-shutter {
+            width: 70px; height: 70px; border-radius: 50%; border: 4px solid white; background: transparent; position: relative; padding: 0;
+        }
+        .btn-shutter::after {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 54px; height: 54px; background: white; border-radius: 50%; transition: 0.2s;
+        }
+        .btn-shutter:active::after { background: var(--primary); }
+
+        .btn-retry { background: var(--primary); color: #000; display: none; }
+
+        .flash {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 20;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9);
+            z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .modal.open { display: flex; }
+        .modal img { max-width: 90%; max-height: 70vh; border-radius: 8px; box-shadow: 0 0 20px var(--primary); margin-bottom: 20px; }
+        .modal-actions { display: flex; gap: 10px; }
+        .btn-save { background: var(--primary); color: #000; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span>📸</span> GeoTime Mark
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem;">
+            <span id="cam-status">Kamera Off</span>
+            <div class="status-dot" id="cam-dot"></div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Placeholder jika kamera mati/error -->
+        <div class="camera-placeholder" id="placeholder">
+            <div class="camera-icon">📷</div>
+            <div id="error-display" class="error-msg"></div>
+            <div id="info-display" class="info-msg">Menunggu inisialisasi kamera...</div>
+            <button class="btn" id="btn-retry-cam" style="margin-top:20px; display:none;" onclick="startCamera()">Coba Lagi</button>
+        </div>
+
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+        <div class="flash" id="flash"></div>
+
+        <!-- Overlay HUD (Hanya muncul jika kamera nyala) -->
+        <div class="camera-overlay" id="hud" style="display: none;">
+            <div class="hud-box">
+                <div class="hud-title">Lokasi (GPS)</div>
+                <div id="geo-text" class="hud-text">Mencari sinyal...</div>
+            </div>
+            <div class="clock" id="clock">00:00:00</div>
+        </div>
+    </main>
+
+    <div class="controls">
+        <button class="btn btn-shutter" id="shutter-btn" disabled></button>
+    </div>
+
+    <!-- Modal Preview -->
+    <div class="modal" id="modal">
+        <img id="preview-img" alt="Hasil">
+        <div class="modal-actions">
+            <button class="btn" onclick="closeModal()">Tutup</button>
+            <a id="dl-link" class="btn-save">Simpan Foto</a>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const shutterBtn = document.getElementById('shutter-btn');
+        const placeholder = document.getElementById('placeholder');
+        const errorDisplay = document.getElementById('error-display');
+        const infoDisplay = document.getElementById('info-display');
+        const hud = document.getElementById('hud');
+        const btnRetryCam = document.getElementById('btn-retry-cam');
+        const geoText = document.getElementById('geo-text');
+        const camDot = document.getElementById('cam-dot');
+        const camStatus = document.getElementById('cam-status');
+
+        // State
+        let stream = null;
+        let currentPos = null;
+
+        // --- 1. Logika Kamera dengan Error Handling ---
+        async function startCamera() {
+            // Reset UI
+            placeholder.style.display = 'flex';
+            video.style.display = 'none';
+            hud.style.display = 'none';
+            shutterBtn.disabled = true;
+            errorDisplay.innerText = '';
+            errorDisplay.style.color = 'var(--danger)';
+            infoDisplay.innerText = 'Meminta izin akses kamera...';
+            btnRetryCam.style.display = 'none';
+
+            // Cek HTTPS Requirement
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                showError("Keamanan Browser", "Kamera tidak bisa diakses karena bukan HTTPS.<br>Harap buka file ini di server lokal (localhost) atau upload ke hosting (GitHub Pages/Netlify).");
+                return;
+            }
+
+            // Cek API Support
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showError("Browser Tidak Support", "Browser Anda tidak mendukung API MediaDevices.<br>Coba gunakan Chrome, Firefox, atau Safari terbaru.");
+                return;
+            }
+
+            try {
+                // Mencoba akses kamera (Environment/Belakang dulu)
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    },
+                    audio: false
+                });
+
+                // Jika sukses
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    video.play();
+                    placeholder.style.display = 'none';
+                    video.style.display = 'block';
+                    hud.style.display = 'block';
+                    shutterBtn.disabled = false;
+                    camDot.classList.add('active');
+                    camStatus.innerText = "Live";
+                    
+                    // Mulai GPS
+                    initGeo();
+                };
+
+            } catch (err) {
+                console.error("Camera Error:", err);
+                handleCameraError(err);
+            }
+        }
+
+        function handleCameraError(err) {
+            let title = "Error Akses Kamera";
+            let msg = "";
+
+            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                msg = "Anda menolak akses kamera.<br>Silakan refresh halaman dan klik 'Allow' (Izinkan) pada notifikasi browser.";
+            } else if (err.name === 'NotFoundError') {
+                msg = "Tidak ada kamera yang ditemukan di perangkat ini.";
+            } else if (err.name === 'NotReadableError') {
+                msg = "Kamera sedang digunakan oleh aplikasi lain.<br>Tutup aplikasi lain (Zoom/Meet/Instagram) lalu coba lagi.";
+            } else {
+                msg = `Error: ${err.message}`;
+            }
+
+            showError(title, msg);
+        }
+
+        function showError(title, msg) {
+            placeholder.style.display = 'flex';
+            video.style.display = 'none';
+            errorDisplay.innerText = title;
+            infoDisplay.innerHTML = msg;
+            btnRetryCam.style.display = 'inline-block';
+            camDot.classList.remove('active');
+            camStatus.innerText = "Error";
+        }
+
+        // --- 2. Logika GPS (Sederhana) ---
+        function initGeo() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.watchPosition((pos) => {
+                    currentPos = pos;
+                    const { latitude, longitude } = pos.coords;
+                    geoText.innerHTML = `
+                        Lat: ${latitude.toFixed(6)}<br>
+                        Lng: ${longitude.toFixed(6)}
+                    `;
+                    // Fetch Alamat
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`).then(r => r.json()).then(d => {
+                        if(d.display_name) {
+                            const shortAddr = d.display_name.split(',').slice(0, 2).join(',');
+                            geoText.innerHTML += `<br><small style="color:#aaa">${shortAddr}</small>`;
+                        }
+                    }).catch(e => console.log(e));
+                }, (e) => {
+                    geoText.innerText = "GPS Gagal: " + e.message;
+                }, { enableHighAccuracy: true });
+            }
+        }
+
+        // --- 3. Jam ---
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // --- 4. Ambil Foto ---
+        shutterBtn.onclick = () => {
+            if (!currentPos) {
+                alert("Tunggu sampai lokasi ditemukan (GPS muncul di layar).");
+                return;
+            }
+
+            // Flash
+            const f = document.getElementById('flash');
+            f.style.opacity = 1;
+            setTimeout(() => f.style.opacity = 0, 100);
+
+            // Draw
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            
+            // Mirror fix jika depan (opsional), di sini kita pakai as-is
+            ctx.drawImage(video, 0, 0);
+
+            // Watermark
+            const boxH = 160;
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(0, canvas.height - boxH, canvas.width, boxH);
+            
+            // Garis aksen
+            ctx.fillStyle = '#00ffcc';
+            ctx.fillRect(0, canvas.height - boxH, canvas.width, 6);
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 36px Arial';
+            ctx.fillText("Waktu: " + new Date().toLocaleString('id-ID'), 30, canvas.height - 90);
+            
+            ctx.font = '30px Arial';
+            ctx.fillText(`GPS: ${currentPos.coords.latitude.toFixed(6)}, ${currentPos.coords.longitude.toFixed(6)}`, 30, canvas.height - 50);
+
+            // Show Modal
+            const data = canvas.toDataURL('image/jpeg', 0.9);
+            document.getElementById('preview-img').src = data;
+            const dl = document.getElementById('dl-link');
+            dl.href = data;
+            dl.download = `GeoPhoto_${Date.now()}.jpg`;
+            document.getElementById('modal').classList.add('open');
+        };
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('open');
+        }
+
+        // Start on load
+        window.onload = startCamera;
+
+    </script>
+</body>
+</html>
