@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GeoTime Mark - Perbaikan Tombol</title>
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --bg: #000;
+            --surface: #1e1e1e;
+            --text: #fff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Mencegah scroll */
+        }
+
+        /* --- Header --- */
+        header {
+            height: 60px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+            z-index: 20;
+        }
+
+        /* --- Main Video Area --- */
+        main {
+            flex: 1;
+            position: relative;
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- Pesan Error / Status (Overlay di tengah) --- */
+        .status-msg {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 10px;
+            z-index: 5;
+            max-width: 90%;
+        }
+        .error-text { color: #ff4757; font-weight: bold; }
+
+        /* --- Info HUD (Waktu & Lokasi) --- */
+        .hud {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px;
+            pointer-events: none;
+            z-index: 5;
+            text-shadow: 1px 1px 3px #000;
+        }
+        .hud-box {
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--primary);
+        }
+        .clock { font-size: 1.5rem; font-weight: bold; text-align: right; }
+
+        /* --- Controls / Tombol (Yang Saya Perbaiki) --- */
+        .controls {
+            height: 120px; /* Tinggi area tombol fixed */
+            background: var(--surface);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-top: 1px solid #333;
+            z-index: 100; /* Z-Index tinggi agar tidak tertimpa video */
+        }
+
+        /* Style Tombol Rana */
+        .btn-shutter {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            outline: none;
+            transition: transform 0.1s, background 0.3s;
+        }
+
+        /* Efek lingkaran luar tombol */
+        .btn-shutter::after {
+            content: '';
+            position: absolute;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-shutter:active { transform: scale(0.95); background: var(--primary); }
+
+        /* Style ketika tombol DISABLED (belum siap) */
+        .btn-shutter:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .btn-shutter:disabled::after { border-color: #333; }
+
+        canvas { display: none; }
+        
+        /* Flash animation */
+        .flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; opacity: 0; pointer-events: none; z-index: 50;
+        }
+        .flash.active { opacity: 1; transition: opacity 0.1s; }
+
+        /* Modal Preview */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal.open { display: flex; }
+        .modal img { max-width: 100%; max-height: 70vh; border-radius: 5px; box-shadow: 0 0 20px rgba(0,255,204,0.2); margin-bottom: 20px; }
+        
+        .modal-btns { display: flex; gap: 15px; }
+        .btn {
+            padding: 12px 25px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1rem;
+        }
+        .btn-cancel { background: #333; color: white; }
+        .btn-save { background: var(--primary); color: black; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        GeoTime Foto Mark
+    </header>
+
+    <main>
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+        <div class="flash" id="flash"></div>
+
+        <!-- Overlay Status & Error -->
+        <div id="status-display" class="status-msg">
+            Memuat Kamera...
+        </div>
+
+        <!-- Overlay Info (Waktu & GPS) -->
+        <div class="hud" id="hud" style="display:none;">
+            <div class="hud-box" style="background: rgba(0,0,0,0.7);">
+                <div id="geo-text" style="font-size: 0.9rem;">Mencari GPS...</div>
+            </div>
+            <div class="clock" id="clock">00:00:00</div>
+        </div>
+    </main>
+
+    <!-- AREA TOMBOL (PERBAIKAN DISINI) -->
+    <div class="controls">
+        <!-- Tombol ini akan disabled (abu-abu) sampai kamera nyala -->
+        <button class="btn-shutter" id="shutter-btn" disabled></button>
+    </div>
+
+    <!-- Modal Hasil -->
+    <div class="modal" id="modal">
+        <img id="preview-img" alt="Hasil Foto">
+        <div class="modal-btns">
+            <button class="btn btn-cancel" onclick="closeModal()">Hapus / Ulang</button>
+            <a id="save-link" class="btn btn-save">Simpan Foto</a>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const shutterBtn = document.getElementById('shutter-btn');
+        const statusDisplay = document.getElementById('status-display');
+        const hud = document.getElementById('hud');
+        const flash = document.getElementById('flash');
+        const geoText = document.getElementById('geo-text');
+        
+        let stream = null;
+        let currentLocation = null;
+
+        // 1. Inisialisasi Kamera
+        async function startCamera() {
+            statusDisplay.innerHTML = "Meminta izin kamera...";
+            
+            // Cek HTTPS
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                showError("Harap gunakan HTTPS atau Localhost");
+                return;
+            }
+
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080) },
+                    audio: false
+                });
+                
+                video.srcObject = stream;
+                
+                // Event saat video siap diputar
+                video.onloadedmetadata = () => {
+                    video.play();
+                    // Sembunyikan pesan status, tampilkan HUD, dan AKTIFKAN tombol
+                    statusDisplay.style.display = 'none';
+                    hud.style.display = 'block';
+                    shutterBtn.disabled = false; // <--- INI KUNCI NYALAKAN TOMBOL
+                    startGPS();
+                };
+
+            } catch (err) {
+                showError("Gagal akses kamera: " + err.message);
+            }
+        }
+
+        function showError(msg) {
+            statusDisplay.innerHTML = `<span class="error-text">${msg}</span>`;
+            shutterBtn.disabled = true; // Pastikan tombol mati jika error
+        }
+
+        // 2. Logika GPS Sederhana
+        function startGPS() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.watchPosition((pos) => {
+                    currentLocation = pos.coords;
+                    const lat = pos.coords.latitude.toFixed(5);
+                    const lng = pos.coords.longitude.toFixed(5);
+                    geoText.innerHTML = `Lat: ${lat}, Lng: ${lng}`;
+                    
+                    // Coba ambil alamat
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                        .then(r => r.json())
+                        .then(d => {
+                            if(d.display_name) {
+                                geoText.innerHTML += `<br><small style="color:#ddd">${d.display_name.split(',')[0]}</small>`;
+                            }
+                        }).catch(e => {});
+                }, (e) => {
+                    geoText.innerText = "GPS Tidak Aktif";
+                }, { enableHighAccuracy: true });
+            }
+        }
+
+        // 3. Jam
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // 4. Fungsi Ambil Foto
+        shutterBtn.addEventListener('click', () => {
+            // Efek flash
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 150);
+
+            // Setup Canvas
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+
+            // Gambar Video
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Buat Background Watermark (Gelap Transparan)
+            const wmHeight = 150;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, canvas.height - wmHeight, canvas.width, wmHeight);
+
+            // Garis Hijau
+            ctx.fillStyle = '#00ffcc';
+            ctx.fillRect(0, canvas.height - wmHeight, canvas.width, 5);
+
+            // Tulis Teks
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 40px Arial';
+            
+            const timeStr = new Date().toLocaleString('id-ID');
+            ctx.fillText("📅 " + timeStr, 30, canvas.height - 100);
+
+            ctx.font = '32px Arial';
+            if(currentLocation) {
+                ctx.fillText(`📍 ${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`, 30, canvas.height - 50);
+            } else {
+                ctx.fillText("📍 Lokasi tidak ditemukan", 30, canvas.height - 50);
+            }
+
+            // Tampilkan Modal
+            const dataURL = canvas.toDataURL('image/jpeg');
+            document.getElementById('preview-img').src = dataURL;
+            const saveLink = document.getElementById('save-link');
+            saveLink.href = dataURL;
+            saveLink.download = `GeoFoto_${Date.now()}.jpg`;
+            
+            document.getElementById('modal').classList.add('open');
+        });
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('open');
+        }
+
+        // Jalankan saat load
+        window.onload = startCamera;
+
+    </script>
+</body>
+</html>
