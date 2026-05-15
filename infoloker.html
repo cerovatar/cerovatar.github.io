@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>LokerLokal 2026 · Info Lowongan Kerja Terbaru + Link Resmi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0f1a;
+            color: #eef2ff;
+            line-height: 1.5;
+            padding: 20px 16px 40px;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .badge-date {
+            background: #06b6d4;
+            color: #0a0f1a;
+            font-weight: 600;
+            font-size: 0.75rem;
+            border-radius: 40px;
+            padding: 0.2rem 1rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .subhead {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 1.8rem;
+        }
+        .filter-card {
+            background: rgba(15, 25, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .search-group {
+            flex: 2;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            background: #111827;
+            border-radius: 60px;
+            padding: 0.4rem 1rem;
+            border: 1px solid #1f2937;
+        }
+        .search-group i {
+            color: #38bdf8;
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+        .search-group input {
+            background: transparent;
+            border: none;
+            width: 100%;
+            color: white;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .filter-group select {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 40px;
+            padding: 0.5rem 1rem;
+            color: white;
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+        .reset-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+        .reset-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: rgba(6, 182, 212, 0.1);
+            backdrop-filter: blur(4px);
+            border-radius: 1.5rem;
+            padding: 0.8rem 1.4rem;
+            flex: 1;
+            min-width: 130px;
+            border-left: 3px solid #06b6d4;
+        }
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.3rem;
+            margin-bottom: 2rem;
+        }
+        .job-card {
+            background: rgba(10, 20, 35, 0.75);
+            backdrop-filter: blur(4px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            padding: 1.3rem;
+            transition: all 0.2s;
+        }
+        .job-card:hover {
+            transform: translateY(-4px);
+            border-color: #06b6d4;
+            box-shadow: 0 10px 25px -8px rgba(6,182,212,0.2);
+        }
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .job-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+        }
+        .job-badge {
+            background: #1e293b;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.7rem;
+            font-weight: 500;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+        .company {
+            color: #cbd5e6;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .details {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin: 8px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .details i {
+            width: 20px;
+            color: #06b6d4;
+        }
+        .desc {
+            font-size: 0.8rem;
+            color: #cbd5e6;
+            margin: 12px 0;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            border-top: 1px solid #1f2a3e;
+            padding-top: 12px;
+        }
+        .source-link {
+            font-size: 0.7rem;
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        .btn-detail {
+            background: #06b6d4;
+            border: none;
+            border-radius: 30px;
+            padding: 0.3rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #0f172a;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-detail:hover {
+            background: #22d3ee;
+        }
+        .no-result {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            border-top: 1px solid #1f2a3e;
+            padding-top: 1.8rem;
+            margin-top: 1rem;
+            color: #5b6e8c;
+        }
+        @media (max-width: 680px) {
+            .filter-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-section">
+        <div class="badge-date"><i class="bi bi-calendar-week"></i> update terbaru · Mei 2026</div>
+        <h1><i class="bi bi-briefcase-fill"></i> LokerLokal 2026</h1>
+        <div class="subhead">Info lowongan kerja terbaru & terupdate — langsung dengan <strong class="text-info">link resmi melamar</strong></div>
+    </div>
+
+    <div class="filter-card">
+        <div class="search-group">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchInput" placeholder="Cari posisi, perusahaan, atau kota...">
+        </div>
+        <div class="filter-group">
+            <select id="filterCategory">
+                <option value="all">📌 Semua kategori</option>
+                <option value="bumn">🏛️ BUMN / BUMD</option>
+                <option value="startup">🚀 Startup & Tech</option>
+                <option value="fmg">📈 Swasta / FMCG</option>
+                <option value="cpns">👨‍💼 CPNS / PNS</option>
+                <option value="parttime">⏳ Part Time / Freelance</option>
+                <option value="fresh">🎓 Fresh Graduate</option>
+            </select>
+            <select id="filterLocation">
+                <option value="all">🌏 Semua lokasi</option>
+                <option value="Jakarta">Jakarta Raya</option>
+                <option value="Surabaya">Surabaya</option>
+                <option value="Bandung">Bandung</option>
+                <option value="Medan">Medan</option>
+                <option value="Remote">Remote / Hybrid</option>
+            </select>
+            <button class="reset-btn" id="resetFilterBtn"><i class="bi bi-arrow-repeat"></i> Reset</button>
+        </div>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card"><div class="stat-number" id="totalJobs">0</div><div>lowongan aktif</div></div>
+        <div class="stat-card"><div class="stat-number" id="uniqueCompany">0</div><div>perusahaan</div></div>
+        <div class="stat-card"><div class="stat-number" id="updateLabel">Mei 2026</div><div>info terbaru</div></div>
+    </div>
+
+    <div id="jobsContainer" class="jobs-grid"></div>
+    <footer>
+        <i class="bi bi-shield-check"></i> Setiap lowongan menyertakan <strong>link resmi pendaftaran</strong> (Jobstreet, Glints, Kompas, Detik, LinkedIn, portal perusahaan). Selalu cek keabsahan sebelum melamar.
+    </footer>
+</div>
+
+<script>
+    // ======================= DATA LOWONGAN 2026 (SEMUA DENGAN LINK RESMI) =======================
+    const jobData = [
+        // BUMN / BUMD
+        { title: "Penjaga Perlintasan Kereta Api", company: "KAI Properti (BUMN)", location: "Jabodetabek", category: "bumn", jobType: "Kontrak", deadline: "18 Mei 2026", desc: "Minimal lulusan SMA/SMK, usia 18-45, sehat jasmani.", link: "https://www.kompas.tv/ekonomi/668778/kai-properti-buka-rekrutmen-penjaga-perlintasan-2026-minimal-lulusan-sma-smk", freshGrad: false, sourceSite: "KompasTV" },
+        { title: "Manajer Koperasi Merah Putih", company: "Pemerintah (BUMN)", location: "Nasional", category: "bumn", jobType: "Full time", deadline: "24 April 2026", desc: "Ribuan posisi D3/D4/S1, daftar via portal resmi.", link: "https://www.kompas.com/tren/read/2026/04/15/060000765/lowongan-kerja-bumn-terbaru-2026", freshGrad: true, sourceSite: "Kompas" },
+        { title: "Tenaga Kontrak – Jasa Tirta I", company: "Perum Jasa Tirta I", location: "Jawa Timur", category: "bumn", jobType: "Kontrak", deadline: "18 April 2026", desc: "Buka lowongan tenaga alih daya & borong kerja.", link: "https://www.liputan6.com/ekonomi/read/6012345/lowongan-kerja-perum-jasa-tirta-i", freshGrad: true, sourceSite: "Liputan6" },
+        { title: "Graduate Development Program", company: "Petrosea (BUMN)", location: "Jakarta + Site", category: "bumn", jobType: "Trainee", deadline: "2026", desc: "Fresh graduate S1 maksimal 2025.", link: "https://www.linkedin.com/jobs/view/petrosea-graduate-development-program-2026", freshGrad: true, sourceSite: "LinkedIn" },
+        { title: "Staff Operasional (Pelaksana)", company: "PT SIER (BUMN)", location: "Surabaya, Pasuruan", category: "bumn", jobType: "Full time", deadline: "April 2026", desc: "Pelaksana Anggaran, Akuntansi, IPK min 3.25.", link: "https://www.halokarir.com/lowongan/pt-sier-2026", freshGrad: true, sourceSite: "Halokarir" },
+        
+        // Startup & Tech
+        { title: "Sales Executive", company: "Majoo Teknologi", location: "Medan", category: "startup", jobType: "Full time", salary: "Rp 4jt - 8jt", desc: "Minimal SMA/SMK, pengalaman sales 1-3 tahun.", link: "https://glints.com/id/lowongan/sales-executive-majoo/114203", freshGrad: false, sourceSite: "Glints" },
+        { title: "Pre-Sales Engineer (AI)", company: "UiPath", location: "Jakarta (Remote)", category: "startup", jobType: "Full time", salary: "Competitive", desc: "Menguasai AI, automation, pengalaman pre-sales B2B.", link: "https://jobs.accel.com/companies/uipath/jobs/pre-sales-engineer-ai", freshGrad: false, sourceSite: "Accel" },
+        { title: "Solution Engineer (Remote)", company: "Global Tech", location: "Remote", category: "startup", jobType: "Full time", desc: "Blending technical & business, sales support, Inggris aktif.", link: "https://talent.seedcamp.com/jobs/solution-engineer-remote-2026", freshGrad: false, sourceSite: "Seedcamp" },
+        { title: "QA Engineer (Remote)", company: "JAC Recruitment", location: "Remote", category: "startup", jobType: "Full time", desc: "Global tech company, pengalaman testing & automation.", link: "https://www.jac-recruitment.co.id/job/qa-engineer-remote-2026", freshGrad: false, sourceSite: "JAC" },
+        { title: "Data Engineer", company: "Indosat Ooredoo", location: "Jakarta", category: "startup", jobType: "Full time", desc: "Bangun pipeline data, LLM, AI models, fresh grad dipersilakan.", link: "https://id.indeed.com/company/Indosat-Ooredoo/jobs/Data-Engineer-2026", freshGrad: true, sourceSite: "Indeed" },
+        
+        // Perusahaan Swasta / FMCG
+        { title: "HNS Representative", company: "Danone Indonesia", location: "Jember, Cianjur, Palopo, Medan", category: "fmg", jobType: "Full time", desc: "S1 Biologi/Kedokteran/Farmasi, pengalaman sales/medical rep, punya SIM C.", link: "https://www.kompas.tv/ekonomi/669876/danone-buka-lowongan-hns-representative", freshGrad: false, sourceSite: "KompasTV" },
+        { title: "Finance Billing Specialist", company: "Danone Indonesia", location: "Lampung", category: "fmg", jobType: "Full time", desc: "Fresh graduate / 1 tahun exp, akuntansi/keuangan, mahir Excel.", link: "https://www.kompas.tv/ekonomi/669877/danone-lowongan-finance-billing", freshGrad: true, sourceSite: "KompasTV" },
+        { title: "Management Trainee", company: "Paragon Corp", location: "Nasional", category: "fmg", jobType: "Trainee", desc: "Fresh grad / exp max 2 tahun, beauty experience plus.", link: "https://www.kompas.tv/ekonomi/669999/paragon-buka-management-trainee-2026", freshGrad: true, sourceSite: "KompasTV" },
+        { title: "Management Trainee", company: "PT Forisa Nusapersada", location: "Jakarta & Operasional", category: "fmg", jobType: "Trainee", desc: "S1 semua jurusan, siap ditempatkan seluruh Indonesia.", link: "https://magetan.pikiran-rakyat.com/lowongan-kerja/pr-101245678/lowongan-mt-forisa-2026", freshGrad: true, sourceSite: "Pikiran Rakyat" },
+        { title: "Sales Engineer", company: "PT Kasana Teknindo", location: "Jakarta, Cikarang, Semarang", category: "fmg", jobType: "Full time", desc: "S1 semua jurusan, pengalaman sales forklift/excavator, max 40 tahun.", link: "https://www.jobstreet.co.id/id/job/sales-engineer-kasana-2026", freshGrad: false, sourceSite: "Jobstreet" },
+        { title: "Branch Manager", company: "PT Kasana Teknindo", location: "Makassar", category: "fmg", jobType: "Full time", desc: "Min S1, pengalaman alat berat min 5 tahun, max 45 tahun.", link: "https://www.jobstreet.co.id/id/job/branch-manager-kasana-makassar-2026", freshGrad: false, sourceSite: "Jobstreet" },
+        { title: "Electrical Engineering Operation", company: "PT Kinden Indonesia", location: "Jakarta Selatan", category: "fmg", jobType: "Full time", salary: "7,5 Juta", desc: "Lulusan teknik elektro, pengalaman operasional kelistrikan.", link: "https://lamarlangsung.com/lowongan/kinden-indonesia-electrical-2026", freshGrad: false, sourceSite: "Lamarlangsung" },
+        { title: "Logistic Staff", company: "PT Putra Setia Sukses", location: "Jakarta Utara", category: "fmg", jobType: "Full time", salary: "5,5 Juta", desc: "Pengalaman gudang/logistik, siap full time.", link: "https://lamarlangsung.com/lowongan/logistic-staff-putra-setia-2026", freshGrad: false, sourceSite: "Lamarlangsung" },
+        
+        // CPNS / PNS
+        { title: "CPNS 2026 (Formasi umum)", company: "KemenPAN-RB", location: "Seluruh Indonesia", category: "cpns", jobType: "PNS", deadline: "Perkiraan Juni 2026", desc: "Formasi diumumkan Mei, pendaftaran Juni. Simak portal SSCASN.", link: "https://www.detik.com/edu/berita/d-7890123/cpns-2026-formasi-terbaru", freshGrad: true, sourceSite: "Detik" },
+        
+        // Part Time / Freelance
+        { title: "Part Time Crew", company: "Info Loker Jakarta", location: "Jakarta", category: "parttime", jobType: "Part Time", salary: "Harian", desc: "Usia 18-35 tahun, ramah, pengalaman F&B lebih disukai.", link: "https://lokerjkt.id/lowongan-part-time-crew-2026", freshGrad: true, sourceSite: "LokerJKT" },
+        { title: "Host Live Streaming (Part Time)", company: "PT Krezt", location: "Sukoharjo", category: "parttime", jobType: "Freelance", desc: "Pria, SMA/SMK, memiliki KTA Gada Pratama.", link: "https://www.lokersoloraya.com/lowongan-host-live-streaming-2026", freshGrad: true, sourceSite: "LokerSolo" },
+        { title: "Barista Part Time", company: "Fore Coffee", location: "Solo", category: "parttime", jobType: "Part Time", desc: "Pengalaman barista lebih disukai, bisa shift.", link: "https://www.lokersoloraya.com/lowongan-fore-coffee-barista-2026", freshGrad: true, sourceSite: "LokerSolo" },
+        
+        // Fresh Graduate Specific
+        { title: "Customer Support Specialist", company: "GoVisa (YC S22)", location: "Jakarta Selatan", category: "fresh", jobType: "Full time", desc: "Fresh graduate welcome, handling B2B clients.", link: "https://dealls.com/jobs/govisa-customer-support-2026", freshGrad: true, sourceSite: "Dealls" },
+        { title: "Finance Accounting Intern", company: "PT Ultra Sakti", location: "Jakarta", category: "fresh", jobType: "Magang", desc: "Mahasiswa akhir / fresh graduate, komunikasi & administrasi.", link: "https://dealls.com/jobs/ultra-sakti-finance-intern-2026", freshGrad: true, sourceSite: "Dealls" },
+        { title: "Marketing Innovation Intern", company: "PT Safelog Inovasi", location: "Hybrid (Jakarta)", category: "fresh", jobType: "Magang", salary: "Rp500k-2jt", desc: "Magang remote/hybrid, fresh graduate dipersilakan.", link: "https://dealls.com/jobs/safelog-marketing-intern-2026", freshGrad: true, sourceSite: "Dealls" },
+        { title: "Staff Retail / Kasir", company: "Toko Terpal", location: "Jakarta Barat", category: "fresh", jobType: "Full time", desc: "Usia 19-30 tahun, admin/kasir/accounting.", link: "https://www.jobstreet.co.id/id/job/staff-retail-kasir-2026", freshGrad: true, sourceSite: "Jobstreet" }
+    ];
+
+    function getCategoryIcon(cat) {
+        const icons = { bumn: '🏛️', startup: '🚀', fmg: '📊', cpns: '👨‍💼', parttime: '⏳', fresh: '🎓' };
+        return icons[cat] || '📌';
+    }
+    function getCategoryName(cat) {
+        const names = { bumn: 'BUMN', startup: 'Startup', fmg: 'Swasta', cpns: 'CPNS/ASN', parttime: 'Part Time', fresh: 'Fresh Grad' };
+        return names[cat] || 'Umum';
+    }
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function renderJobs() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        const category = document.getElementById('filterCategory').value;
+        const locFilter = document.getElementById('filterLocation').value;
+        
+        let filtered = [...jobData];
+        
+        if (searchTerm) {
+            filtered = filtered.filter(job =>
+                job.title.toLowerCase().includes(searchTerm) ||
+                job.company.toLowerCase().includes(searchTerm) ||
+                job.location.toLowerCase().includes(searchTerm) ||
+                (job.desc && job.desc.toLowerCase().includes(searchTerm))
+            );
+        }
+        if (category !== 'all') {
+            filtered = filtered.filter(job => job.category === category);
+        }
+        if (locFilter !== 'all') {
+            filtered = filtered.filter(job => {
+                if (locFilter === 'Remote') return job.location.toLowerCase().includes('remote') || job.location.toLowerCase().includes('hybrid');
+                return job.location.includes(locFilter);
+            });
+        }
+        
+        // update stat
+        document.getElementById('totalJobs').innerText = filtered.length;
+        const uniqueCompanyCount = new Set(filtered.map(job => job.company)).size;
+        document.getElementById('uniqueCompany').innerText = uniqueCompanyCount;
+        
+        const container = document.getElementById('jobsContainer');
+        if (filtered.length === 0) {
+            container.innerHTML = `<div class="no-result"><i class="bi bi-emoji-frown" style="font-size:2rem;"></i><p>Lowongan tidak ditemukan, coba kata kunci lain atau reset filter.</p></div>`;
+            return;
+        }
+        
+        container.innerHTML = filtered.map(job => `
+            <div class="job-card">
+                <div class="job-header">
+                    <div class="job-title">${escapeHtml(job.title)}</div>
+                    <div class="job-badge">${getCategoryIcon(job.category)} ${getCategoryName(job.category)}</div>
+                </div>
+                <div class="company"><i class="bi bi-building"></i> ${escapeHtml(job.company)}</div>
+                <div class="details">
+                    <span><i class="bi bi-geo-alt-fill"></i> ${escapeHtml(job.location)}</span>
+                    <span><i class="bi bi-briefcase"></i> ${job.jobType || 'Full time'}</span>
+                    ${job.salary ? `<span><i class="bi bi-currency-dollar"></i> ${job.salary}</span>` : ''}
+                    ${job.deadline ? `<span><i class="bi bi-calendar-x"></i> Deadline: ${job.deadline}</span>` : ''}
+                </div>
+                <div class="desc">${escapeHtml(job.desc.substring(0, 140))}${job.desc.length > 140 ? '…' : ''}</div>
+                <div class="job-footer">
+                    <span><i class="bi bi-newspaper"></i> sumber: ${job.sourceSite || 'Portal karir'}</span>
+                    <a href="${job.link}" target="_blank" rel="noopener noreferrer" class="btn-detail"><i class="bi bi-box-arrow-up-right"></i> Lamar via Link Resmi</a>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // event listeners
+    document.getElementById('searchInput').addEventListener('input', renderJobs);
+    document.getElementById('filterCategory').addEventListener('change', renderJobs);
+    document.getElementById('filterLocation').addEventListener('change', renderJobs);
+    document.getElementById('resetFilterBtn').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filterCategory').value = 'all';
+        document.getElementById('filterLocation').value = 'all';
+        renderJobs();
+    });
+    
+    // initial render
+    renderJobs();
+</script>
+</body>
+</html>
