@@ -91,7 +91,7 @@
             border-radius: 1rem;
             display: none;
         }
-        .btn-pay {
+        .btn-pay, .btn-lanjut {
             background: linear-gradient(95deg, #b87c2e, #e09d32);
             width: 100%;
             border: none;
@@ -102,8 +102,23 @@
             margin-top: 1rem;
             cursor: pointer;
         }
+        .btn-lanjut {
+            background: linear-gradient(95deg, #2c6e2c, #1f9e4a);
+            margin-top: 0.5rem;
+        }
+        .btn-lanjut:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         .small-note { font-size: 0.7rem; margin-top: 1rem; color: #ad8b67; }
         .loading { display: none; margin-top: 1rem; }
+        .info-success {
+            background: #2a5a2a;
+            border-radius: 1rem;
+            padding: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -126,8 +141,16 @@
         <img id="preview" class="preview-img" alt="Preview bukti">
     </div>
     <button id="kirimWaBtn" class="btn-pay"><i class="fab fa-whatsapp"></i> Kirim Bukti ke WA & Lanjutkan</button>
-    <div class="small-note">*Setelah mengirim bukti, Anda akan diarahkan ke halaman ramalan.</div>
     <div id="loading" class="loading"><i class="fas fa-spinner fa-spin"></i> Mengirim...</div>
+    
+    <!-- Tombol lanjutan manual setelah kirim bukti -->
+    <div id="manualLanjut" style="display: none; margin-top: 1rem;">
+        <hr style="border-color: #b8860b; margin: 1rem 0;">
+        <p><i class="fas fa-check-circle"></i> <strong>Sudah kirim bukti?</strong> Silakan lanjutkan ke halaman ramalan:</p>
+        <button id="lanjutBtn" class="btn-lanjut"><i class="fas fa-arrow-right"></i> Lanjutkan ke Ramalan Jodoh</button>
+    </div>
+    
+    <div class="small-note">*Klik "Kirim Bukti ke WA" untuk membuka WhatsApp & kirim pesan. Setelah itu, Anda bisa klik tombol di bawah untuk melanjutkan.</div>
 </div>
 
 <script>
@@ -176,7 +199,25 @@
         });
     });
 
-    // Kirim ke WA dan redirect
+    // Fungsi untuk menyimpan status ke localStorage dan redirect ke neptu.html
+    function simpanDanRedirect() {
+        const amount = parseInt(document.getElementById('amount').value);
+        if(amount < 50000) {
+            alert("Minimal pembayaran Rp 50.000");
+            return false;
+        }
+        if(!buktiDataURL) {
+            alert("Silakan upload bukti pembayaran terlebih dahulu.");
+            return false;
+        }
+        localStorage.setItem('zinxploit_payment_done', 'true');
+        localStorage.setItem('payment_amount', amount);
+        localStorage.setItem('payment_method', paymentMethod);
+        window.location.href = 'neptu.html';
+        return true;
+    }
+
+    // Tombol Kirim ke WA + tampilkan tombol manual lanjut
     document.getElementById('kirimWaBtn').addEventListener('click', async () => {
         const amount = parseInt(document.getElementById('amount').value);
         if(amount < 50000) {
@@ -187,30 +228,44 @@
             alert("Silakan upload bukti pembayaran terlebih dahulu.");
             return;
         }
-
-        // Simpan status pembayaran
-        localStorage.setItem('zinxploit_payment_done', 'true');
-        localStorage.setItem('payment_amount', amount);
-        localStorage.setItem('payment_method', paymentMethod);
-
-        // Nomor WhatsApp tujuan (admin) - ganti dengan nomor Anda
+        
+        // Simpan sementara data agar tombol lanjut bisa bekerja
+        localStorage.setItem('temp_amount', amount);
+        localStorage.setItem('temp_method', paymentMethod);
+        localStorage.setItem('temp_bukti', buktiDataURL);
+        
+        // Nomor WhatsApp tujuan (admin)
         const adminWa = '6283171754073'; // +62 831-7175-4073
-        // Buat pesan otomatis
         const metodeText = paymentMethod === 'bank' ? 'Bank Seabank (901531141482 a.n Mario Adi Saputra)' : 'E-Wallet (083171754073)';
         const message = `*PEMBAYARAN RAMAL JODOH*%0A%0ANominal: Rp ${amount.toLocaleString('id-ID')}%0AMetode: ${metodeText}%0A%0ABukti pembayaran terlampir (saya akan kirim manual).%0A%0A_Mohon segera diproses._`;
         const waUrl = `https://wa.me/${adminWa}?text=${message}`;
-        
-        // Buka WhatsApp di tab baru
         window.open(waUrl, '_blank');
         
-        // Tampilkan loading, lalu redirect setelah 4 detik
-        const loadingDiv = document.getElementById('loading');
-        loadingDiv.style.display = 'block';
+        // Tampilkan tombol manual lanjut
+        document.getElementById('manualLanjut').style.display = 'block';
+        // Optional: disable tombol kirim WA agar tidak diklik dua kali
         document.getElementById('kirimWaBtn').disabled = true;
+        document.getElementById('kirimWaBtn').style.opacity = '0.6';
         
-        setTimeout(() => {
-            window.location.href = 'neptu.html';
-        }, 4000);
+        alert("Pesan WhatsApp telah dibuka. Setelah mengirim bukti, klik tombol 'Lanjutkan ke Ramalan Jodoh' untuk mengakses ramalan.");
+    });
+    
+    // Tombol lanjut manual (setelah kirim WA)
+    document.getElementById('lanjutBtn').addEventListener('click', () => {
+        const amount = parseInt(document.getElementById('amount').value);
+        if(amount < 50000) {
+            alert("Minimal pembayaran Rp 50.000");
+            return;
+        }
+        if(!buktiDataURL) {
+            alert("Bukti belum diupload. Silakan upload bukti terlebih dahulu.");
+            return;
+        }
+        // Simpan final ke localStorage
+        localStorage.setItem('zinxploit_payment_done', 'true');
+        localStorage.setItem('payment_amount', amount);
+        localStorage.setItem('payment_method', paymentMethod);
+        window.location.href = 'neptu.html';
     });
 
     updateDetail();
