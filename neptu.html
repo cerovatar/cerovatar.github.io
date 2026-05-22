@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ZinXploit - Pembayaran Ramal Jodoh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #1a0f0c 0%, #2c1a1a 100%);
+            font-family: 'Quicksand', sans-serif;
+            color: #f9e7c2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .payment-card {
+            background: #1e1714;
+            border-radius: 2rem;
+            border: 1px solid #e09d32;
+            max-width: 500px;
+            width: 100%;
+            padding: 2rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        h2 { margin-bottom: 1rem; color: #f3c682; }
+        .payment-method {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .method-btn {
+            background: #2e1f1a;
+            border: 1px solid #b8860b;
+            border-radius: 60px;
+            padding: 8px 18px;
+            cursor: pointer;
+            color: #f9e7c2;
+            transition: 0.2s;
+        }
+        .method-btn.active {
+            background: #e09d32;
+            color: #1a0f0c;
+            border-color: #ffd966;
+        }
+        .payment-detail {
+            background: #2a1e18;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        .copy-btn {
+            background: #b87c2e;
+            border: none;
+            border-radius: 30px;
+            padding: 4px 12px;
+            cursor: pointer;
+            margin-left: 8px;
+            font-size: 0.7rem;
+        }
+        input, .file-label {
+            width: 100%;
+            padding: 10px;
+            background: #2e1f1a;
+            border: 1px solid #b8860b;
+            border-radius: 60px;
+            color: white;
+            margin: 10px 0;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .file-label {
+            background: #2e1f1a;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 150px;
+            margin: 10px 0;
+            border-radius: 1rem;
+            display: none;
+        }
+        .btn-pay {
+            background: linear-gradient(95deg, #b87c2e, #e09d32);
+            width: 100%;
+            border: none;
+            border-radius: 60px;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+        .small-note { font-size: 0.7rem; margin-top: 1rem; color: #ad8b67; }
+        .loading { display: none; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+<div class="payment-card">
+    <h2><i class="fas fa-coins"></i> Akses Ramalan Jodoh</h2>
+    <p>Lakukan pembayaran & kirim bukti untuk melanjutkan.</p>
+    <div class="payment-method">
+        <div class="method-btn active" data-method="bank">Transfer Bank</div>
+        <div class="method-btn" data-method="ewallet">E-Wallet</div>
+    </div>
+    <div id="paymentDetail" class="payment-detail"></div>
+    <div>
+        <label>Nominal Pembayaran (min Rp 50.000)</label>
+        <input type="number" id="amount" value="50000" min="50000" step="5000">
+    </div>
+    <div>
+        <label>Upload Bukti Transfer (foto/screenshot)</label>
+        <input type="file" id="buktiFile" accept="image/*">
+        <label for="buktiFile" class="file-label"><i class="fas fa-upload"></i> Pilih Bukti</label>
+        <img id="preview" class="preview-img" alt="Preview bukti">
+    </div>
+    <button id="kirimWaBtn" class="btn-pay"><i class="fab fa-whatsapp"></i> Kirim Bukti ke WA & Lanjutkan</button>
+    <div class="small-note">*Setelah mengirim bukti, Anda akan diarahkan ke halaman ramalan.</div>
+    <div id="loading" class="loading"><i class="fas fa-spinner fa-spin"></i> Mengirim...</div>
+</div>
+
+<script>
+    let paymentMethod = 'bank';
+    let buktiDataURL = null;
+
+    function updateDetail() {
+        const div = document.getElementById('paymentDetail');
+        if(paymentMethod === 'bank') {
+            div.innerHTML = `<p><i class="fas fa-university"></i> Bank Seabank - ZinXploit</p><p>No. Rekening: <strong>901531141482</strong> <button class="copy-btn" onclick="copyText('901531141482')">Copy</button></p><p>a.n Mario Adi Saputra</p>`;
+        } else {
+            div.innerHTML = `<p><i class="fab fa-google-pay"></i> E-Wallet (Dana / OVO / GoPay)</p><p>No. Handphone: <strong>083171754073</strong> <button class="copy-btn" onclick="copyText('083171754073')">Copy</button></p><p>Kirim ke nomor ini, lalu konfirmasi.</p>`;
+        }
+    }
+
+    window.copyText = (text) => { 
+        navigator.clipboard.writeText(text); 
+        alert("Nomor disalin: " + text); 
+    };
+
+    // Preview gambar bukti
+    document.getElementById('buktiFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                buktiDataURL = event.target.result;
+                const preview = document.getElementById('preview');
+                preview.src = buktiDataURL;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            buktiDataURL = null;
+            document.getElementById('preview').style.display = 'none';
+        }
+    });
+
+    // Pilihan metode
+    document.querySelectorAll('.method-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            paymentMethod = btn.dataset.method;
+            updateDetail();
+        });
+    });
+
+    // Kirim ke WA dan redirect
+    document.getElementById('kirimWaBtn').addEventListener('click', async () => {
+        const amount = parseInt(document.getElementById('amount').value);
+        if(amount < 50000) {
+            alert("Minimal pembayaran Rp 50.000");
+            return;
+        }
+        if(!buktiDataURL) {
+            alert("Silakan upload bukti pembayaran terlebih dahulu.");
+            return;
+        }
+
+        // Simpan status pembayaran
+        localStorage.setItem('zinxploit_payment_done', 'true');
+        localStorage.setItem('payment_amount', amount);
+        localStorage.setItem('payment_method', paymentMethod);
+
+        // Nomor WhatsApp tujuan (admin) - ganti dengan nomor Anda
+        const adminWa = '6283171754073'; // +62 831-7175-4073
+        // Buat pesan otomatis
+        const metodeText = paymentMethod === 'bank' ? 'Bank Seabank (901531141482 a.n Mario Adi Saputra)' : 'E-Wallet (083171754073)';
+        const message = `*PEMBAYARAN RAMAL JODOH*%0A%0ANominal: Rp ${amount.toLocaleString('id-ID')}%0AMetode: ${metodeText}%0A%0ABukti pembayaran terlampir (saya akan kirim manual).%0A%0A_Mohon segera diproses._`;
+        const waUrl = `https://wa.me/${adminWa}?text=${message}`;
+        
+        // Buka WhatsApp di tab baru
+        window.open(waUrl, '_blank');
+        
+        // Tampilkan loading, lalu redirect setelah 4 detik
+        const loadingDiv = document.getElementById('loading');
+        loadingDiv.style.display = 'block';
+        document.getElementById('kirimWaBtn').disabled = true;
+        
+        setTimeout(() => {
+            window.location.href = 'neptu.html';
+        }, 4000);
+    });
+
+    updateDetail();
+</script>
+</body>
+</html>
