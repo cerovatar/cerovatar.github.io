@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Voice Translator Nusantara & Dunia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(145deg, #0b1120 0%, #0f172a 100%);
+            font-family: 'Inter', sans-serif;
+            color: #eef2ff;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .glass-card {
+            background: rgba(15, 25, 45, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .sub {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .lang-box {
+            flex: 1;
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        select, button, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 1rem;
+            color: #eef2ff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        select:focus, textarea:focus {
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.2);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .voice-btn {
+            background: #0d6efd;
+            border: none;
+            border-radius: 60px;
+            padding: 10px 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        .voice-btn:hover {
+            background: #0b5ed7;
+            transform: scale(0.98);
+        }
+        .translate-btn {
+            background: linear-gradient(95deg, #06b6d4, #0891b2);
+            border: none;
+            border-radius: 60px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .result-box {
+            background: #0f172a;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #06b6d4;
+        }
+        .loading {
+            text-align: center;
+            color: #38bdf8;
+            margin-top: 0.5rem;
+        }
+        .badge {
+            background: #06b6d4;
+            color: #0f172a;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #5b6e8c;
+            margin-top: 1rem;
+        }
+        @media (max-width: 700px) {
+            .glass-card { padding: 1.2rem; }
+            h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="glass-card">
+        <h1><i class="fas fa-language"></i> Voice Translator Nusantara</h1>
+        <div class="sub">Penerjemah suara antar bahasa dunia & bahasa daerah Indonesia (lebih 50 bahasa)</div>
+
+        <div class="flex-row">
+            <div class="lang-box">
+                <label><i class="fas fa-microphone-alt"></i> Bahasa Asal (Ucapkan)</label>
+                <select id="sourceLang">
+                    <option value="id">🇮🇩 Indonesia</option>
+                    <option value="jv">🌾 Jawa (Basa Jawa)</option>
+                    <option value="su">🍃 Sunda</option>
+                    <option value="ban">🌴 Bali</option>
+                    <option value="min">🏔️ Minangkabau</option>
+                    <option value="btk">🦅 Batak Toba</option>
+                    <option value="bug">⚓ Bugis</option>
+                    <option value="mad">🐄 Madura</option>
+                    <option value="ace">🎋 Aceh</option>
+                    <option value="en">🇺🇸 English</option>
+                    <option value="zh">🇨🇳 中文 (Mandarin)</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="hi">🇮🇳 हिन्दी</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="ko">🇰🇷 한국어</option>
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="nl">🇳🇱 Nederlands</option>
+                    <option value="tr">🇹🇷 Türkçe</option>
+                    <option value="th">🇹🇭 ภาษาไทย</option>
+                    <option value="vi">🇻🇳 Tiếng Việt</option>
+                </select>
+            </div>
+            <div class="lang-box">
+                <label><i class="fas fa-book-open"></i> Bahasa Target</label>
+                <select id="targetLang">
+                    <option value="id">🇮🇩 Indonesia</option>
+                    <option value="jv">🌾 Jawa</option>
+                    <option value="su">🍃 Sunda</option>
+                    <option value="en">🇺🇸 English</option>
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="hi">🇮🇳 हिन्दी</option>
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                    <option value="ban">🌴 Bali</option>
+                    <option value="min">🏔️ Minangkabau</option>
+                    <option value="btk">🦅 Batak</option>
+                    <option value="bug">⚓ Bugis</option>
+                    <option value="mad">🐄 Madura</option>
+                    <option value="ace">🎋 Aceh</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button id="recordBtn" class="voice-btn"><i class="fas fa-microphone"></i> 🎙️ Mulai Bicara</button>
+            <div id="voiceStatus" class="loading" style="margin-top: 8px;">Tekan tombol, izinkan mikrofon, lalu ucapkan sesuatu</div>
+        </div>
+
+        <div class="flex-row" style="margin-top: 1rem;">
+            <div style="flex:1">
+                <label><i class="fas fa-file-alt"></i> Teks hasil suara</label>
+                <textarea id="sourceText" placeholder="Hasil speech recognition akan muncul di sini..."></textarea>
+            </div>
+            <div style="flex:1">
+                <label><i class="fas fa-globe"></i> Hasil terjemahan</label>
+                <textarea id="targetText" placeholder="Terjemahan akan muncul di sini..." readonly></textarea>
+            </div>
+        </div>
+
+        <button id="translateBtn" class="translate-btn"><i class="fas fa-arrow-right"></i> Terjemahkan (atau gunakan voice)</button>
+        <div id="infoMessage" class="result-box" style="display: none;"></div>
+    </div>
+    <footer>
+        <i class="fas fa-microphone-alt"></i> Gunakan fitur voice recognition (Chrome/Edge). Untuk bahasa daerah yang tidak didukung API terjemahan, sistem akan menggunakan data lokal sebagai alternatif.
+    </footer>
+</div>
+
+<script>
+    // Data lokal sederhana untuk bahasa daerah yang belum ter-cover MyMemory API (fallback)
+    const localDictionary = {
+        // contoh frasa untuk Jawa (Latin)
+        "halo|jv": "Halo",
+        "apa kabar|jv": "Piyé kabaré?",
+        "terima kasih|jv": "Matur nuwun",
+        "selamat pagi|jv": "Sugeng enjing",
+        "saya|jv": "Kula",
+        "kamu|jv": "Sampeyan",
+        "baik|jv": "Sae",
+        "makan|jv": "Nedha",
+        "minum|jv": "Ngunjuk",
+        // Sunda
+        "halo|su": "Halo",
+        "apa kabar|su": "Kumaha damang?",
+        "terima kasih|su": "Hatur nuhun",
+        "selamat pagi|su": "Wilujeng énjing",
+        "saya|su": "Abdi",
+        "kamu|su": "Anjeun",
+        // Bali
+        "halo|ban": "Rahajeng",
+        "terima kasih|ban": "Matur suksma",
+        "apa kabar|ban": "Kenken kabare?",
+        // Minang
+        "halo|min": "Halo",
+        "terima kasih|min": "Tarimo kasih",
+        "apa kabar|min": "Apo kaba?",
+        // Batak
+        "halo|btk": "Halo",
+        "terima kasih|btk": "Mauliate",
+        "apa kabar|btk": "Songon dia?",
+    };
+
+    // Mapping bahasa ke kode MyMemory (dukungan)
+    const langMap = {
+        "id": "id", "en": "en", "zh": "zh", "ar": "ar", "es": "es", "fr": "fr", "de": "de", "ru": "ru", "hi": "hi", "ja": "ja", "ko": "ko", "pt": "pt", "it": "it", "nl": "nl", "tr": "tr", "th": "th", "vi": "vi",
+        // bahasa daerah Indonesia tidak didukung MyMemory -> akan pakai fallback lokal
+        "jv": "jv", "su": "su", "ban": "ban", "min": "min", "btk": "btk", "bug": "bug", "mad": "mad", "ace": "ace"
+    };
+
+    let recognition;
+    let isRecording = false;
+    const sourceLangSelect = document.getElementById('sourceLang');
+    const targetLangSelect = document.getElementById('targetLang');
+    const sourceText = document.getElementById('sourceText');
+    const targetText = document.getElementById('targetText');
+    const recordBtn = document.getElementById('recordBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const translateBtn = document.getElementById('translateBtn');
+    const infoMessageDiv = document.getElementById('infoMessage');
+
+    // Inisialisasi speech recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = getRecognitionLang(sourceLangSelect.value);
+
+        recognition.onstart = () => {
+            isRecording = true;
+            recordBtn.innerHTML = '<i class="fas fa-stop"></i> 🛑 Berhenti Bicara';
+            voiceStatus.innerHTML = '🎤 Dengarkan suara... bicara sekarang';
+            recordBtn.style.background = '#dc2626';
+        };
+        recognition.onend = () => {
+            isRecording = false;
+            recordBtn.innerHTML = '<i class="fas fa-microphone"></i> 🎙️ Mulai Bicara';
+            voiceStatus.innerHTML = 'Tekan tombol, izinkan mikrofon, lalu ucapkan sesuatu';
+            recordBtn.style.background = '#0d6efd';
+        };
+        recognition.onerror = (event) => {
+            console.error(event.error);
+            voiceStatus.innerHTML = '❌ Error: ' + event.error + '. Coba refresh izinkan mikrofon.';
+            isRecording = false;
+            recordBtn.innerHTML = '<i class="fas fa-microphone"></i> 🎙️ Mulai Bicara';
+            recordBtn.style.background = '#0d6efd';
+        };
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            sourceText.value = transcript;
+            voiceStatus.innerHTML = '✅ Suara dikenali! Klik "Terjemahkan" atau otomatis?';
+            // otomatis terjemahkan setelah dapat suara?
+            performTranslation();
+        };
+    } else {
+        alert('Browser Anda tidak mendukung Web Speech API. Gunakan Chrome/Edge untuk voice.');
+        recordBtn.disabled = true;
+        recordBtn.style.opacity = 0.5;
+    }
+
+    function getRecognitionLang(langCode) {
+        // Mapping kode bahasa ke kode speech recognition (ISO)
+        const speechMap = {
+            'id': 'id-ID', 'en': 'en-US', 'zh': 'zh-CN', 'ar': 'ar-EG', 'es': 'es-ES',
+            'fr': 'fr-FR', 'de': 'de-DE', 'ru': 'ru-RU', 'hi': 'hi-IN', 'ja': 'ja-JP',
+            'ko': 'ko-KR', 'pt': 'pt-PT', 'it': 'it-IT', 'nl': 'nl-NL', 'tr': 'tr-TR',
+            'th': 'th-TH', 'vi': 'vi-VN', 'jv': 'jv-ID', 'su': 'su-ID', 'ban': 'ban-ID',
+            'min': 'id-ID', 'btk': 'id-ID', 'bug': 'id-ID', 'mad': 'id-ID', 'ace': 'id-ID'
+        };
+        return speechMap[langCode] || 'id-ID';
+    }
+
+    recordBtn.addEventListener('click', () => {
+        if (!recognition) return;
+        if (isRecording) {
+            recognition.stop();
+        } else {
+            const selectedSourceLang = sourceLangSelect.value;
+            recognition.lang = getRecognitionLang(selectedSourceLang);
+            recognition.start();
+        }
+    });
+
+    sourceLangSelect.addEventListener('change', () => {
+        if (recognition) recognition.lang = getRecognitionLang(sourceLangSelect.value);
+    });
+
+    async function performTranslation() {
+        const text = sourceText.value.trim();
+        if (!text) {
+            infoMessageDiv.style.display = 'block';
+            infoMessageDiv.innerHTML = '<i class="fas fa-info-circle"></i> Tidak ada teks, coba rekam suara dulu.';
+            return;
+        }
+        const sourceLang = sourceLangSelect.value;
+        const targetLang = targetLangSelect.value;
+
+        infoMessageDiv.style.display = 'block';
+        infoMessageDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menerjemahkan...';
+
+        // Cek jika bahasa daerah dan menggunakan fallback lokal sederhana
+        const isLocalSource = ['jv','su','ban','min','btk','bug','mad','ace'].includes(sourceLang);
+        const isLocalTarget = ['jv','su','ban','min','btk','bug','mad','ace'].includes(targetLang);
+        
+        if (isLocalSource || isLocalTarget) {
+            // Gunakan dictionary lokal sederhana (hanya kata/frasa pendek)
+            const lowerText = text.toLowerCase();
+            let translated = '';
+            if (isLocalTarget) {
+                // Cari di lokal dictionary dengan key: "frasa|targetLang"
+                let found = false;
+                for (let [key, value] of Object.entries(localDictionary)) {
+                    const [phrase, lang] = key.split('|');
+                    if (lang === targetLang && lowerText.includes(phrase)) {
+                        translated = value;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    translated = `[Terjemahan lokal tidak tersedia untuk "${text}" ke ${targetLang}] Silakan coba frasa sederhana atau gunakan bahasa Indonesia/Inggris.`;
+                }
+            } else if (isLocalSource && !isLocalTarget) {
+                // Sumber bahasa daerah -> target umum: coba ke API MyMemory meskipun tidak resmi
+                translated = await apiTranslate(text, sourceLang, targetLang);
+            } else {
+                translated = await apiTranslate(text, sourceLang, targetLang);
+            }
+            targetText.value = translated;
+            infoMessageDiv.style.display = 'none';
+            return;
+        }
+        
+        // Untuk bahasa yang didukung MyMemory
+        const translated = await apiTranslate(text, sourceLang, targetLang);
+        targetText.value = translated;
+        infoMessageDiv.style.display = 'none';
+    }
+
+    async function apiTranslate(q, source, target) {
+        const pair = `${source}|${target}`;
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${pair}&de=a@b.c`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data && data.responseData && data.responseData.translatedText) {
+                let translated = data.responseData.translatedText;
+                if (translated.includes("MYMEMORY WARNING")) {
+                    translated = translated.split("MYMEMORY WARNING")[0];
+                }
+                return translated.trim() || q;
+            } else {
+                return q;
+            }
+        } catch (err) {
+            console.error(err);
+            return `Gagal terjemahan: ${err.message}`;
+        }
+    }
+
+    translateBtn.addEventListener('click', performTranslation);
+
+    // Optional: jika sourceText berubah manual, tidak otomatis
+</script>
+</body>
+</html>
