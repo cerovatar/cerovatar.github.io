@@ -31,7 +31,7 @@
         h2 { margin-bottom: 1rem; color: #f3c682; }
         .payment-method {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             justify-content: center;
             margin: 1rem 0;
             flex-wrap: wrap;
@@ -40,10 +40,11 @@
             background: #2e1f1a;
             border: 1px solid #b8860b;
             border-radius: 60px;
-            padding: 8px 18px;
+            padding: 8px 14px;
             cursor: pointer;
             color: #f9e7c2;
             transition: 0.2s;
+            font-size: 0.85rem;
         }
         .method-btn.active {
             background: #e09d32;
@@ -112,13 +113,6 @@
         }
         .small-note { font-size: 0.7rem; margin-top: 1rem; color: #ad8b67; }
         .loading { display: none; margin-top: 1rem; }
-        .info-success {
-            background: #2a5a2a;
-            border-radius: 1rem;
-            padding: 0.5rem;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-        }
     </style>
 </head>
 <body>
@@ -126,7 +120,8 @@
     <h2><i class="fas fa-coins"></i> Akses Ramalan Jodoh</h2>
     <p>Lakukan pembayaran & kirim bukti untuk melanjutkan.</p>
     <div class="payment-method">
-        <div class="method-btn active" data-method="bank">Transfer Bank</div>
+        <div class="method-btn active" data-method="seabank">Bank Seabank</div>
+        <div class="method-btn" data-method="bri">Bank BRI</div>
         <div class="method-btn" data-method="ewallet">E-Wallet</div>
     </div>
     <div id="paymentDetail" class="payment-detail"></div>
@@ -150,17 +145,19 @@
         <button id="lanjutBtn" class="btn-lanjut"><i class="fas fa-arrow-right"></i> Lanjutkan ke Ramalan Jodoh</button>
     </div>
     
-    <div class="small-note">*Klik "Kirim Bukti ke WA" untuk membuka WhatsApp & kirim pesan. Setelah itu, Anda bisa klik tombol di bawah untuk melanjutkan.</div>
+    <div class="small-note">*Klik "Kirim Bukti ke WA" untuk membuka WhatsApp & kirim pesan. Setelah itu, klik tombol di bawah untuk melanjutkan.</div>
 </div>
 
 <script>
-    let paymentMethod = 'bank';
+    let paymentMethod = 'seabank';
     let buktiDataURL = null;
 
     function updateDetail() {
         const div = document.getElementById('paymentDetail');
-        if(paymentMethod === 'bank') {
-            div.innerHTML = `<p><i class="fas fa-university"></i> Bank Seabank - ZinXploit</p><p>No. Rekening: <strong>901531141482</strong> <button class="copy-btn" onclick="copyText('901531141482')">Copy</button></p><p>a.n Mario Adi Saputra</p>`;
+        if(paymentMethod === 'seabank') {
+            div.innerHTML = `<p><i class="fas fa-university"></i> Bank Seabank</p><p>No. Rekening: <strong>901531141482</strong> <button class="copy-btn" onclick="copyText('901531141482')">Copy</button></p><p>a.n Mario Adi Saputra</p>`;
+        } else if(paymentMethod === 'bri') {
+            div.innerHTML = `<p><i class="fas fa-university"></i> Bank BRI</p><p>No. Rekening: <strong>081401029377530</strong> <button class="copy-btn" onclick="copyText('081401029377530')">Copy</button></p><p>a.n Idi Harjanto</p>`;
         } else {
             div.innerHTML = `<p><i class="fab fa-google-pay"></i> E-Wallet (Dana / OVO / GoPay)</p><p>No. Handphone: <strong>083171754073</strong> <button class="copy-btn" onclick="copyText('083171754073')">Copy</button></p><p>Kirim ke nomor ini, lalu konfirmasi.</p>`;
         }
@@ -199,24 +196,6 @@
         });
     });
 
-    // Fungsi untuk menyimpan status ke localStorage dan redirect ke neptu.html
-    function simpanDanRedirect() {
-        const amount = parseInt(document.getElementById('amount').value);
-        if(amount < 50000) {
-            alert("Minimal pembayaran Rp 50.000");
-            return false;
-        }
-        if(!buktiDataURL) {
-            alert("Silakan upload bukti pembayaran terlebih dahulu.");
-            return false;
-        }
-        localStorage.setItem('zinxploit_payment_done', 'true');
-        localStorage.setItem('payment_amount', amount);
-        localStorage.setItem('payment_method', paymentMethod);
-        window.location.href = 'neptu.html';
-        return true;
-    }
-
     // Tombol Kirim ke WA + tampilkan tombol manual lanjut
     document.getElementById('kirimWaBtn').addEventListener('click', async () => {
         const amount = parseInt(document.getElementById('amount').value);
@@ -235,15 +214,19 @@
         localStorage.setItem('temp_bukti', buktiDataURL);
         
         // Nomor WhatsApp tujuan (admin)
-        const adminWa = '6283171754073'; // +62 831-7175-4073
-        const metodeText = paymentMethod === 'bank' ? 'Bank Seabank (901531141482 a.n Mario Adi Saputra)' : 'E-Wallet (083171754073)';
+        const adminWa = '6285735605012'; // +62 857-3560-5012
+        
+        let metodeText = "";
+        if(paymentMethod === 'seabank') metodeText = "Bank Seabank (901531141482 a.n Mario Adi Saputra)";
+        else if(paymentMethod === 'bri') metodeText = "Bank BRI (081401029377530 a.n Idi Harjanto)";
+        else metodeText = "E-Wallet (083171754073)";
+        
         const message = `*PEMBAYARAN RAMAL JODOH*%0A%0ANominal: Rp ${amount.toLocaleString('id-ID')}%0AMetode: ${metodeText}%0A%0ABukti pembayaran terlampir (saya akan kirim manual).%0A%0A_Mohon segera diproses._`;
         const waUrl = `https://wa.me/${adminWa}?text=${message}`;
         window.open(waUrl, '_blank');
         
         // Tampilkan tombol manual lanjut
         document.getElementById('manualLanjut').style.display = 'block';
-        // Optional: disable tombol kirim WA agar tidak diklik dua kali
         document.getElementById('kirimWaBtn').disabled = true;
         document.getElementById('kirimWaBtn').style.opacity = '0.6';
         
