@@ -29,6 +29,29 @@
             text-align: center;
         }
         h2 { margin-bottom: 1rem; color: #f3c682; }
+        .package-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .package-btn {
+            background: #2e1f1a;
+            border: 1px solid #b8860b;
+            border-radius: 60px;
+            padding: 8px 14px;
+            cursor: pointer;
+            color: #f9e7c2;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            flex: 1;
+        }
+        .package-btn.active {
+            background: #e09d32;
+            color: #1a0f0c;
+            border-color: #ffd966;
+        }
         .payment-method {
             display: flex;
             gap: 0.8rem;
@@ -117,8 +140,12 @@
 </head>
 <body>
 <div class="payment-card">
-    <h2><i class="fas fa-coins"></i> Akses Ramalan Jodoh</h2>
-    <p>Lakukan pembayaran & kirim bukti untuk melanjutkan.</p>
+    <h2><i class="fas fa-coins"></i> Pilih Paket Ramalan</h2>
+    <div class="package-group">
+        <div class="package-btn active" data-package="basic">📜 Basic (Rp50.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik</span></div>
+        <div class="package-btn" data-package="premium">🌟 Premium (Rp100.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik + Tanggal Pernikahan</span></div>
+    </div>
+    <p style="margin-top: 0.5rem;">Pilih metode pembayaran & upload bukti</p>
     <div class="payment-method">
         <div class="method-btn active" data-method="seabank">Bank Seabank</div>
         <div class="method-btn" data-method="bri">Bank BRI</div>
@@ -126,8 +153,8 @@
     </div>
     <div id="paymentDetail" class="payment-detail"></div>
     <div>
-        <label>Nominal Pembayaran (min Rp 50.000)</label>
-        <input type="number" id="amount" value="50000" min="50000" step="5000">
+        <label>Nominal Pembayaran (otomatis)</label>
+        <input type="number" id="amount" value="50000" min="50000" step="10000" readonly style="background:#3e2a1f;">
     </div>
     <div>
         <label>Upload Bukti Transfer (foto/screenshot)</label>
@@ -150,6 +177,7 @@
 
 <script>
     let paymentMethod = 'seabank';
+    let selectedPackage = 'basic';
     let buktiDataURL = null;
 
     function updateDetail() {
@@ -167,6 +195,27 @@
         navigator.clipboard.writeText(text); 
         alert("Nomor disalin: " + text); 
     };
+
+    // Pilihan paket
+    document.querySelectorAll('.package-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.package-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedPackage = btn.dataset.package;
+            const amount = selectedPackage === 'basic' ? 50000 : 100000;
+            document.getElementById('amount').value = amount;
+        });
+    });
+
+    // Pilihan metode
+    document.querySelectorAll('.method-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            paymentMethod = btn.dataset.method;
+            updateDetail();
+        });
+    });
 
     // Preview gambar bukti
     document.getElementById('buktiFile').addEventListener('change', function(e) {
@@ -186,21 +235,12 @@
         }
     });
 
-    // Pilihan metode
-    document.querySelectorAll('.method-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            paymentMethod = btn.dataset.method;
-            updateDetail();
-        });
-    });
-
-    // Tombol Kirim ke WA + tampilkan tombol manual lanjut
+    // Tombol Kirim ke WA
     document.getElementById('kirimWaBtn').addEventListener('click', async () => {
         const amount = parseInt(document.getElementById('amount').value);
-        if(amount < 50000) {
-            alert("Minimal pembayaran Rp 50.000");
+        const minAmount = selectedPackage === 'basic' ? 50000 : 100000;
+        if(amount < minAmount) {
+            alert(`Minimal pembayaran untuk paket ${selectedPackage === 'basic' ? 'Basic' : 'Premium'} adalah Rp ${minAmount.toLocaleString('id-ID')}`);
             return;
         }
         if(!buktiDataURL) {
@@ -208,47 +248,44 @@
             return;
         }
         
-        // Simpan sementara data agar tombol lanjut bisa bekerja
         localStorage.setItem('temp_amount', amount);
         localStorage.setItem('temp_method', paymentMethod);
         localStorage.setItem('temp_bukti', buktiDataURL);
+        localStorage.setItem('temp_package', selectedPackage);
         
-        // Nomor WhatsApp tujuan (admin)
-        const adminWa = '6285735605012'; // +62 857-3560-5012
-        
+        const adminWa = '6285735605012';
         let metodeText = "";
         if(paymentMethod === 'seabank') metodeText = "Bank Seabank (901531141482 a.n Mario Adi Saputra)";
         else if(paymentMethod === 'bri') metodeText = "Bank BRI (081401029377530 a.n Idi Harjanto)";
         else metodeText = "E-Wallet (083171754073)";
         
-        const message = `*PEMBAYARAN RAMAL JODOH*%0A%0ANominal: Rp ${amount.toLocaleString('id-ID')}%0AMetode: ${metodeText}%0A%0ABukti pembayaran terlampir (saya akan kirim manual).%0A%0A_Mohon segera diproses._`;
+        const message = `*PEMBAYARAN RAMAL JODOH*%0A%0ANominal: Rp ${amount.toLocaleString('id-ID')}%0AMetode: ${metodeText}%0APaket: ${selectedPackage.toUpperCase()}%0A%0ABukti pembayaran terlampir (saya akan kirim manual).%0A%0A_Mohon segera diproses._`;
         const waUrl = `https://wa.me/${adminWa}?text=${message}`;
         window.open(waUrl, '_blank');
         
-        // Tampilkan tombol manual lanjut
         document.getElementById('manualLanjut').style.display = 'block';
         document.getElementById('kirimWaBtn').disabled = true;
         document.getElementById('kirimWaBtn').style.opacity = '0.6';
-        
-        alert("Pesan WhatsApp telah dibuka. Setelah mengirim bukti, klik tombol 'Lanjutkan ke Ramalan Jodoh' untuk mengakses ramalan.");
+        alert("Pesan WhatsApp telah dibuka. Setelah mengirim bukti, klik tombol 'Lanjutkan ke Ramalan Jodoh'.");
     });
     
-    // Tombol lanjut manual (setelah kirim WA)
+    // Tombol lanjut
     document.getElementById('lanjutBtn').addEventListener('click', () => {
         const amount = parseInt(document.getElementById('amount').value);
-        if(amount < 50000) {
-            alert("Minimal pembayaran Rp 50.000");
+        const minAmount = selectedPackage === 'basic' ? 50000 : 100000;
+        if(amount < minAmount) {
+            alert(`Minimal pembayaran Rp ${minAmount.toLocaleString('id-ID')}`);
             return;
         }
         if(!buktiDataURL) {
-            alert("Bukti belum diupload. Silakan upload bukti terlebih dahulu.");
+            alert("Bukti belum diupload.");
             return;
         }
-        // Simpan final ke localStorage
         localStorage.setItem('zinxploit_payment_done', 'true');
         localStorage.setItem('payment_amount', amount);
         localStorage.setItem('payment_method', paymentMethod);
-        window.location.href = 'neptuprem.html';
+        localStorage.setItem('payment_package', selectedPackage);
+        window.location.href = 'neptu.html';
     });
 
     updateDetail();
