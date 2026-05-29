@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Neptu - Ramal Jodoh Primbon & Tarot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* (Semua gaya sama seperti sebelumnya – hanya contoh ringkas) */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(145deg, #1a0f0c 0%, #2c1a1a 100%);
+      font-family: 'Quicksand', sans-serif;
+      color: #f9e7c2;
+      min-height: 100vh;
+      padding: 0;
+    }
+    .navbar {
+      background: rgba(20, 12, 28, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(218, 165, 32, 0.3);
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #f3c682, #e8b55a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    .mystic-card {
+      background: rgba(20, 12, 28, 0.65);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      border: 1px solid rgba(218, 165, 32, 0.5);
+      padding: 1.8rem;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, #f3c682, #e8b55a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .flex-row { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
+    .input-panel { flex: 1; min-width: 260px; background: rgba(0,0,0,0.35); border-radius: 1.5rem; padding: 1.2rem; }
+    label { display: block; font-weight: 600; margin: 0.8rem 0 0.3rem; color: #f3d382; }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      background: #2e1f1a;
+      border: 1px solid #b8860b;
+      border-radius: 60px;
+      color: #fff2e0;
+    }
+    button {
+      background: linear-gradient(95deg, #b87c2e, #e09d32);
+      border: none;
+      border-radius: 60px;
+      padding: 12px;
+      width: 100%;
+      margin-top: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .result-box { background: #fef7e8; border-radius: 1.5rem; padding: 1rem; margin-top: 1rem; color: #2c1a0c; }
+    .tab-buttons { display: flex; gap: 12px; justify-content: center; margin-bottom: 1.5rem; }
+    .tab-btn { background: rgba(0,0,0,0.5); border: 1px solid #b8860b; border-radius: 40px; padding: 8px 20px; cursor: pointer; }
+    .tab-btn.active { background: #e09d32; color: #1a0f0c; }
+    .tab-pane { display: none; }
+    .tab-pane.active-pane { display: block; }
+    footer { text-align: center; font-size: 0.8rem; margin-top: 2rem; color: #cfb284; }
+    .premium-badge {
+      background: #e09d32;
+      color: #1a0f0c;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      margin-left: 1rem;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">ZinXploit</div>
+  </nav>
+  <div class="container">
+    <div class="mystic-card">
+      <h1><i class="fas fa-moon"></i> WETON TAROT + LINTRIK <span id="packageBadge"></span></h1>
+      <div class="flex-row">
+        <div class="input-panel">
+          <i class="fas fa-mars"></i> <strong>Pria</strong>
+          <label>Nama</label><input type="text" id="namaPria" value="Arya">
+          <label>Hari Lahir</label><select id="hariPria"><option value="0">Minggu</option><option value="1">Senin</option><option value="2">Selasa</option><option value="3">Rabu</option><option value="4">Kamis</option><option value="5">Jumat</option><option value="6">Sabtu</option></select>
+          <label>Pasaran</label><select id="pasaranPria"><option value="0">Legi</option><option value="1">Pahing</option><option value="2">Pon</option><option value="3">Wage</option><option value="4">Kliwon</option></select>
+        </div>
+        <div class="input-panel">
+          <i class="fas fa-venus"></i> <strong>Wanita</strong>
+          <label>Nama</label><input type="text" id="namaWanita" value="Dewi">
+          <label>Hari Lahir</label><select id="hariWanita"><option value="0">Minggu</option><option value="1">Senin</option><option value="2">Selasa</option><option value="3">Rabu</option><option value="4">Kamis</option><option value="5">Jumat</option><option value="6">Sabtu</option></select>
+          <label>Pasaran</label><select id="pasaranWanita"><option value="0">Legi</option><option value="1">Pahing</option><option value="2">Pon</option><option value="3">Wage</option><option value="4">Kliwon</option></select>
+        </div>
+      </div>
+      <button id="ramalBtn"><i class="fas fa-tarot"></i> RAMAL JODOH & LINTRIK</button>
+    </div>
+
+    <div class="tab-buttons" id="tabButtons">
+      <div class="tab-btn active" data-tab="ramalan">📜 Hasil Ramalan</div>
+      <div class="tab-btn" id="weddingTabBtn" data-tab="wedding">💍 Cari Tanggal Pernikahan <span id="lockIcon"></span></div>
+    </div>
+
+    <div id="ramalanPanel" class="tab-pane active-pane">
+      <div id="hasilArea" style="min-height: 350px;"></div>
+    </div>
+
+    <div id="weddingPanel" class="tab-pane">
+      <div class="mystic-card" id="weddingContent">
+        <!-- konten akan diisi oleh JS atau pesan upgrade -->
+      </div>
+    </div>
+
+    <footer>© Created by ZinXploit 2026 - update</footer>
+  </div>
+
+  <script>
+    // ========== DATA & FUNGSI RAMALAN (singkat) ==========
+    const neptuHari = [5,4,3,7,8,6,9];
+    const neptuPasaran = [5,9,7,4,8];
+    const namaHari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+    const namaPasaran = ["Legi","Pahing","Pon","Wage","Kliwon"];
+    
+    const kategori = {
+      1: { name: "🌿 PEGAT", desc: "Hubungan rentan konflik." },
+      2: { name: "👑 RATU", desc: "Sangat harmonis." },
+      3: { name: "💞 JODOH", desc: "Cocok dan saling melengkapi." },
+      4: { name: "⛰️ TOPO", desc: "Awal sulit, nanti bahagia." },
+      5: { name: "🌾 TINARI", desc: "Berkecukupan." },
+      6: { name: "⚔️ PADU", desc: "Sering bertengkar." },
+      7: { name: "🕊️ SUJANAN", desc: "Rawan perselingkuhan." }
+    };
+    
+    function hitungNeptu(h, p) { return neptuHari[h] + neptuPasaran[p]; }
+    function getKategori(total) { let s = total % 7; if(s===0) s=7; return kategori[s]; }
+    
+    function tampilkanHasil() {
+      const h1 = parseInt(document.getElementById('hariPria').value);
+      const p1 = parseInt(document.getElementById('pasaranPria').value);
+      const h2 = parseInt(document.getElementById('hariWanita').value);
+      const p2 = parseInt(document.getElementById('pasaranWanita').value);
+      const neptu1 = hitungNeptu(h1,p1);
+      const neptu2 = hitungNeptu(h2,p2);
+      const total = neptu1+neptu2;
+      const kat = getKategori(total);
+      const lintrik = Math.floor(Math.random() * 40 + 60); // simulasi
+      const html = `<div class="result-box"><strong>Neptu Pria:</strong> ${neptu1}<br><strong>Neptu Wanita:</strong> ${neptu2}<br><strong>Total Neptu:</strong> ${total}<br><h3>${kat.name}</h3><p>${kat.desc}</p><strong>Lintrik:</strong> ${lintrik}%</div>`;
+      document.getElementById('hasilArea').innerHTML = html;
+    }
+    
+    // ========== CEK PAKET & TAMPILKAN FITUR ==========
+    let isPremium = false;
+    function checkPackage() {
+      const pkg = localStorage.getItem('payment_package');
+      if(pkg === 'premium') {
+        isPremium = true;
+        document.getElementById('packageBadge').innerHTML = '<span class="premium-badge">🌟 PREMIUM</span>';
+        document.getElementById('lockIcon').innerHTML = '';
+        // Tampilkan tab wedding secara normal
+        document.querySelector('[data-tab="wedding"]').style.display = 'inline-block';
+        // Isi konten wedding dengan form cari tanggal
+        document.getElementById('weddingContent').innerHTML = `
+          <h3><i class="fas fa-calendar-alt"></i> Tentukan Hari Baik Nikah (Primbon)</h3>
+          <div class="flex-row" style="gap: 1rem;">
+            <div style="flex:1"><label>Bulan (1-12)</label><input type="number" id="bulanNikah" min="1" max="12" value="6"></div>
+            <div style="flex:1"><label>Tahun</label><input type="number" id="tahunNikah" min="2025" max="2027" value="2026"></div>
+          </div>
+          <button id="cariTanggalBtn"><i class="fas fa-search"></i> Cari Tanggal Baik</button>
+          <div id="tanggalHasilArea" style="margin-top:1rem; padding:1rem; background:#1e282c; border-radius:1rem;">Silakan klik cari.</div>
+        `;
+        // Re-attach event untuk cari tanggal
+        document.getElementById('cariTanggalBtn')?.addEventListener('click', () => {
+          const bulan = parseInt(document.getElementById('bulanNikah').value);
+          const tahun = parseInt(document.getElementById('tahunNikah').value);
+          if(isNaN(bulan)||isNaN(tahun)) return alert("Masukkan bulan/tahun");
+          // simulasi hasil
+          document.getElementById('tanggalHasilArea').innerHTML = `<div>Rekomendasi: 12 Juni 2026 (Sabtu Kliwon) - Neptu 15</div><div>15 Juni 2026 (Selasa Legi) - Neptu 11</div>`;
+        });
+      } else {
+        // Basic: sembunyikan tab wedding, atau tampilkan pesan upgrade
+        isPremium = false;
+        document.getElementById('packageBadge').innerHTML = '<span class="premium-badge">📜 BASIC</span>';
+        document.querySelector('[data-tab="wedding"]').style.display = 'inline-block';
+        document.getElementById('lockIcon').innerHTML = ' 🔒';
+        document.getElementById('weddingContent').innerHTML = `
+          <div style="text-align:center; padding:2rem;">
+            <i class="fas fa-lock" style="font-size:3rem;"></i>
+            <h3>Fitur Tanggal Pernikahan Terkunci</h3>
+            <p>Fitur ini hanya tersedia untuk paket <strong>PREMIUM (Rp100.000)</strong>.<br>
+            Silakan upgrade melalui halaman pembayaran.</p>
+            <a href="bayar.html" style="display:inline-block; margin-top:1rem; background:#e09d32; padding:0.5rem 1rem; border-radius:2rem; color:#1a0f0c; text-decoration:none;">Upgrade ke Premium</a>
+          </div>
+        `;
+        // Nonaktifkan tab wedding agar tidak bisa diklik? Biarkan saja, tapi kontennya tetap upgrade.
+        // Untuk keamanan, kita bisa tetap mengizinkan tab tetapi kontennya sudah pesan upgrade.
+      }
+    }
+    
+    // ========== NAVIGASI TAB ==========
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = {
+      ramalan: document.getElementById('ramalanPanel'),
+      wedding: document.getElementById('weddingPanel')
+    };
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        if(target === 'wedding' && !isPremium) {
+          // Tidak perlu pindah tab, tapi kita sudah punya konten upgrade di dalam weddingPanel.
+          // Biarkan pindah namun tetap tampilkan pesan upgrade.
+        }
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        Object.values(panes).forEach(p => p.classList.remove('active-pane'));
+        panes[target].classList.add('active-pane');
+      });
+    });
+    
+    document.getElementById('ramalBtn').addEventListener('click', tampilkanHasil);
+    
+    // Jalankan pengecekan paket saat load
+    checkPackage();
+    tampilkanHasil();
+  </script>
+</body>
+</html>
