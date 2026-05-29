@@ -271,22 +271,28 @@
     
     // Tombol lanjut
     document.getElementById('lanjutBtn').addEventListener('click', () => {
-        const amount = parseInt(document.getElementById('amount').value);
-        const minAmount = selectedPackage === 'basic' ? 50000 : 100000;
-        if(amount < minAmount) {
-            alert(`Minimal pembayaran Rp ${minAmount.toLocaleString('id-ID')}`);
-            return;
-        }
-        if(!buktiDataURL) {
-            alert("Bukti belum diupload.");
-            return;
-        }
-        localStorage.setItem('zinxploit_payment_done', 'true');
-        localStorage.setItem('payment_amount', amount);
-        localStorage.setItem('payment_method', paymentMethod);
-        localStorage.setItem('payment_package', selectedPackage);
-        window.location.href = 'neptu.html';
-    });
+    const amount = parseInt(document.getElementById('amount').value);
+    const minAmount = selectedPackage === 'basic' ? 50000 : 100000;
+    if(amount < minAmount) {
+        alert(`Minimal pembayaran Rp ${minAmount.toLocaleString('id-ID')}`);
+        return;
+    }
+    if(!buktiDataURL) {
+        alert("Bukti belum diupload.");
+        return;
+    }
+    localStorage.setItem('zinxploit_payment_done', 'true');
+    localStorage.setItem('payment_amount', amount);
+    localStorage.setItem('payment_method', paymentMethod);
+    localStorage.setItem('payment_package', selectedPackage);
+    
+    // 🔁 Arahkan sesuai paket
+    if (selectedPackage === 'basic') {
+        window.location.href = 'neptubsc.html';
+    } else {
+        window.location.href = 'neptuprem.html';
+    }
+});
 
     updateDetail();
 </script>
