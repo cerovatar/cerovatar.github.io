@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Tes Psikologi Kejiwaan | Cek Kesehatan Mental</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #0f172a 0%, #1e1b2e 100%);
+            font-family: 'Inter', sans-serif;
+            color: #eef2ff;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: rgba(15, 25, 45, 0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 0.3rem;
+        }
+        .sub {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+        .progress-container {
+            background: #1e293b;
+            border-radius: 30px;
+            height: 8px;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            background: #06b6d4;
+            width: 0%;
+            height: 8px;
+            border-radius: 30px;
+            transition: width 0.3s;
+        }
+        .question {
+            margin-bottom: 1.8rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+        }
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        .options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .option-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #cbd5e6;
+        }
+        .option-btn.selected {
+            background: #06b6d4;
+            color: #0f172a;
+            border-color: #06b6d4;
+            font-weight: bold;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        button {
+            background: #0d6efd;
+            border: none;
+            border-radius: 2rem;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+        }
+        button:hover {
+            transform: scale(0.97);
+        }
+        .btn-primary {
+            background: linear-gradient(95deg, #06b6d4, #0891b2);
+        }
+        .btn-secondary {
+            background: #475569;
+        }
+        .result-card {
+            background: #0f172a;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border-left: 5px solid #06b6d4;
+            margin-top: 1.5rem;
+        }
+        .result-category {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        .saran {
+            background: #1e293b;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #5b6e8c;
+            margin-top: 2rem;
+        }
+        @media (max-width: 550px) {
+            .card { padding: 1.2rem; }
+            .option-btn { padding: 6px 12px; font-size: 0.7rem; }
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1><i class="fas fa-brain"></i> Tes Psikologi Kejiwaan</h1>
+        <div class="sub">Jawab sesuai perasaan Anda dalam 2 minggu terakhir (skala 1-4)</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div id="questionsContainer"></div>
+        <div class="nav-buttons">
+            <button id="prevBtn" class="btn-secondary" disabled><i class="fas fa-chevron-left"></i> Sebelumnya</button>
+            <button id="nextBtn" class="btn-primary">Selanjutnya <i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div id="resultArea" class="hidden"></div>
+        <div class="btn-submit-container hidden" style="margin-top: 1rem;">
+            <button id="submitBtn" class="btn-primary" style="width:100%"><i class="fas fa-check-circle"></i> Lihat Hasil Tes</button>
+        </div>
+    </div>
+    <footer>
+        <i class="fas fa-shield-alt"></i> Tes ini bersifat simulasi untuk kesadaran kesehatan mental. Bukan diagnosis medis. Jika Anda memiliki keluhan serius, konsultasikan ke profesional.
+    </footer>
+</div>
+
+<script>
+    // 15 pertanyaan berdasarkan skala DASS-21 yang disederhanakan (Gejala depresi, kecemasan, stres)
+    const questions = [
+        "Saya merasa sulit untuk tenang dan rileks.",
+        "Saya merasakan mulut kering (tidak karena dehidrasi atau obat).",
+        "Saya tidak dapat merasakan emosi positif sama sekali.",
+        "Saya merasa kesulitan bernapas (tanpa aktivitas berat).",
+        "Saya merasa tidak memiliki semangat untuk melakukan apapun.",
+        "Saya cenderung bereaksi berlebihan terhadap situasi tertentu.",
+        "Saya merasa gemetar (misal tangan).",
+        "Saya merasa banyak menghabiskan energi karena cemas.",
+        "Saya khawatir tentang situasi di mana saya bisa panik dan terlihat bodoh.",
+        "Saya merasa tidak ada hal yang bisa membuat saya optimis ke depan.",
+        "Saya merasa gelisah dan tidak bisa diam.",
+        "Saya merasa sulit untuk mengambil inisiatif dalam melakukan sesuatu.",
+        "Saya merasa takut tanpa alasan yang jelas.",
+        "Saya merasa hidup ini tidak berarti.",
+        "Saya merasa putus asa dan tidak ada harapan."
+    ];
+
+    // Skala 1-4: 1 = Tidak Sesuai, 2 = Kadang-kadang, 3 = Sering, 4 = Sangat Sering
+    let answers = new Array(questions.length).fill(null);
+    let currentIndex = 0;
+    let totalAnswered = 0;
+
+    // Fungsi untuk merender pertanyaan currentIndex
+    function renderQuestion() {
+        const container = document.getElementById('questionsContainer');
+        const q = questions[currentIndex];
+        const currentAnswer = answers[currentIndex];
+        let optionsHtml = '';
+        const optionLabels = ['Tidak Sesuai', 'Kadang-kadang', 'Sering', 'Sangat Sering'];
+        for (let i = 1; i <= 4; i++) {
+            const selectedClass = (currentAnswer === i) ? 'selected' : '';
+            optionsHtml += `<div class="option-btn ${selectedClass}" data-val="${i}">${i} - ${optionLabels[i-1]}</div>`;
+        }
+        container.innerHTML = `
+            <div class="question">
+                <div class="question-text">${currentIndex+1}. ${q}</div>
+                <div class="options" id="options-${currentIndex}">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+        // attach event listeners ke option buttons
+        const optionDivs = document.querySelectorAll(`#options-${currentIndex} .option-btn`);
+        optionDivs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = parseInt(btn.dataset.val);
+                answers[currentIndex] = val;
+                // update tampilan selected
+                optionDivs.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                // hitung ulang answered
+                updateProgress();
+                // auto next jika sudah menjawab dan belum submit? optional, tapi kita tidak auto next agar user bisa check
+            });
+        });
+        // update tombol prev/next
+        document.getElementById('prevBtn').disabled = (currentIndex === 0);
+        document.getElementById('nextBtn').innerHTML = (currentIndex === questions.length-1) ? 'Selesai <i class="fas fa-check"></i>' : 'Selanjutnya <i class="fas fa-chevron-right"></i>';
+        
+        // update progress bar
+        updateProgressBar();
+    }
+
+    function updateProgress() {
+        totalAnswered = answers.filter(a => a !== null).length;
+        const percent = (totalAnswered / questions.length) * 100;
+        document.getElementById('progressBar').style.width = percent + '%';
+        // Tampilkan tombol submit jika semua sudah terjawab
+        const submitContainer = document.querySelector('.btn-submit-container');
+        if (totalAnswered === questions.length) {
+            submitContainer.classList.remove('hidden');
+        } else {
+            submitContainer.classList.add('hidden');
+            document.getElementById('resultArea').classList.add('hidden');
+        }
+    }
+
+    function updateProgressBar() {
+        const percent = (totalAnswered / questions.length) * 100;
+        document.getElementById('progressBar').style.width = percent + '%';
+    }
+
+    // Navigasi
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderQuestion();
+        }
+    });
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        if (currentIndex < questions.length - 1) {
+            // jika pertanyaan belum dijawab, beri peringatan
+            if (answers[currentIndex] === null) {
+                alert('Silakan jawab pertanyaan ini terlebih dahulu.');
+                return;
+            }
+            currentIndex++;
+            renderQuestion();
+        } else {
+            // jika di halaman terakhir, cek semua jawaban sudah diisi
+            if (answers[currentIndex] === null) {
+                alert('Silakan jawab pertanyaan terakhir.');
+                return;
+            }
+            if (totalAnswered === questions.length) {
+                // sudah semua terisi, bisa submit via tombol submit
+                // scroll ke tombol submit
+                document.querySelector('.btn-submit-container').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert(`Anda baru menjawab ${totalAnswered} dari ${questions.length} pertanyaan. Lengkapi dulu.`);
+            }
+        }
+    });
+
+    // Submit & hitung skor
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        if (totalAnswered !== questions.length) {
+            alert(`Silakan jawab semua pertanyaan terlebih dahulu (${totalAnswered}/${questions.length})`);
+            return;
+        }
+        // Hitung total skor (rentang 15 - 60)
+        let totalScore = 0;
+        for (let i = 0; i < answers.length; i++) {
+            totalScore += answers[i];
+        }
+        // Kategorisasi (skor maks 60)
+        let category = '';
+        let description = '';
+        let suggestion = '';
+        if (totalScore <= 25) {
+            category = '✅ Kondisi Mental Sehat / Normal';
+            description = 'Skor Anda menunjukkan bahwa Anda dalam kondisi mental yang baik. Anda mampu mengelola emosi dan stres dengan cukup baik.';
+            suggestion = 'Tetap jaga kesehatan mental dengan olahraga teratur, cukup istirahat, dan bersosialisasi.';
+        } else if (totalScore <= 35) {
+            category = '⚠️ Stres Ringan / Kecemasan Ringan';
+            description = 'Anda mengalami beberapa gejala stres atau kecemasan ringan. Mungkin ada tekanan dari pekerjaan atau hubungan.';
+            suggestion = 'Coba lakukan teknik relaksasi (meditasi, napas dalam), dan luangkan waktu untuk hobi. Jika berlanjut, konsultasi dengan psikolog.';
+        } else if (totalScore <= 45) {
+            category = '🌧️ Depresi Ringan / Kecemasan Sedang';
+            description = 'Gejala yang Anda alami cukup signifikan. Mungkin Anda merasa lelah, mudah marah, atau kehilangan minat.';
+            suggestion = 'Konsultasi dengan psikolog atau konselor sangat disarankan. Jangan ragu mencari bantuan profesional.';
+        } else {
+            category = '⚠️ Depresi Berat / Gangguan Kecemasan Tinggi';
+            description = 'Skor Anda mengindikasikan adanya gejala depresi berat atau gangguan kecemasan yang serius.';
+            suggestion = 'Segera hubungi psikolog atau psikiater. Anda tidak sendirian, bantuan profesional sangat penting untuk pemulihan.';
+        }
+        const resultHtml = `
+            <div class="result-card">
+                <i class="fas fa-chart-simple"></i> <strong>Total Skor Anda:</strong> ${totalScore} / 60<br>
+                <div class="result-category">${category}</div>
+                <p>${description}</p>
+                <div class="saran">
+                    <i class="fas fa-heartbeat"></i> <strong>Saran & Tindak Lanjut:</strong><br>
+                    ${suggestion}
+                </div>
+                <div style="margin-top: 1rem; font-size:0.8rem;">
+                    <i class="fas fa-info-circle"></i> Tes ini hanya alat bantu awal. Untuk diagnosis akurat, konsultasi dengan tenaga kesehatan mental.
+                </div>
+                <button id="resetTestBtn" style="margin-top: 1rem; background:#f59e0b;"><i class="fas fa-redo-alt"></i> Ulangi Tes</button>
+            </div>
+        `;
+        document.getElementById('resultArea').innerHTML = resultHtml;
+        document.getElementById('resultArea').classList.remove('hidden');
+        document.getElementById('resetTestBtn').addEventListener('click', () => {
+            answers = new Array(questions.length).fill(null);
+            totalAnswered = 0;
+            currentIndex = 0;
+            renderQuestion();
+            updateProgress();
+            document.getElementById('resultArea').classList.add('hidden');
+            document.querySelector('.btn-submit-container').classList.add('hidden');
+        });
+        // Scroll ke hasil
+        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // Inisialisasi
+    renderQuestion();
+    updateProgress();
+</script>
+</body>
+</html>
