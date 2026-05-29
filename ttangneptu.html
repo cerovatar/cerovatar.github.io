@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Proposal Aplikasi NEPTU - Ramal Jodoh Primbon Jawa & Tarot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(145deg, #1a0f0c 0%, #2c1a1a 100%);
+            font-family: 'Quicksand', sans-serif;
+            color: #f9e7c2;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        /* Kartu */
+        .card {
+            background: rgba(20, 12, 28, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(218, 165, 32, 0.4);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 1px;
+        }
+        h1 {
+            font-size: 2.8rem;
+            text-align: center;
+            background: linear-gradient(135deg, #f3c682, #e8b55a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-size: 1.8rem;
+            border-left: 5px solid #e09d32;
+            padding-left: 1rem;
+            margin: 1.5rem 0 1rem;
+            color: #f3c682;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #cfb284;
+            margin-bottom: 1.5rem;
+        }
+        .logo-area {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .logo-icon {
+            font-size: 4rem;
+            background: #e09d32;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a0f0c;
+            box-shadow: 0 0 15px rgba(224,157,50,0.5);
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .feature-card {
+            background: rgba(0,0,0,0.4);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(218,165,32,0.3);
+            transition: 0.2s;
+        }
+        .feature-card i {
+            font-size: 2rem;
+            color: #e09d32;
+            margin-bottom: 0.5rem;
+        }
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .table-package {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #b8860b;
+        }
+        th {
+            background: #e09d32;
+            color: #1a0f0c;
+        }
+        .btn-demo {
+            background: linear-gradient(95deg, #b87c2e, #e09d32);
+            border: none;
+            border-radius: 60px;
+            padding: 12px 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #1f130e;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+            transition: 0.2s;
+            margin-top: 1rem;
+        }
+        .btn-demo:hover {
+            transform: scale(1.02);
+        }
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .step {
+            flex: 1;
+            min-width: 180px;
+            background: #2e1f1a;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        .step .number {
+            background: #e09d32;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a0f0c;
+            margin-bottom: 0.8rem;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 2rem;
+            color: #ad8b67;
+        }
+        @media (max-width: 700px) {
+            h1 { font-size: 2rem; }
+            .card { padding: 1.2rem; }
+            th, td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-moon"></i></div>
+        </div>
+        <h1>NEPTU</h1>
+        <div class="subtitle">Aplikasi Ramal Jodoh Primbon Jawa + Tarot + Lintrik</div>
+        <p style="text-align: center; max-width: 700px; margin: 0 auto;">Gabungan kepercayaan leluhur (weton & primbon) dengan simbolisme tarot modern. Temukan kecocokan pasangan, energi mistis hubungan, dan hari baik pernikahan hanya dalam satu platform.</p>
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="#panduan" class="btn-demo"><i class="fas fa-play"></i> Lihat Panduan Penggunaan</a>
+            <a href="#paket" class="btn-demo" style="background: #5a3e2a; margin-left: 1rem;"><i class="fas fa-chart-line"></i> Perbedaan Paket</a>
+        </div>
+    </div>
+
+    <!-- Visi & Misi -->
+    <div class="card">
+        <h2><i class="fas fa-eye"></i> Visi & Misi</h2>
+        <div class="grid-2">
+            <div class="feature-card">
+                <i class="fas fa-star-of-life"></i>
+                <h3>Visi</h3>
+                <p>Menjadi platform ramalan jodoh terpercaya berbasis budaya Jawa yang menggabungkan kearifan lokal (weton & primbon) dengan simbolisme tarot modern, serta memberikan panduan spiritual bagi masyarakat Indonesia dalam menentukan hari baik pernikahan.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bullseye"></i>
+                <h3>Misi</h3>
+                <ul style="margin-left: 1.2rem;">
+                    <li>Melestarikan perhitungan weton Jawa secara digital dan akurat.</li>
+                    <li>Memberikan pengalaman ramalan interaktif dengan kartu tarot dan energi lintrik.</li>
+                    <li>Membantu pasangan menentukan hari pernikahan berdasarkan neptu baik & menghindari hari sial.</li>
+                    <li>Menyediakan akses mudah melalui web responsif, siap pakai di HP maupun desktop.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fitur Unggulan -->
+    <div class="card">
+        <h2><i class="fas fa-gem"></i> Fitur Unggulan</h2>
+        <div class="grid-2">
+            <div class="feature-card"><i class="fas fa-calculator"></i><h3>Perhitungan Weton Otomatis</h3><p>Konversi tanggal lahir Masehi ke hari & pasaran (weton) secara presisi.</p></div>
+            <div class="feature-card"><i class="fas fa-hand-peace"></i><h3>Ramalan Jodoh 7 Kategori</h3><p>Pegat, Ratu, Jodoh, Topo, Tinari, Padu, Sujanan – lengkap dengan deskripsi & saran.</p></div>
+            <div class="feature-card"><i class="fas fa-charging-station"></i><h3>Lintrik (Energi Mistis)</h3><p>Nilai persentase energi hubungan berdasarkan total neptu dan selisih weton.</p></div>
+            <div class="feature-card"><i class="fas fa-calendar-alt"></i><h3>Penentuan Tanggal Baik Nikah</h3><p>Rekomendasi tanggal pernikahan dalam bulan tertentu berdasarkan neptu baik dan hindari hari sial (khusus Premium).</p></div>
+            <div class="feature-card"><i class="fas fa-tarot"></i><h3>Kartu Tarot Cinta</h3><p>Setiap ramalan disertai kartu tarot acak (Lovers, Two of Cups, The Star, dll.) dengan pesan simbolik.</p></div>
+        </div>
+    </div>
+
+    <!-- PAKET & PERBEDAAN -->
+    <div id="paket" class="card">
+        <h2><i class="fas fa-boxes"></i> Paket Layanan & Perbedaan</h2>
+        <div style="overflow-x: auto;">
+            <table class="table-package">
+                <thead>
+                    <tr>
+                        <th>Fitur</th>
+                        <th>📜 Basic (Rp50.000)</th>
+                        <th>🌟 Premium (Rp100.000)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Ramalan Jodoh 7 Kategori</td><td>✅</td><td>✅</td></tr>
+                    <tr><td>Nilai Lintrik (Energi Mistis)</td><td>✅</td><td>✅</td></tr>
+                    <tr><td>Kartu Tarot Cinta</td><td>✅</td><td>✅</td></tr>
+                    <tr><td>Konversi Tanggal Lahir ke Weton</td><td>✅</td><td>✅</td></tr>
+                    <tr><td>Penentuan Tanggal Baik Pernikahan</td><td>❌</td><td>✅ (akses penuh)</td></tr>
+                    <tr><td>Riwayat Ramalan (penyimpanan)</td><td>❌</td><td>✅</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p><strong>💡 Kesimpulan:</strong> Paket <strong>Basic</strong> cocok untuk Anda yang hanya ingin mengetahui kecocokan pasangan dan energi hubungan. Paket <strong>Premium</strong> memberikan rekomendasi hari baik pernikahan, cocok bagi pasangan yang serius menuju jenjang pelaminan.</p>
+    </div>
+
+    <!-- Cara Penggunaan -->
+    <div id="panduan" class="card">
+        <h2><i class="fas fa-compass"></i> Cara Penggunaan Aplikasi NEPTU</h2>
+        <div class="steps">
+            <div class="step"><div class="number">1</div><strong>Pilih Paket & Bayar</strong><br>Pilih Basic atau Premium, transfer ke rekening yang tersedia, upload bukti, dan kirim konfirmasi via WA.</div>
+            <div class="step"><div class="number">2</div><strong>Akses Halaman Ramalan</strong><br>Setelah pembayaran diverifikasi, Anda akan diarahkan ke halaman ramalan sesuai paket.</div>
+            <div class="step"><div class="number">3</div><strong>Masukkan Data Pasangan</strong><br>Isi nama, hari lahir & pasaran (atau gunakan konversi tanggal lahir Masehi).</div>
+            <div class="step"><div class="number">4</div><strong>Dapatkan Hasil Ramalan</strong><br>Tekan tombol "Ramal Jodoh & Lintrik". Muncul kategori jodoh, nilai lintrik, dan kartu tarot.</div>
+            <div class="step"><div class="number">5</div><strong>Fitur Premium</strong><br>Jika paket Premium, buka tab "Cari Tanggal Pernikahan" untuk rekomendasi hari baik.</div>
+        </div>
+        <div style="margin-top: 1.5rem; background: #2e1a1a; border-radius: 1rem; padding: 1rem;">
+            <p><i class="fas fa-credit-card"></i> <strong>Metode Pembayaran & Panduan Transfer:</strong></p>
+            <ul style="margin-left: 1.5rem;">
+                <li><strong>Bank Seabank</strong> – No. Rekening: 901531141482 a.n Mario Adi Saputra</li>
+                <li><strong>Bank BRI</strong> – No. Rekening: 081401029377530 a.n Idi Harjanto</li>
+                <li><strong>E-Wallet (Dana/OVO/GoPay)</strong> – No. Handphone: 083171754073</li>
+            </ul>
+            <p style="margin-top: 0.8rem;"><strong>Langkah:</strong> Transfer sesuai nominal paket, lalu upload bukti (screenshot) di halaman pembayaran, klik "Kirim Bukti ke WA", dan klik "Lanjutkan ke Ramalan Jodoh".</p>
+            <p><i class="fab fa-whatsapp"></i> <strong>Kontak Admin (konfirmasi & dukungan):</strong> +62 857-3560-5012</p>
+        </div>
+    </div>
+
+    <!-- Tabel Perbandingan dengan Aplikasi Lain -->
+    <div class="card">
+        <h2><i class="fas fa-chart-simple"></i> Keunggulan NEPTU Dibanding Aplikasi Lain</h2>
+        <div style="overflow-x: auto;">
+            <table class="table-package">
+                <thead>
+                    <tr><th>Fitur</th><th>NEPTU</th><th>Aplikasi Primbon Lain</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Konversi tanggal lahir Masehi ke weton</td><td>✅ Akurat</td><td>❌ Hanya manual dropdown</td></tr>
+                    <tr><td>Kategori jodoh 7 (Pegat–Sujanan)</td><td>✅ Lengkap + saran</td><td>⚠️ Terbatas</td></tr>
+                    <tr><td>Lintrik (energi mistis)</td><td>✅ Unik (0-100%)</td><td>❌ Tidak ada</td></tr>
+                    <tr><td>Kartu tarot sebagai pelengkap</td><td>✅ Setiap ramalan</td><td>❌</td></tr>
+                    <tr><td>Penentuan tanggal baik pernikahan</td><td>✅ (Premium)</td><td>❌</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Testimoni -->
+    <div class="card">
+        <h2><i class="fas fa-comment-dots"></i> Testimoni Pengguna</h2>
+        <div class="grid-2">
+            <div class="feature-card"><i class="fas fa-quote-left"></i> "Ramalan jodoh paling akurat yang pernah saya coba, weton saya cocok dengan pasangan!" <br>— <strong>Lisa</strong></div>
+            <div class="feature-card"><i class="fas fa-quote-left"></i> "Paket premium sangat membantu menentukan hari pernikahan. Rekomendasi tanggalnya tepat." <br>— <strong>Dewi & Rizky</strong></div>
+        </div>
+    </div>
+
+    <!-- Penutup & Ajakan -->
+    <div class="card" style="text-align: center;">
+        <h2><i class="fas fa-rocket"></i> Segera Gunakan NEPTU!</h2>
+        <p style="margin: 1rem 0;">Kunjungi halaman resmi kami untuk memulai ramalan jodoh Anda.</p>
+        <div style="margin-top: 1rem; font-size: 0.9rem;">
+            📱 <strong>Akses di:</strong> <a href="https://cerovatar.github.io/neptu.html" target="_blank" style="color: #f3c682;">https://cerovatar.github.io/neptu.html</a>
+        </div>
+        <p style="margin-top: 1rem;">Untuk kerjasama, reseller, atau kustomisasi aplikasi, hubungi tim kami melalui WhatsApp.</p>
+        <a href="https://wa.me/6285735605012" class="btn-demo" style="margin-top: 1rem;"><i class="fab fa-whatsapp"></i> Chat WhatsApp</a>
+        <div style="margin-top: 1rem; font-size: 0.8rem;">© 2026 ZinXploit — Neptu: Ramal Jodoh & Solusi Pernikahan Modern Berbasis Budaya</div>
+    </div>
+    <footer>Proposal ini bersifat promosi dan dapat disesuaikan dengan kebutuhan klien.</footer>
+</div>
+</body>
+</html>
