@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Simulasi TOEIC & TOEFL 100 Soal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(145deg, #0f172a 0%, #1e1b2e 100%);
+      font-family: 'Inter', sans-serif;
+      color: #eef2ff;
+      padding: 1rem;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .card {
+      background: rgba(15, 25, 45, 0.75);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #fff, #38bdf8); -webkit-background-clip: text; background-clip: text; color: transparent; text-align: center; }
+    .sub { text-align: center; color: #94a3b8; margin-bottom: 1rem; font-size: 0.85rem; }
+    .test-selector { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; }
+    .test-btn {
+      background: #1e293b; border: 1px solid #334155; border-radius: 40px; padding: 0.5rem 1.2rem;
+      cursor: pointer; font-weight: 600; transition: 0.2s;
+    }
+    .test-btn.active { background: #06b6d4; color: #0f172a; border-color: #06b6d4; }
+    .form-input {
+      width: 100%; padding: 0.6rem; border-radius: 2rem; background: #1e293b;
+      border: 1px solid #334155; color: white; outline: none;
+    }
+    .quiz-area { max-height: 550px; overflow-y: auto; padding-right: 8px; margin-top: 1rem; }
+    .question {
+      background: #0f172a; border-radius: 1rem; padding: 0.8rem; margin-bottom: 1rem;
+      border: 1px solid #1e293b;
+    }
+    .question-text { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .options { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.3rem; }
+    .option {
+      background: #1e293b; border: 1px solid #334155; border-radius: 30px;
+      padding: 0.3rem 0.9rem; cursor: pointer; font-size: 0.8rem; transition: 0.1s;
+    }
+    .option.selected { background: #06b6d4; color: #0f172a; border-color: #06b6d4; }
+    .btn-submit {
+      background: linear-gradient(95deg, #06b6d4, #0891b2); border: none; border-radius: 40px;
+      padding: 0.7rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 1rem;
+    }
+    .btn-answer-key {
+      background: linear-gradient(95deg, #f59e0b, #d97706); border: none; border-radius: 40px;
+      padding: 0.7rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 0.5rem;
+    }
+    .score-area { text-align: center; margin-top: 1rem; }
+    .certificate-preview { text-align: center; margin-top: 1rem; }
+    canvas { background: white; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-width: 100%; height: auto; }
+    .btn-download { background: #10b981; border: none; border-radius: 40px; padding: 0.5rem 1rem; font-weight: bold; cursor: pointer; margin-top: 0.5rem; }
+    .hidden { display: none; }
+    footer { text-align: center; font-size: 0.7rem; color: #5b6e8c; margin-top: 2rem; }
+    @media (max-width: 700px) {
+      .options { gap: 0.5rem; }
+      .option { padding: 0.2rem 0.6rem; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1><i class="fas fa-certificate"></i> TOEIC / TOEFL 100 Soal</h1>
+    <div class="sub">Pilih tes, jawab 100 soal, dapatkan skor & sertifikat</div>
+
+    <div class="test-selector">
+      <div class="test-btn active" data-test="toeic">📘 TOEIC (100 Soal)</div>
+      <div class="test-btn" data-test="toefl">🌍 TOEFL (100 Soal)</div>
+    </div>
+
+    <label>Nama Peserta</label>
+    <input type="text" id="participantName" placeholder="Masukkan nama lengkap" class="form-input" value="John Doe">
+
+    <div id="quizContainer" class="quiz-area"></div>
+
+    <button id="submitBtn" class="btn-submit"><i class="fas fa-check-circle"></i> Kirim Jawaban & Dapatkan Skor</button>
+    <button id="answerKeyBtn" class="btn-answer-key" onclick="window.open('kunci-jawaban.html', '_blank')"><i class="fas fa-key"></i> Buka Kunci Jawaban (Jendela Baru)</button>
+
+    <div id="scoreArea" class="score-area hidden">
+      <div class="card" style="margin-top:0;">
+        <h3>Skor Anda: <span id="scoreValue">0</span> / 100</h3>
+        <p id="levelText"></p>
+        <button id="generateCertBtn" class="btn-download"><i class="fas fa-file-certificate"></i> Generate Sertifikat</button>
+      </div>
+    </div>
+
+    <div id="certificateArea" class="certificate-preview hidden">
+      <canvas id="certCanvas" width="800" height="600" style="width:100%; height:auto; max-width:800px; border-radius:1rem;"></canvas>
+      <button id="downloadCertBtn" class="btn-download"><i class="fas fa-download"></i> Unduh Sertifikat (PNG)</button>
+    </div>
+  </div>
+  <footer>⚠️ Simulasi hiburan. Sertifikat tidak berlaku resmi. Kunci jawaban tersedia di jendela terpisah.</footer>
+</div>
+
+<script>
+  // ==================== PEMBANGKIT 100 SOAL ====================
+  function generateToeicQuestions(count) {
+    const templates = [
+      { text: "The manager ___ the meeting if he is late.", options: ["will postpone", "postponed", "postpones", "has postponed"], correct: 0 },
+      { text: "Please make sure all documents ___ signed by Friday.", options: ["are", "is", "be", "been"], correct: 0 },
+      { text: "The new employee is very ___ and learns quickly.", options: ["intelligent", "intelligently", "intelligence", "more intelligent"], correct: 0 },
+      { text: "___ the weather was bad, they continued the event.", options: ["Although", "Because", "Since", "Unless"], correct: 0 },
+      { text: "This is the most ___ movie I have ever seen.", options: ["exciting", "excited", "excite", "excitement"], correct: 0 },
+      { text: "If I had known, I ___ you earlier.", options: ["would tell", "will tell", "would have told", "told"], correct: 2 },
+      { text: "She speaks English ___ than her brother.", options: ["more fluently", "fluently", "most fluently", "fluent"], correct: 0 },
+      { text: "The report ___ by the assistant yesterday.", options: ["was written", "wrote", "is written", "writing"], correct: 0 },
+      { text: "I am looking forward ___ you at the conference.", options: ["to see", "seeing", "to seeing", "see"], correct: 2 },
+      { text: "Neither the manager nor the staff ___ satisfied.", options: ["is", "are", "was", "were"], correct: 1 }
+    ];
+    let questions = [];
+    for (let i = 0; i < count; i++) {
+      let base = templates[i % templates.length];
+      let question = { ...base };
+      if (i >= templates.length) {
+        question.text = question.text.replace(/\.$/, "") + ` (var ${Math.floor(i/templates.length)+1})`;
+      }
+      questions.push(question);
+    }
+    return questions;
+  }
+
+  function generateToeflQuestions(count) {
+    const templates = [
+      { text: "The committee ___ to approve the budget by next week.", options: ["expects", "expect", "expecting", "to expect"], correct: 0 },
+      { text: "She is one of the most talented ___ I have ever met.", options: ["artist", "artists", "artistes", "artistry"], correct: 1 },
+      { text: "___ his efforts, he failed the exam.", options: ["Although", "Despite", "Because", "Since"], correct: 1 },
+      { text: "The professor suggested ___ the chapter again.", options: ["to read", "reading", "read", "for reading"], correct: 1 },
+      { text: "Not only ___ late, but he also forgot the documents.", options: ["he was", "was he", "he is", "is he"], correct: 1 },
+      { text: "Had I known the answer, I ___ you.", options: ["would help", "would have helped", "will help", "helped"], correct: 1 },
+      { text: "The company's profits have increased ___ 20% over the last year.", options: ["by", "with", "for", "to"], correct: 0 },
+      { text: "She is accustomed ___ waking up early.", options: ["to", "with", "for", "at"], correct: 0 },
+      { text: "The building ___ constructed in 1990 is now a museum.", options: ["which", "that", "where", "who"], correct: 1 },
+      { text: "I would rather you ___ quiet during the presentation.", options: ["keep", "kept", "to keep", "keeping"], correct: 1 }
+    ];
+    let questions = [];
+    for (let i = 0; i < count; i++) {
+      let base = templates[i % templates.length];
+      let question = { ...base };
+      if (i >= templates.length) {
+        question.text = question.text.replace(/\.$/, "") + ` (var ${Math.floor(i/templates.length)+1})`;
+      }
+      questions.push(question);
+    }
+    return questions;
+  }
+
+  let toeicQuestions = generateToeicQuestions(100);
+  let toeflQuestions = generateToeflQuestions(100);
+  let currentTest = "toeic";
+  let currentQuestions = [...toeicQuestions];
+  let userAnswers = new Array(100).fill(null);
+  let score = 0;
+  let participantName = "";
+
+  const quizContainer = document.getElementById("quizContainer");
+  const submitBtn = document.getElementById("submitBtn");
+  const scoreArea = document.getElementById("scoreArea");
+  const certificateArea = document.getElementById("certificateArea");
+  const scoreValueSpan = document.getElementById("scoreValue");
+  const levelTextP = document.getElementById("levelText");
+  const generateCertBtn = document.getElementById("generateCertBtn");
+  const downloadCertBtn = document.getElementById("downloadCertBtn");
+  const certCanvas = document.getElementById("certCanvas");
+  const participantNameInput = document.getElementById("participantName");
+
+  function renderQuestions() {
+    quizContainer.innerHTML = "";
+    userAnswers = new Array(currentQuestions.length).fill(null);
+    currentQuestions.forEach((q, idx) => {
+      const qDiv = document.createElement("div");
+      qDiv.className = "question";
+      qDiv.innerHTML = `
+        <div class="question-text">${idx+1}. ${q.text}</div>
+        <div class="options" id="options-${idx}">
+          ${q.options.map((opt, optIdx) => `<div class="option" data-qidx="${idx}" data-oidx="${optIdx}">${String.fromCharCode(65+optIdx)}. ${opt}</div>`).join('')}
+        </div>
+      `;
+      quizContainer.appendChild(qDiv);
+    });
+    document.querySelectorAll('.option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        const qIdx = parseInt(opt.dataset.qidx);
+        const oIdx = parseInt(opt.dataset.oidx);
+        document.querySelectorAll(`#options-${qIdx} .option`).forEach(el => el.classList.remove('selected'));
+        opt.classList.add('selected');
+        userAnswers[qIdx] = oIdx;
+      });
+    });
+  }
+
+  function switchTest(test) {
+    currentTest = test;
+    if (test === "toeic") currentQuestions = [...toeicQuestions];
+    else currentQuestions = [...toeflQuestions];
+    userAnswers = new Array(currentQuestions.length).fill(null);
+    renderQuestions();
+    scoreArea.classList.add("hidden");
+    certificateArea.classList.add("hidden");
+  }
+
+  function calculateScore() {
+    let correct = 0;
+    for (let i = 0; i < currentQuestions.length; i++) {
+      if (userAnswers[i] === currentQuestions[i].correct) correct++;
+    }
+    return Math.round((correct / currentQuestions.length) * 100);
+  }
+
+  function generateCertificate() {
+    const name = participantNameInput.value.trim();
+    if (!name) { alert("Masukkan nama peserta."); return; }
+    participantName = name;
+    const testType = currentTest === "toeic" ? "TOEIC (Listening & Reading)" : "TOEFL iBT";
+    const date = new Date().toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+    const scoreVal = score;
+    let grade = "";
+    if (scoreVal >= 90) grade = "Expert (C2)";
+    else if (scoreVal >= 75) grade = "Advanced (C1)";
+    else if (scoreVal >= 60) grade = "Upper Intermediate (B2)";
+    else if (scoreVal >= 40) grade = "Intermediate (B1)";
+    else if (scoreVal >= 20) grade = "Elementary (A2)";
+    else grade = "Beginner (A1)";
+
+    const canvas = certCanvas;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 800;
+    canvas.height = 600;
+    ctx.fillStyle = '#fdf8f0';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#c9a03d';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(20, 20, canvas.width-40, canvas.height-40);
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = 'bold 28px "Playfair Display", "Georgia", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("CERTIFICATE OF ACHIEVEMENT", canvas.width/2, 80);
+    ctx.font = '18px "Inter", sans-serif';
+    ctx.fillStyle = '#4a5568';
+    ctx.fillText("This certificate is proudly presented to", canvas.width/2, 140);
+    ctx.font = 'bold 32px "Inter", sans-serif';
+    ctx.fillStyle = '#c9a03d';
+    ctx.fillText(participantName, canvas.width/2, 200);
+    ctx.font = '18px "Inter", sans-serif';
+    ctx.fillStyle = '#4a5568';
+    ctx.fillText(`for successfully completing the simulated ${testType} examination`, canvas.width/2, 250);
+    ctx.font = 'bold 20px "Inter", sans-serif';
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillText(`with a score of ${scoreVal} / 100`, canvas.width/2, 310);
+    ctx.font = '16px "Inter", sans-serif';
+    ctx.fillStyle = '#4a5568';
+    ctx.fillText(`Proficiency Level: ${grade}`, canvas.width/2, 350);
+    ctx.font = '14px "Inter", sans-serif';
+    ctx.fillStyle = '#718096';
+    ctx.fillText(`Date: ${date}`, canvas.width/2, 420);
+    ctx.font = 'italic 14px "Inter", sans-serif';
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillText("Director of Testing", canvas.width/2 - 150, 500);
+    ctx.fillText("Assessment Committee", canvas.width/2 + 150, 500);
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2 - 200, 490);
+    ctx.lineTo(canvas.width/2 - 100, 490);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2 + 100, 490);
+    ctx.lineTo(canvas.width/2 + 200, 490);
+    ctx.stroke();
+    ctx.font = '10px "Inter", sans-serif';
+    ctx.fillStyle = '#a0aec0';
+    ctx.fillText("(Simulation - For entertainment only)", canvas.width/2, 570);
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, 470, 35, 0, 2 * Math.PI);
+    ctx.strokeStyle = '#c9a03d';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.font = 'bold 10px "Inter", sans-serif';
+    ctx.fillStyle = '#c9a03d';
+    ctx.fillText("VALID", canvas.width/2-12, 475);
+    certificateArea.classList.remove("hidden");
+  }
+
+  submitBtn.addEventListener('click', () => {
+    const unanswered = userAnswers.some(ans => ans === null);
+    if (unanswered) { alert("Silakan jawab semua 100 soal terlebih dahulu."); return; }
+    score = calculateScore();
+    scoreValueSpan.innerText = score;
+    let level = "";
+    if (score >= 90) level = "Expert (C2) – Kemahiran sangat tinggi";
+    else if (score >= 75) level = "Advanced (C1) – Mahir";
+    else if (score >= 60) level = "Upper Intermediate (B2) – Menengah atas";
+    else if (score >= 40) level = "Intermediate (B1) – Menengah";
+    else if (score >= 20) level = "Elementary (A2) – Dasar";
+    else level = "Beginner (A1) – Pemula";
+    levelTextP.innerHTML = `Tingkat Kemahiran: ${level}`;
+    scoreArea.classList.remove("hidden");
+    certificateArea.classList.add("hidden");
+    scoreArea.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  generateCertBtn.addEventListener('click', generateCertificate);
+  downloadCertBtn.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = `certificate_${participantName.replace(/\s/g, '_')}_${currentTest.toUpperCase()}.png`;
+    link.href = certCanvas.toDataURL();
+    link.click();
+  });
+
+  document.querySelectorAll('.test-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.test-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      switchTest(btn.dataset.test);
+    });
+  });
+
+  renderQuestions();
+</script>
+</body>
+</html>
