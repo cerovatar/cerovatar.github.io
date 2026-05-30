@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Tes Spiritualitas | 100 Soal + Sertifikat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(145deg, #0b1120 0%, #1a1a2e 100%);
+      font-family: 'Inter', sans-serif;
+      color: #eef2ff;
+      padding: 1rem;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    .card {
+      background: rgba(15, 25, 45, 0.75);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #c084fc, #8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-align: center;
+    }
+    .sub {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.7rem;
+      border-radius: 2rem;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: white;
+      outline: none;
+      font-size: 1rem;
+    }
+    .quiz-area {
+      max-height: 550px;
+      overflow-y: auto;
+      padding-right: 8px;
+      margin-top: 1rem;
+    }
+    .question {
+      background: #0f172a;
+      border-radius: 1rem;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #334155;
+    }
+    .question-text {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 0.3rem;
+    }
+    .option-btn {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 30px;
+      padding: 0.3rem 1rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.1s;
+      color: #cbd5e6;
+    }
+    .option-btn.selected {
+      background: #8b5cf6;
+      color: white;
+      border-color: #c084fc;
+    }
+    .btn-submit {
+      background: linear-gradient(95deg, #8b5cf6, #c084fc);
+      border: none;
+      border-radius: 40px;
+      padding: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+    .score-area {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .certificate-preview {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    canvas {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      max-width: 100%;
+      height: auto;
+    }
+    .btn-download {
+      background: #10b981;
+      border: none;
+      border-radius: 40px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .hidden { display: none; }
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #5b6e8c;
+      margin-top: 2rem;
+    }
+    @media (max-width: 700px) {
+      .options { gap: 0.5rem; }
+      .option-btn { padding: 0.2rem 0.7rem; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1><i class="fas fa-feather-alt"></i> Tes Seberapa Spiritual Dirimu</h1>
+    <div class="sub">100 pernyataan spiritual | Jawab skala 1–5 (1=Sangat Tidak Setuju, 5=Sangat Setuju)</div>
+
+    <label>Nama Anda</label>
+    <input type="text" id="userName" placeholder="Masukkan nama" class="form-input" value="Pencari Jiwa">
+
+    <div id="quizContainer" class="quiz-area"></div>
+
+    <button id="submitBtn" class="btn-submit"><i class="fas fa-star-of-life"></i> Lihat Hasil Spiritualitas</button>
+
+    <div id="scoreArea" class="score-area hidden">
+      <div class="card" style="margin-top:0;">
+        <h3>Skor Spiritualitas Anda: <span id="scoreValue">0</span> / 500</h3>
+        <p id="levelText"></p>
+        <button id="generateCertBtn" class="btn-download"><i class="fas fa-certificate"></i> Generate Sertifikat</button>
+      </div>
+    </div>
+
+    <div id="certificateArea" class="certificate-preview hidden">
+      <canvas id="certCanvas" width="800" height="600" style="width:100%; height:auto; max-width:800px; border-radius:1rem;"></canvas>
+      <button id="downloadCertBtn" class="btn-download"><i class="fas fa-download"></i> Unduh Sertifikat (PNG)</button>
+    </div>
+  </div>
+  <footer>⚠️ Tes ini untuk hiburan & refleksi diri. Hasil tidak mengikat.</footer>
+</div>
+
+<script>
+  // ==================== GENERATE 100 SOAL SPIRITUAL ====================
+  // Template pernyataan spiritual
+  const templates = [
+    "Saya merasa terhubung dengan sesuatu yang lebih besar dari diri saya.",
+    "Saya sering merenungkan makna kehidupan.",
+    "Saya merasa damai ketika berada di alam terbuka.",
+    "Saya percaya bahwa segala sesuatu terjadi karena alasan tertentu.",
+    "Saya melakukan meditasi atau doa secara rutin.",
+    "Saya mudah merasakan empati terhadap penderitaan orang lain.",
+    "Saya sering bersyukur atas hal-hal kecil dalam hidup.",
+    "Saya percaya pada kekuatan intuisi batin.",
+    "Saya merasa bahwa hidup ini memiliki tujuan spiritual.",
+    "Saya mencari kebijaksanaan dari berbagai tradisi spiritual.",
+    "Saya merasa tenang saat menghadapi masalah berat.",
+    "Saya sering meluangkan waktu untuk introspeksi diri.",
+    "Saya percaya bahwa alam memiliki energi spiritual.",
+    "Saya merasa bahwa cinta adalah kekuatan utama di alam semesta.",
+    "Saya tertarik pada konsep karma dan akibat dari tindakan.",
+    "Saya merasa bahwa pikiran positif dapat mempengaruhi realitas.",
+    "Saya sering membantu orang lain tanpa pamrih.",
+    "Saya merasa bahwa kesederhanaan membawa kebahagiaan.",
+    "Saya percaya pada keajaiban kehidupan.",
+    "Saya merasa bahwa setiap orang memiliki cahaya batin.",
+    "Saya mudah memaafkan kesalahan orang lain.",
+    "Saya sering merasakan getaran energi dari tempat suci.",
+    "Saya percaya bahwa meditasi meningkatkan kesadaran.",
+    "Saya merasa bahwa hidup adalah perjalanan spiritual.",
+    "Saya sering membaca buku-buku spiritual atau filsafat.",
+    "Saya percaya bahwa doa memiliki kekuatan.",
+    "Saya merasa bahwa alam semesta mendukung perjalanan saya.",
+    "Saya berusaha hidup selaras dengan alam.",
+    "Saya sering mendengarkan musik yang menenangkan jiwa.",
+    "Saya merasa bahwa kesabaran adalah kunci kedamaian."
+  ];
+
+  // Perlu 100 soal, ulangi template dengan variasi
+  let questions = [];
+  for (let i = 0; i < 100; i++) {
+    let base = templates[i % templates.length];
+    let variant = "";
+    if (i >= templates.length) {
+      variant = ` (${Math.floor(i / templates.length) + 1})`;
+    }
+    questions.push(base + variant);
+  }
+
+  let userAnswers = new Array(100).fill(null);
+  let score = 0;
+  let userName = "";
+
+  // DOM elements
+  const quizContainer = document.getElementById("quizContainer");
+  const submitBtn = document.getElementById("submitBtn");
+  const scoreArea = document.getElementById("scoreArea");
+  const certificateArea = document.getElementById("certificateArea");
+  const scoreValueSpan = document.getElementById("scoreValue");
+  const levelTextP = document.getElementById("levelText");
+  const generateCertBtn = document.getElementById("generateCertBtn");
+  const downloadCertBtn = document.getElementById("downloadCertBtn");
+  const certCanvas = document.getElementById("certCanvas");
+  const userNameInput = document.getElementById("userName");
+
+  // Render 100 soal
+  function renderQuestions() {
+    quizContainer.innerHTML = "";
+    userAnswers = new Array(100).fill(null);
+    questions.forEach((q, idx) => {
+      const qDiv = document.createElement("div");
+      qDiv.className = "question";
+      qDiv.innerHTML = `
+        <div class="question-text">${idx+1}. ${q}</div>
+        <div class="options" id="options-${idx}">
+          ${[1,2,3,4,5].map(val => `<div class="option-btn" data-qidx="${idx}" data-val="${val}">${val}</div>`).join('')}
+        </div>
+      `;
+      quizContainer.appendChild(qDiv);
+    });
+    // Attach event listeners
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const qIdx = parseInt(btn.dataset.qidx);
+        const val = parseInt(btn.dataset.val);
+        // Hapus selected dari group
+        document.querySelectorAll(`#options-${qIdx} .option-btn`).forEach(opt => opt.classList.remove('selected'));
+        btn.classList.add('selected');
+        userAnswers[qIdx] = val;
+      });
+    });
+  }
+
+  // Hitung skor total (maks 500)
+  function calculateScore() {
+    let total = 0;
+    for (let i = 0; i < userAnswers.length; i++) {
+      if (userAnswers[i] !== null) total += userAnswers[i];
+      else total += 0; // jika belum dijawab, dianggap 0, tapi nanti akan dicek
+    }
+    return total;
+  }
+
+  // Dapatkan kategori spiritual
+  function getCategory(score) {
+    if (score < 200) return { name: "🌍 Duniawi (Kurang Spiritual)", desc: "Anda cenderung fokus pada hal-hal material dan duniawi. Mulailah merenungkan aspek spiritual untuk kedamaian batin." };
+    if (score < 300) return { name: "🕯️ Pemula Spiritual", desc: "Anda mulai terbuka terhadap nilai-nilai spiritual, tetapi masih perlu pendalaman dan konsistensi." };
+    if (score < 400) return { name: "🧘 Praktisi Spiritual", desc: "Anda cukup spiritual, rutin melakukan refleksi dan memiliki kesadaran batin yang baik." };
+    if (score < 450) return { name: "✨ Bijaksana (Spiritual Tinggi)", desc: "Anda memiliki koneksi spiritual yang kuat dan sering menjadi pencerah bagi sekitar." };
+    return { name: "🕉️ Guru Spiritual (Sangat Tinggi)", desc: "Anda sangat spiritual, hidup penuh makna, dan mampu menularkan kedamaian kepada orang lain." };
+  }
+
+  // Generate sertifikat
+  function generateCertificate() {
+    const name = userNameInput.value.trim();
+    if (!name) { alert("Masukkan nama terlebih dahulu."); return; }
+    userName = name;
+    const finalScore = score;
+    const category = getCategory(finalScore);
+    const date = new Date().toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+    
+    const canvas = certCanvas;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 800;
+    canvas.height = 600;
+    
+    // Background gradien lembut
+    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    grad.addColorStop(0, '#fdfbf7');
+    grad.addColorStop(1, '#f4f0ea');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Border emas
+    ctx.strokeStyle = '#b8860b';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(20, 20, canvas.width-40, canvas.height-40);
+    
+    // Header
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = 'bold 28px "Playfair Display", "Georgia", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("CERTIFICATE OF SPIRITUAL AWARENESS", canvas.width/2, 70);
+    
+    ctx.font = '18px "Inter", sans-serif';
+    ctx.fillStyle = '#4a5568';
+    ctx.fillText("This certificate is awarded to", canvas.width/2, 130);
+    
+    ctx.font = 'bold 32px "Inter", sans-serif';
+    ctx.fillStyle = '#8b5cf6';
+    ctx.fillText(name, canvas.width/2, 190);
+    
+    ctx.font = '16px "Inter", sans-serif';
+    ctx.fillStyle = '#4a5568';
+    ctx.fillText("for achieving a spirituality score of", canvas.width/2, 250);
+    
+    ctx.font = 'bold 36px "Inter", sans-serif';
+    ctx.fillStyle = '#b8860b';
+    ctx.fillText(`${finalScore} / 500`, canvas.width/2, 310);
+    
+    ctx.font = '18px "Inter", sans-serif';
+    ctx.fillStyle = '#4a5568';
+    ctx.fillText(`Category: ${category.name}`, canvas.width/2, 360);
+    
+    ctx.font = '14px "Inter", sans-serif';
+    ctx.fillStyle = '#718096';
+    ctx.fillText(category.desc.substring(0, 70) + "...", canvas.width/2, 410);
+    
+    ctx.font = '14px "Inter", sans-serif';
+    ctx.fillStyle = '#718096';
+    ctx.fillText(`Date: ${date}`, canvas.width/2, 470);
+    
+    // Tanda tangan
+    ctx.font = 'italic 14px "Inter", sans-serif';
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillText("Spiritual Assessment Board", canvas.width/2 - 150, 540);
+    ctx.fillText("Director of Inner Peace", canvas.width/2 + 150, 540);
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2 - 210, 530);
+    ctx.lineTo(canvas.width/2 - 90, 530);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2 + 90, 530);
+    ctx.lineTo(canvas.width/2 + 210, 530);
+    ctx.stroke();
+    
+    ctx.font = '10px "Inter", sans-serif';
+    ctx.fillStyle = '#a0aec0';
+    ctx.fillText("(For entertainment & self-reflection only)", canvas.width/2, 580);
+    
+    certificateArea.classList.remove("hidden");
+  }
+
+  // Submit jawaban
+  submitBtn.addEventListener('click', () => {
+    const unanswered = userAnswers.some(ans => ans === null);
+    if (unanswered) {
+      alert("Silakan jawab semua 100 pertanyaan terlebih dahulu.");
+      return;
+    }
+    score = calculateScore();
+    scoreValueSpan.innerText = score;
+    const category = getCategory(score);
+    levelTextP.innerHTML = `${category.name}<br><span style="font-size:0.9rem;">${category.desc}</span>`;
+    scoreArea.classList.remove("hidden");
+    certificateArea.classList.add("hidden");
+    scoreArea.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  generateCertBtn.addEventListener('click', generateCertificate);
+  downloadCertBtn.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = `spiritual_certificate_${userName.replace(/\s/g, '_')}.png`;
+    link.href = certCanvas.toDataURL();
+    link.click();
+  });
+
+  // Render awal
+  renderQuestions();
+</script>
+</body>
+</html>
