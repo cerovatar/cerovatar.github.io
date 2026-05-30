@@ -4,9 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Portofolio — Mario Adi Saputra | ZinXploit</title>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -21,7 +19,6 @@
       line-height: 1.6;
     }
 
-    /* Variabel tema (dark default) */
     :root {
       --bg-primary: #0a0a0a;
       --bg-secondary: #111111;
@@ -33,8 +30,6 @@
       --border-light: rgba(255, 255, 255, 0.1);
       --nav-bg: rgba(10, 10, 10, 0.95);
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      --input-bg: rgba(255, 255, 255, 0.05);
-      --code-bg: rgba(0, 0, 0, 0.2);
       --progress-bg: rgba(255, 255, 255, 0.1);
       --btn-hover: #ff6b6b;
     }
@@ -50,8 +45,6 @@
       --border-light: rgba(0, 0, 0, 0.1);
       --nav-bg: rgba(255, 255, 255, 0.95);
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      --input-bg: rgba(0, 0, 0, 0.02);
-      --code-bg: #f1f5f9;
       --progress-bg: #e2e8f0;
     }
 
@@ -60,17 +53,9 @@
       color: var(--text-primary);
     }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg-primary);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: 4px;
-    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 
     /* Header & Navigation */
     header {
@@ -84,7 +69,6 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--border-light);
-      transition: all 0.3s;
     }
 
     .logo {
@@ -95,38 +79,15 @@
       background-clip: text;
       color: transparent;
     }
-    .logo span {
-      color: var(--accent);
-      background: none;
-      -webkit-background-clip: unset;
-      background-clip: unset;
-    }
 
     nav a {
       color: var(--text-primary);
       margin-left: 2rem;
       text-decoration: none;
       font-weight: 500;
-      font-size: 0.9rem;
       transition: color 0.2s;
-      position: relative;
     }
-    nav a:hover, nav a.active {
-      color: var(--accent);
-    }
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--accent);
-      transition: width 0.3s;
-    }
-    nav a:hover::after {
-      width: 100%;
-    }
+    nav a:hover, nav a.active { color: var(--accent); }
 
     .theme-toggle {
       background: var(--card-bg);
@@ -137,11 +98,6 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      transition: all 0.2s;
-    }
-    .theme-toggle i {
-      font-size: 1rem;
-      color: var(--text-primary);
     }
 
     .menu-btn {
@@ -158,23 +114,15 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      position: relative;
       background: radial-gradient(circle at 30% 10%, var(--accent-glow) 0%, var(--bg-primary) 80%);
       padding: 2rem;
-    }
-    .hero-content {
-      max-width: 700px;
-      animation: fadeInUp 0.8s ease;
     }
     .hero h2 {
       font-size: 3.2rem;
       font-weight: 700;
       margin-bottom: 1rem;
     }
-    .hero h2 span {
-      color: var(--accent);
-      text-shadow: 0 0 15px var(--accent-glow);
-    }
+    .hero h2 span { color: var(--accent); }
     .hero p {
       font-size: 1.2rem;
       color: var(--text-secondary);
@@ -220,7 +168,6 @@
       border-radius: 3px;
     }
 
-    /* About Card */
     .about-card, .skills-container, .contact-card {
       background: var(--card-bg);
       backdrop-filter: blur(8px);
@@ -235,27 +182,15 @@
     }
 
     /* Skills */
-    .skill-item {
-      margin-bottom: 1.5rem;
-    }
-    .skill-info {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-    .progress-bg {
-      background: var(--progress-bg);
-      height: 8px;
-      border-radius: 10px;
-      overflow: hidden;
-    }
+    .skill-item { margin-bottom: 1.5rem; }
+    .skill-info { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500; }
+    .progress-bg { background: var(--progress-bg); height: 8px; border-radius: 10px; overflow: hidden; }
     .progress-bar {
       width: 0;
       height: 100%;
       background: linear-gradient(90deg, var(--accent), #ff8a5c);
       border-radius: 10px;
-      transition: width 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      transition: width 1.2s;
     }
 
     /* Projects Grid */
@@ -271,27 +206,11 @@
       border: 1px solid var(--border-light);
       transition: all 0.3s;
     }
-    .project-card:hover {
-      transform: translateY(-8px);
-      border-color: var(--accent);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-    }
-    .project-img-wrapper {
-      height: 200px;
-      overflow: hidden;
-    }
-    .project-img-wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s;
-    }
-    .project-card:hover img {
-      transform: scale(1.05);
-    }
-    .project-info {
-      padding: 1.5rem;
-    }
+    .project-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: var(--shadow); }
+    .project-img-wrapper { height: 200px; overflow: hidden; }
+    .project-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .project-card:hover img { transform: scale(1.05); }
+    .project-info { padding: 1.5rem; }
     .tag {
       display: inline-block;
       background: var(--accent-glow);
@@ -302,15 +221,6 @@
       border-radius: 20px;
       margin-bottom: 0.8rem;
     }
-    .project-info h3 {
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
-    }
-    .project-info p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
     .btn-download {
       display: inline-block;
       background: var(--accent);
@@ -319,11 +229,80 @@
       border-radius: 30px;
       font-size: 0.8rem;
       text-decoration: none;
-      transition: background 0.2s;
     }
-    .btn-download:hover {
-      background: var(--btn-hover);
+    .btn-download:hover { background: var(--btn-hover); }
+
+    /* Carousel Sertifikat */
+    .certificate-carousel {
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 20px;
     }
+    .carousel-container {
+      display: flex;
+      transition: transform 0.4s ease;
+    }
+    .certificate-slide {
+      flex: 0 0 100%;
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      text-align: center;
+      padding: 1rem;
+    }
+    .certificate-slide img {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #fff;
+    }
+    .certificate-slide .certificate-info {
+      margin-top: 1rem;
+    }
+    .certificate-slide h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+    }
+    .certificate-slide p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.6);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: 0.2s;
+      z-index: 10;
+    }
+    .carousel-btn:hover { background: var(--accent); }
+    .btn-prev { left: 10px; }
+    .btn-next { right: 10px; }
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-secondary);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .dot.active { background: var(--accent); transform: scale(1.2); }
 
     /* Contact */
     .contact-card {
@@ -338,12 +317,8 @@
       gap: 0.8rem;
       font-size: 1rem;
     }
-    .contact-item i {
-      font-size: 1.4rem;
-      color: var(--accent);
-    }
+    .contact-item i { font-size: 1.4rem; color: var(--accent); }
 
-    /* Footer */
     footer {
       text-align: center;
       padding: 2rem;
@@ -371,58 +346,31 @@
       transition: all 0.3s;
       z-index: 1000;
     }
-    .music-control:hover {
-      transform: scale(1.1);
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 var(--accent-glow); }
-      70% { box-shadow: 0 0 0 15px rgba(214,48,49,0); }
-      100% { box-shadow: 0 0 0 0 rgba(214,48,49,0); }
-    }
+    .music-control:hover { transform: scale(1.1); }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .menu-btn {
-        display: block;
-      }
+      .menu-btn { display: block; }
       nav {
         position: absolute;
         top: 70px;
         left: 0;
         width: 100%;
         background: var(--nav-bg);
-        backdrop-filter: blur(12px);
         flex-direction: column;
         padding: 1rem 0;
-        border-bottom: 1px solid var(--border-light);
         display: none;
       }
-      nav.show {
-        display: flex;
-      }
-      nav a {
-        margin: 0.8rem 2rem;
-      }
-      .hero h2 {
-        font-size: 2.2rem;
-      }
-      .container {
-        padding: 2rem 1rem;
-      }
-      .section-title {
-        font-size: 1.8rem;
-      }
+      nav.show { display: flex; }
+      nav a { margin: 0.8rem 2rem; }
+      .hero h2 { font-size: 2.2rem; }
+      .container { padding: 2rem 1rem; }
+      .certificate-carousel { max-width: 100%; }
     }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -431,13 +379,14 @@
     <div class="logo">Mario<span>.Dev</span></div>
     <div class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
     <nav id="menuNav">
-    <a href="home.html" onclick="toggleMenu()">Home</a>
-    <a href="neptu.html" onclick="toggleMenu()">Neptu</a>
-    <a href="Caljawa.html" onclick="toggleMenu()">Kalender Jawa</a>
-      <a href="#about" onclick="toggleMenu()">Tentang</a>
-      <a href="#skills" onclick="toggleMenu()">Keahlian</a>
-      <a href="#projects" onclick="toggleMenu()">Proyek</a>
-      <a href="#contact" onclick="toggleMenu()">Kontak</a>
+      <a href="home.html">Home</a>
+      <a href="neptu.html">Neptu</a>
+      <a href="Caljawa.html">Kalender Jawa</a>
+      <a href="#about">Tentang</a>
+      <a href="#skills">Keahlian</a>
+      <a href="#projects">Proyek</a>
+      <a href="#certificates">Sertifikat</a>
+      <a href="#contact">Kontak</a>
     </nav>
     <div class="theme-toggle" id="themeToggle">
       <i class="fas fa-sun"></i>
@@ -460,7 +409,7 @@
       <h2 class="section-title">Tentang Saya</h2>
       <div class="about-card">
         <p style="text-align: center; max-width: 800px; margin: 0 auto;">
-          Saya adalah seorang profesional di bidang web development yang berfokus pada pembuatan website modern, responsif, dan fungsional. Saya memiliki passion dalam mengubah ide menjadi kenyataan digital. Siap membantu Anda membangun identitas digital yang kuat dan menarik.
+          Saya seorang profesional web development yang berfokus pada website modern, responsif, dan fungsional. Passion mengubah ide menjadi realitas digital.
         </p>
       </div>
     </section>
@@ -469,33 +418,9 @@
     <section id="skills">
       <h2 class="section-title">Keahlian Teknis</h2>
       <div class="skills-container">
-        <div class="skill-item">
-          <div class="skill-info">
-            <span><i class="fab fa-html5"></i> HTML5</span>
-            <span>95%</span>
-          </div>
-          <div class="progress-bg">
-            <div class="progress-bar" data-width="95%"></div>
-          </div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info">
-            <span><i class="fab fa-css3-alt"></i> CSS3</span>
-            <span>90%</span>
-          </div>
-          <div class="progress-bg">
-            <div class="progress-bar" data-width="90%"></div>
-          </div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info">
-            <span><i class="fab fa-js"></i> JavaScript</span>
-            <span>85%</span>
-          </div>
-          <div class="progress-bg">
-            <div class="progress-bar" data-width="85%"></div>
-          </div>
-        </div>
+        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-html5"></i> HTML5</span><span>95%</span></div><div class="progress-bg"><div class="progress-bar" data-width="95%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-css3-alt"></i> CSS3</span><span>90%</span></div><div class="progress-bg"><div class="progress-bar" data-width="90%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-js"></i> JavaScript</span><span>85%</span></div><div class="progress-bg"><div class="progress-bar" data-width="85%"></div></div></div>
       </div>
     </section>
 
@@ -503,47 +428,54 @@
     <section id="projects">
       <h2 class="section-title">Proyek Unggulan</h2>
       <div class="projects">
-        <div class="project-card">
-          <div class="project-img-wrapper">
-            <img src="https://d.top4top.io/p_3631ygdly0.png" alt="Website Neptu">
+        <div class="project-card"><div class="project-img-wrapper"><img src="https://d.top4top.io/p_3631ygdly0.png" alt="Website Neptu"></div><div class="project-info"><span class="tag">Javanese App</span><h3>Website Neptu</h3><p>Platform Cek Khodam & Neptu modern dengan UI/UX premium.</p></div></div>
+        <div class="project-card"><div class="project-img-wrapper"><img src="https://f.top4top.io/p_3631lxov70.png" alt="Aplikasi Kasir"></div><div class="project-info"><span class="tag">Web App</span><h3>Aplikasi Kasir (POS)</h3><p>Sistem Point of Sale berbasis web dengan manajemen stok dan laporan real-time.</p></div></div>
+        <div class="project-card"><div class="project-img-wrapper"><img src="https://c.top4top.io/p_3631sek070.png" alt="Landing Page"></div><div class="project-info"><span class="tag">Marketing</span><h3>Landing Page Produk</h3><p>Halaman landing page interaktif dengan konversi tinggi.</p></div></div>
+        <div class="project-card"><div class="project-img-wrapper"><img src="https://i.top4top.io/p_3670elsa90.jpg" alt="Kalender Jawa"></div><div class="project-info"><span class="tag">Utility</span><h3>Aplikasi Kalender Jawa</h3><p>Kalender Masehi-Jawa lengkap dengan hari pasaran, wuku, dan ramadhan.</p><a href="#" class="btn-download">Unduh APK</a></div></div>
+      </div>
+    </section>
+
+    <!-- Certificates Carousel -->
+    <section id="certificates">
+      <h2 class="section-title">Sertifikat Profesional</h2>
+      <div class="certificate-carousel">
+        <button class="carousel-btn btn-prev" id="prevCertBtn"><i class="fas fa-chevron-left"></i></button>
+        <div class="carousel-container" id="certCarousel">
+          <!-- Slide 1: Bootcamp Juara Coding -->
+          <div class="certificate-slide">
+            <img src="https://e.top4top.io/p_3802elevf0.jpg" alt="Sertifikat Bootcamp Juara Coding">
+            <div class="certificate-info">
+              <h3>Bootcamp Juara Coding</h3>
+              <p>Lifetime Certificate - Juara Coding | 2022</p>
+            </div>
           </div>
-          <div class="project-info">
-            <span class="tag">Javanese App</span>
-            <h3>Website Neptu</h3>
-            <p>Platform Cek Khodam & Neptu modern dengan UI/UX premium. Fitur ramalan kecocokan pasangan dan penentuan tanggal pernikahan berbasis Weton.</p>
+          <!-- Slide 2: Full Stack Web Development -->
+          <div class="certificate-slide">
+            <img src="https://k.top4top.io/p_38021qjmc0.jpg" alt="Sertifikat Full Stack Web Development">
+            <div class="certificate-info">
+              <h3>Full Stack Web Development</h3>
+              <p>Coding Academy | 2022</p>
+            </div>
+          </div>
+          <!-- Slide 3: Praktik Kerja Lapangan (PKL) - GAMBAR SUDAH DIGANTI -->
+          <div class="certificate-slide">
+            <img src="https://e.top4top.io/p_3802qef180.jpg" alt="Sertifikat Praktik Kerja Lapangan">
+            <div class="certificate-info">
+              <h3>Praktik Kerja Lapangan (PKL)</h3>
+              <p>Penyelenggara / Instansi | 2022</p>
+            </div>
+          </div>
+          <!-- Slide 4: Software Engineering -->
+          <div class="certificate-slide">
+            <img src="https://g.top4top.io/p_3802xsd8p2.jpg" alt="Sertifikat Software Engineering">
+            <div class="certificate-info">
+              <h3>Software Engineering</h3>
+              <p>Certified Software Engineer | 2022</p>
+            </div>
           </div>
         </div>
-        <div class="project-card">
-          <div class="project-img-wrapper">
-            <img src="https://f.top4top.io/p_3631lxov70.png" alt="Aplikasi Kasir">
-          </div>
-          <div class="project-info">
-            <span class="tag">Web App</span>
-            <h3>Aplikasi Kasir (POS)</h3>
-            <p>Sistem Point of Sale berbasis web dengan fitur manajemen stok, laporan penjualan real-time, dan antarmuka user-friendly.</p>
-          </div>
-        </div>
-        <div class="project-card">
-          <div class="project-img-wrapper">
-            <img src="https://c.top4top.io/p_3631sek070.png" alt="Landing Page">
-          </div>
-          <div class="project-info">
-            <span class="tag">Marketing</span>
-            <h3>Landing Page Produk</h3>
-            <p>Halaman landing page interaktif dengan konversi tinggi untuk meningkatkan penjualan produk digital.</p>
-          </div>
-        </div>
-        <div class="project-card">
-          <div class="project-img-wrapper">
-            <img src="https://i.top4top.io/p_3670elsa90.jpg" alt="Kalender Jawa">
-          </div>
-          <div class="project-info">
-            <span class="tag">Utility</span>
-            <h3>Aplikasi Kalender Jawa</h3>
-            <p>Aplikasi tanggal Masehi Jawa dengan detail hari pasaran, wuku, perhitungan hari baik dan ramadhan.</p>
-            <a href="https://files.appsgeyser.com/Kalender%20Jawa_19452331.apk?_gl=1*uu3dub*_ga*MTExODcxMzEwOS4xNzY4NTU3OTA0*_ga_WRFFFBGC4Z*czE3Njg3MTkzMjIkbzIkZzEkdDE3Njg3MTk0NjAkajUyJGwwJGgwJGQ2VGVuOHRjNG1qd0VzS0Z3LW13QWdmX084WFExR1hLT3JB" class="btn-download" download>Unduh Sekarang</a>
-          </div>
-        </div>
+        <button class="carousel-btn btn-next" id="nextCertBtn"><i class="fas fa-chevron-right"></i></button>
+        <div class="dots" id="certDots"></div>
       </div>
     </section>
 
@@ -563,20 +495,14 @@
     <p>© 2026 Portofolio ZinXploit. All Rights Reserved.</p>
   </footer>
 
-  <!-- Music Player -->
-  <div class="music-control" id="musicBtn" title="Play/Pause Music">
-    <i class="fas fa-music"></i>
-  </div>
-  <audio id="bgm" loop>
-    <source src="Kimetsu no Yaiba OST [Go Shinna ft Nami Nakagawa - Kamado Tanjirou no Uta] Lirik & Terjemahan.mp3" type="audio/mpeg">
-  </audio>
+  <div class="music-control" id="musicBtn"><i class="fas fa-music"></i></div>
+  <audio id="bgm" loop><source src="Kimetsu no Yaiba OST [Go Shinna ft Nami Nakagawa - Kamado Tanjirou no Uta] Lirik & Terjemahan.mp3" type="audio/mpeg"></audio>
 
   <script>
-    // ----- Theme Toggle -----
+    // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
     const sunIcon = themeToggle.querySelector('.fa-sun');
     const moonIcon = themeToggle.querySelector('.fa-moon');
-    
     function setTheme(theme) {
       if (theme === 'light') {
         document.body.classList.add('light');
@@ -589,88 +515,96 @@
       }
       localStorage.setItem('theme', theme);
     }
-
-    // Check local storage or system preference
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDark ? 'dark' : 'light');
-    }
+    if (savedTheme) setTheme(savedTheme);
+    else setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    themeToggle.addEventListener('click', () => setTheme(document.body.classList.contains('light') ? 'dark' : 'light'));
 
-    themeToggle.addEventListener('click', () => {
-      const isLight = document.body.classList.contains('light');
-      setTheme(isLight ? 'dark' : 'light');
-    });
-
-    // ----- Skill Bar Animation (Intersection Observer) -----
+    // Skills animation
     const skillsContainer = document.querySelector('.skills-container');
     const progressBars = document.querySelectorAll('.progress-bar');
-    
-    const animateSkills = () => {
-      progressBars.forEach(bar => {
-        const width = bar.getAttribute('data-width');
-        bar.style.width = width;
-      });
-    };
-    
-    const resetSkills = () => {
-      progressBars.forEach(bar => bar.style.width = '0');
-    };
-    
+    const animateSkills = () => progressBars.forEach(bar => bar.style.width = bar.getAttribute('data-width'));
+    const resetSkills = () => progressBars.forEach(bar => bar.style.width = '0');
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateSkills();
-        } else {
-          resetSkills();
-        }
-      });
+      entries.forEach(entry => entry.isIntersecting ? animateSkills() : resetSkills());
     }, { threshold: 0.2 });
-    
     if (skillsContainer) observer.observe(skillsContainer);
-    
-    // ----- Menu Mobile -----
-    function toggleMenu() {
-      document.getElementById('menuNav').classList.toggle('show');
+
+    // Carousel Sertifikat
+    const container = document.getElementById('certCarousel');
+    const slides = document.querySelectorAll('.certificate-slide');
+    const prevBtn = document.getElementById('prevCertBtn');
+    const nextBtn = document.getElementById('nextCertBtn');
+    const dotsContainer = document.getElementById('certDots');
+    let currentIndex = 0;
+    let totalSlides = slides.length;
+
+    function updateCarousel() {
+      container.style.transform = `translateX(-${currentIndex * 100}%)`;
+      document.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
     }
-    
-    // ----- Music Player -----
+    function createDots() {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (i === currentIndex) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          updateCarousel();
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+    });
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % totalSlides;
+      updateCarousel();
+    });
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    container.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+    container.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) nextBtn.click();
+      if (touchEndX > touchStartX + 50) prevBtn.click();
+    });
+    createDots();
+    updateCarousel();
+
+    // Menu Mobile
+    function toggleMenu() { document.getElementById('menuNav').classList.toggle('show'); }
+
+    // Music Player
     const bgm = document.getElementById('bgm');
     const musicBtn = document.getElementById('musicBtn');
     const musicIcon = musicBtn.querySelector('i');
     let isPlaying = false;
-    
     bgm.volume = 0.3;
-    
     function toggleMusic() {
       if (isPlaying) {
         bgm.pause();
         musicIcon.className = 'fas fa-music';
       } else {
-        bgm.play().catch(e => console.log('Autoplay prevented:', e));
+        bgm.play().catch(e => console.log('Autoplay prevented'));
         musicIcon.className = 'fas fa-pause';
       }
       isPlaying = !isPlaying;
     }
-    
     musicBtn.addEventListener('click', toggleMusic);
-    
-    // Auto-play attempt (user interaction required in modern browsers, so only on click)
-    // Add a small hint: first click anywhere will also start? optional.
     document.body.addEventListener('click', function initAudio() {
-      if (!isPlaying && bgm.paused) {
-        bgm.play().then(() => {
-          isPlaying = true;
-          musicIcon.className = 'fas fa-pause';
-        }).catch(() => {});
-      }
+      if (!isPlaying && bgm.paused) { bgm.play().then(() => { isPlaying = true; musicIcon.className = 'fas fa-pause'; }).catch(() => {}); }
       document.body.removeEventListener('click', initAudio);
     }, { once: true });
-    
-    // ----- Scroll Animation for Cards -----
-    const animatedElements = document.querySelectorAll('.project-card, .about-card, .contact-card');
+
+    // Scroll Animation
+    const animatedElements = document.querySelectorAll('.project-card, .about-card, .contact-card, .certificate-slide');
     const scrollObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -679,10 +613,7 @@
         }
       });
     }, { threshold: 0.1 });
-    animatedElements.forEach(el => {
-      el.style.opacity = '0';
-      scrollObserver.observe(el);
-    });
+    animatedElements.forEach(el => { el.style.opacity = '0'; scrollObserver.observe(el); });
   </script>
 </body>
 </html>
