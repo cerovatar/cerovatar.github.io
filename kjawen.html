@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kajian Kejawen | Spiritualitas Jawa Lestari</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1e1a0c;
+            font-family: 'Quicksand', sans-serif;
+            color: #f3e9c0;
+            line-height: 1.6;
+        }
+        /* Batik pattern overlay */
+        .batik-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23c9a03d' d='M20,20 L30,10 L40,20 L30,30 Z'/%3E%3Ccircle cx='70' cy='70' r='8' fill='%23c9a03d'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 40px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        /* Header */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: rgba(30, 20, 10, 0.7);
+            border-radius: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #c9a03d;
+            backdrop-filter: blur(4px);
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #f3c682, #d4af37);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            color: #cfb284;
+        }
+        /* Navigation */
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+        .nav-links a {
+            background: #2a2418;
+            border: 1px solid #c9a03d;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+            text-decoration: none;
+            color: #f3e9c0;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .nav-links a:hover {
+            background: #c9a03d;
+            color: #1e1a0c;
+        }
+        /* Cards */
+        .card {
+            background: rgba(30, 20, 10, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 1.5rem;
+            border: 1px solid #c9a03d;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            border-left: 5px solid #c9a03d;
+            padding-left: 1rem;
+            margin-bottom: 1.2rem;
+            color: #f3c682;
+        }
+        .card h3 {
+            color: #d4af37;
+            margin: 1rem 0 0.5rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .sub-card {
+            background: #2a2418;
+            border-radius: 1rem;
+            padding: 1rem;
+            border-left: 3px solid #c9a03d;
+        }
+        .badge {
+            background: #c9a03d;
+            color: #1e1a0c;
+            padding: 0.2rem 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        /* Tabel Neptu */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #c9a03d;
+        }
+        th {
+            color: #f3c682;
+        }
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid #c9a03d;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #8b7355;
+        }
+        @media (max-width: 700px) {
+            .hero h1 { font-size: 1.8rem; }
+            .card { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="batik-bg"></div>
+<div class="container">
+    <div class="hero">
+        <h1><i class="fas fa-moon"></i> Kawruh Jiwa • Kejawen</h1>
+        <p>Memahami spiritualitas leluhur Jawa: kearifan lokal, kebatinan, dan tradisi luhur</p>
+    </div>
+
+    <div class="nav-links">
+        <a href="#pengertian">Pengertian</a>
+        <a href="#sedulur">Sedulur Papat</a>
+        <a href="#weton">Weton & Neptu</a>
+        <a href="#tirakat">Tirakat & Puasa</a>
+        <a href="#petung">Petung & Primbon</a>
+        <a href="#meditasi">Meditasi Jawa</a>
+    </div>
+
+    <!-- 1. Pengertian Kejawen -->
+    <div id="pengertian" class="card">
+        <h2><i class="fas fa-feather-alt"></i> Apa itu Kejawen?</h2>
+        <p>Kejawen (dari kata "Jawa") adalah sistem kepercayaan, filsafat, dan praktik spiritual yang berkembang di tanah Jawa. Menggabungkan unsur animisme, dinamisme, Hindu-Buddha, dan nilai-nilai Islam yang disaring secara kultural. Inti Kejawen adalah <strong>"Manunggaling Kawula Gusti"</strong> (bersatunya hamba dengan Tuhan) dan <strong>"Hamemayu Hayuning Bawono"</strong> (memperindah keindahan dunia).</p>
+        <p style="margin-top: 0.5rem;">Ajaran Kejawen menekankan keseimbangan lahir-batin, keselarasan dengan alam, dan budi pekerti luhur (sabar, nerimo, ikhlas).</p>
+    </div>
+
+    <!-- 2. Sedulur Papat Limo Pancer -->
+    <div id="sedulur" class="card">
+        <h2><i class="fas fa-users"></i> Sedulur Papat Limo Pancer</h2>
+        <p>Dalam konsep Jawa, manusia memiliki empat "saudara" gaib yang menyertai sejak dalam kandungan, yaitu: <strong>Kakang Kawah</strong> (air ketuban), <strong>Adi Ari-ari</strong> (plasenta), <strong>Getih</strong> (darah), <strong>Puser</strong> (tali pusat). Mereka disebut sedulur papat. Ditambah "Limo Pancer" yaitu diri sendiri sebagai pusat.</p>
+        <div class="grid-2" style="margin-top: 1rem;">
+            <div class="sub-card"><span class="badge">Kakang Kawah</span><br>Simbol kesuburan, kekuatan, pelindung dari marabahaya.</div>
+            <div class="sub-card"><span class="badge">Adi Ari-ari</span><br>Simbol kasih sayang, rezeki, dan ikatan keluarga.</div>
+            <div class="sub-card"><span class="badge">Getih</span><br>Simbol semangat, keberanian, dan energi kehidupan.</div>
+            <div class="sub-card"><span class="badge">Puser</span><br>Simbol pusat keseimbangan, penghubung dunia batin.</div>
+        </div>
+        <p style="margin-top: 1rem;">Dalam ritual slametan atau ruwatan, sedulur papat diajak berdialog dan diberi sesaji agar hidup selamat.</p>
+    </div>
+
+    <!-- 3. Weton & Neptu -->
+    <div id="weton" class="card">
+        <h2><i class="fas fa-calculator"></i> Weton & Neptu (Hari Baik)</h2>
+        <p>Weton adalah kombinasi hari (7) dan pasaran (5). Setiap hari dan pasaran memiliki nilai neptu. Jumlah neptu digunakan untuk menentukan karakter, kecocokan jodoh, dan hari baik.</p>
+        <div class="grid-2">
+            <div class="sub-card">
+                <h3>Neptu Hari</h3>
+                <table>
+                    <tr><th>Hari</th><th>Neptu</th></tr>
+                    <tr><td>Minggu</td><td>5</td></tr><tr><td>Senin</td><td>4</td></tr><tr><td>Selasa</td><td>3</td></tr>
+                    <tr><td>Rabu</td><td>7</td></tr><tr><td>Kamis</td><td>8</td></tr><tr><td>Jumat</td><td>6</td></tr><tr><td>Sabtu</td><td>9</td></tr>
+                </table>
+            </div>
+            <div class="sub-card">
+                <h3>Neptu Pasaran</h3>
+                <table>
+                    <tr><th>Pasaran</th><th>Neptu</th></tr>
+                    <tr><td>Legi</td><td>5</td></tr><tr><td>Pahing</td><td>9</td></tr><tr><td>Pon</td><td>7</td></tr>
+                    <tr><td>Wage</td><td>4</td></tr><tr><td>Kliwon</td><td>8</td></tr>
+                </table>
+            </div>
+        </div>
+        <p><i class="fas fa-info-circle"></i> Contoh: Rabu Pon = 7+7=14. Dalam primbon, neptu digunakan untuk meramal watak dan kecocokan.</p>
+    </div>
+
+    <!-- 4. Tirakat & Puasa Jawa -->
+    <div id="tirakat" class="card">
+        <h2><i class="fas fa-utensils"></i> Tirakat & Puasa Jawa</h2>
+        <p>Tirakat (olah spiritual) dalam Kejawen dilakukan untuk membersihkan jiwa dan mendekatkan diri kepada Gusti. Beberapa puasa khas Jawa:</p>
+        <div class="grid-2">
+            <div class="sub-card">
+                <h3>🌸 Puasa Mutih</h3>
+                <p>Hanya makan nasi putih & air putih (tanpa lauk/garam/gula). Biasanya 1, 3, atau 7 hari. Melatih kesederhanaan dan fokus batin.</p>
+            </div>
+            <div class="sub-card">
+                <h3>🔥 Puasa Ngebleng</h3>
+                <p>Tidak makan dan tidak minum sama sekali dari subuh hingga maghrib. Lebih keras, biasanya untuk hajat tertentu.</p>
+            </div>
+            <div class="sub-card">
+                <h3>🌑 Puasa Pati Geni</h3>
+                <p>Puasa disertai tidak menyalakan api (lampu, kompor) serta tidak berbicara. Bertapa di tempat gelap.</p>
+            </div>
+            <div class="sub-card">
+                <h3>📿 Puasa Senin-Kamis (Jawa)</h3>
+                <p>Mengikuti tradisi Islam namun dijalani dengan niat kejawen: ikhlas, ngendhalikan hawa nafsu.</p>
+            </div>
+        </div>
+        <p style="margin-top: 0.8rem;"><strong>Niat puasa mutih:</strong> "Kulo niat puasa mutih, amargi ngelampahi dhawuh Gusti, kangge nyingkiraken panggawe ala lan anggayuh kasampurnaning jiwa."</p>
+    </div>
+
+    <!-- 5. Petung & Primbon -->
+    <div id="petung" class="card">
+        <h2><i class="fas fa-book"></i> Petung & Primbon (Perhitungan Jawa)</h2>
+        <p>Primbon adalah kitab yang berisi perhitungan hari baik, weton, arah rumah, serta ramalan. Beberapa konsep dasar:</p>
+        <div class="grid-2">
+            <div class="sub-card">
+                <h3>Hari Baik (Neptu)</h3>
+                <p>Untuk acara pernikahan, pindahan, atau memulai usaha. Pilih neptu total antara 7,9,11,13,15,17,19 dan hindari hari sial (Sabtu Wage, Selasa Kliwon, Jumat Legi, Minggu Pahing).</p>
+            </div>
+            <div class="sub-card">
+                <h3>Pancasuda (Rejeki)</h3>
+                <p>Berdasar arah datang tamu/penghuni rumah: Sri (murah rezeki), Lungguh (dihormati), Gendono (susah), Dumilah (sepi).</p>
+            </div>
+            <div class="sub-card">
+                <h3>Tibo (Hari Buruk)</h3>
+                <p>Menghindari tanggal-tanggal tertentu seperti Suro, Selikuran, dll. Dipercaya membawa sial.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Meditasi Jawa (Semedi) -->
+    <div id="meditasi" class="card">
+        <h2><i class="fas fa-brain"></i> Meditasi Jawa (Semedi / Tapa)</h2>
+        <p>Semedi adalah praktik hening, konsentrasi, dan mengosongkan pikiran untuk mencapai manunggaling kawula Gusti. Langkah sederhana:</p>
+        <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+            <li>Pilih tempat hening, sebaiknya malam hari atau subuh.</li>
+            <li>Duduk bersila atau bersimpuh, pejamkan mata, atur napas perlahan.</li>
+            <li>Fokuskan hati pada satu titik (dapat membayangkan cahaya atau suara).</li>
+            <li>Lafalkan wirid atau nafas "Huu... Allah..." (sesuai keyakinan).</li>
+            <li>Tahan pikiran liar, jika muncul biarkan berlalu.</li>
+            <li>Akhiri dengan rasa syukur dan diam sejenak.</li>
+        </ol>
+        <p style="margin-top: 0.8rem;"><i class="fas fa-quote-left"></i> "Wong kang semedi iku wong kang bisa ngendhaleni hawa napsu lan bisa manunggal marang cipta."</p>
+        <div class="sub-card" style="margin-top: 1rem;">
+            <i class="fas fa-torii-gate"></i> <strong>Waktu baik semedi:</strong> Malam Jumat Legi, malam 1 Suro, atau saat bulan purnama.
+        </div>
+    </div>
+
+    <!-- Penutup -->
+    <div class="card" style="text-align: center;">
+        <h2><i class="fas fa-leaf"></i> Matur Nuwun</h2>
+        <p>Ajaran Kejawen mengajarkan bahwa kita adalah bagian dari alam semesta. "Memayu Hayuning Bawono" — memperindah keindahan dunia dengan budi pekerti luhur. Semoga bermanfaat.</p>
+        <p style="margin-top: 0.5rem;">📖 <strong>Serat Wedhatama</strong> karya KGPAA Mangkunegara IV mengajarkan: <em>“Ngèlmu iku kelakone kanthi laku, lekase lawan kas, tegese kas nyantosani”</em> (ilmu itu harus diamalkan, dimulai dengan tekad, yang berarti tekad memperkuat).</p>
+    </div>
+
+    <footer>
+        <i class="fas fa-crown"></i> Kawruh Jiwa · Spiritualitas Jawa Lestari · Bhinneka Tunggal Ika<br>
+        © 2026 ZinXploit — Berdasarkan kitab primbon dan lontar Jawa.
+    </footer>
+</div>
+</body>
+</html>
