@@ -27,6 +27,31 @@
             padding: 2rem;
             box-shadow: 0 20px 35px rgba(0,0,0,0.5);
             text-align: center;
+            position: relative;
+        }
+        /* Tombol musik */
+        .music-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #2e1f1a;
+            border: 1px solid #b8860b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #f3c682;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+        .music-btn:hover {
+            background: #e09d32;
+            color: #1a0f0c;
+            transform: scale(1.05);
         }
         h2 { margin-bottom: 1rem; color: #f3c682; }
         .package-group {
@@ -140,6 +165,9 @@
 </head>
 <body>
 <div class="payment-card">
+    <div class="music-btn" id="musicToggleBtn">
+        <i class="fas fa-music"></i>
+    </div>
     <h2><i class="fas fa-coins"></i> Pilih Paket Ramalan</h2>
     <div class="package-group">
         <div class="package-btn active" data-package="basic">📜 Basic (Rp50.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik</span></div>
@@ -175,7 +203,48 @@
     <div class="small-note">*Klik "Kirim Bukti ke WA" untuk membuka WhatsApp & kirim pesan. Setelah itu, klik tombol di bawah untuk melanjutkan.</div>
 </div>
 
+<!-- Audio latar (musik) -->
+<audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a7c3c0.mp3?filename=kalimba-11985.mp3" type="audio/mpeg">
+    <!-- Fallback jika file tidak tersedia -->
+    Your browser does not support the audio element.
+</audio>
+
 <script>
+    // ========== MUSIK PLAYER ==========
+    const audio = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicToggleBtn');
+    let isMusicPlaying = false;
+
+    // Coba set volume rendah
+    audio.volume = 0.3;
+
+    function toggleMusic() {
+        if (isMusicPlaying) {
+            audio.pause();
+            musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+            musicBtn.style.background = '#2e1f1a';
+            musicBtn.style.color = '#f3c682';
+        } else {
+            audio.play().catch(e => console.log('Autoplay diblokir, klik tombol musik lagi.'));
+            // Beberapa browser tetap butuh interaksi, tapi user sudah klik tombol sehingga biasanya berhasil
+            musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            musicBtn.style.background = '#e09d32';
+            musicBtn.style.color = '#1a0f0c';
+        }
+        isMusicPlaying = !isMusicPlaying;
+    }
+
+    musicBtn.addEventListener('click', toggleMusic);
+
+    // Jika audio gagal dimuat (karena link mati), beri notifikasi lembut
+    audio.addEventListener('error', () => {
+        console.warn('Gagal memuat musik latar. Periksa koneksi atau ganti sumber audio.');
+        musicBtn.style.opacity = '0.5';
+        musicBtn.title = 'Musik tidak tersedia';
+    });
+
+    // ========== LOGIKA PEMBAYARAN (tetap sama) ==========
     let paymentMethod = 'seabank';
     let selectedPackage = 'basic';
     let buktiDataURL = null;
@@ -271,28 +340,28 @@
     
     // Tombol lanjut
     document.getElementById('lanjutBtn').addEventListener('click', () => {
-    const amount = parseInt(document.getElementById('amount').value);
-    const minAmount = selectedPackage === 'basic' ? 50000 : 100000;
-    if(amount < minAmount) {
-        alert(`Minimal pembayaran Rp ${minAmount.toLocaleString('id-ID')}`);
-        return;
-    }
-    if(!buktiDataURL) {
-        alert("Bukti belum diupload.");
-        return;
-    }
-    localStorage.setItem('zinxploit_payment_done', 'true');
-    localStorage.setItem('payment_amount', amount);
-    localStorage.setItem('payment_method', paymentMethod);
-    localStorage.setItem('payment_package', selectedPackage);
-    
-    // 🔁 Arahkan sesuai paket
-    if (selectedPackage === 'basic') {
-        window.location.href = 'neptubsc.html';
-    } else {
-        window.location.href = 'neptuprem.html';
-    }
-});
+        const amount = parseInt(document.getElementById('amount').value);
+        const minAmount = selectedPackage === 'basic' ? 50000 : 100000;
+        if(amount < minAmount) {
+            alert(`Minimal pembayaran Rp ${minAmount.toLocaleString('id-ID')}`);
+            return;
+        }
+        if(!buktiDataURL) {
+            alert("Bukti belum diupload.");
+            return;
+        }
+        localStorage.setItem('zinxploit_payment_done', 'true');
+        localStorage.setItem('payment_amount', amount);
+        localStorage.setItem('payment_method', paymentMethod);
+        localStorage.setItem('payment_package', selectedPackage);
+        
+        // Arahkan sesuai paket
+        if (selectedPackage === 'basic') {
+            window.location.href = 'neptubsc.html';
+        } else {
+            window.location.href = 'neptuprem.html';
+        }
+    });
 
     updateDetail();
 </script>
