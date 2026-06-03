@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* (Semua style sama persis seperti sebelumnya, tidak diubah agar hemat tempat) */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: linear-gradient(145deg, #1a0f0c 0%, #2c1a1a 100%);
@@ -80,6 +79,32 @@
       margin: 0 auto;
       padding: 1.5rem;
     }
+    /* Gaya tombol musik floating di pojok kanan bawah */
+    .music-fab {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #2e1f1a;
+      border: 1px solid #b8860b;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #f3c682;
+      font-size: 1.6rem;
+      z-index: 1100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .music-fab:hover {
+      background: #e09d32;
+      color: #1a0f0c;
+      transform: scale(1.05);
+    }
+    /* sisanya sama seperti sebelumnya (card, form, dll) */
     .mystic-card {
       background: rgba(20, 12, 28, 0.65);
       backdrop-filter: blur(12px);
@@ -238,6 +263,7 @@
     @media (max-width: 700px) {
       h1 { font-size: 1.8rem; }
       .mystic-card { padding: 1.2rem; }
+      .music-fab { width: 45px; height: 45px; font-size: 1.3rem; bottom: 1rem; right: 1rem; }
     }
     .glow { animation: fadeGlow 0.6s ease; }
     @keyframes fadeGlow {
@@ -366,14 +392,54 @@
     <footer>© Created by ZinXploit 2026 - update</footer>
   </div>
 
+  <!-- Tombol musik floating di bawah (pojok kanan) -->
+  <div class="music-fab" id="musicToggleBtn">
+    <i class="fas fa-music"></i>
+  </div>
+
+  <!-- Audio latar (musik) -->
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a7c3c0.mp3?filename=kalimba-11985.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
   <script>
-    // ===================== DATA RAMALAN (TIDAK BERUBAH) =====================
+    // ========== MUSIK PLAYER ==========
+    const audio = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicToggleBtn');
+    let isMusicPlaying = false;
+
+    audio.volume = 0.3;
+
+    function toggleMusic() {
+      if (isMusicPlaying) {
+        audio.pause();
+        musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+        musicBtn.style.background = '#2e1f1a';
+        musicBtn.style.color = '#f3c682';
+      } else {
+        audio.play().catch(e => console.log('Autoplay diblokir, klik tombol musik lagi.'));
+        musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        musicBtn.style.background = '#e09d32';
+        musicBtn.style.color = '#1a0f0c';
+      }
+      isMusicPlaying = !isMusicPlaying;
+    }
+
+    musicBtn.addEventListener('click', toggleMusic);
+
+    audio.addEventListener('error', () => {
+      console.warn('Gagal memuat musik latar.');
+      musicBtn.style.opacity = '0.5';
+      musicBtn.title = 'Musik tidak tersedia';
+    });
+
+    // ========== DATA RAMALAN (sama seperti sebelumnya) ==========
     const neptuHari = [5,4,3,7,8,6,9];
     const neptuPasaran = [5,9,7,4,8];
     const namaHari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
     const namaPasaran = ["Legi","Pahing","Pon","Wage","Kliwon"];
     
-    // Tanggal Jawa (simbolis)
     const javaneseDates = {
       "Minggu,Legi": "15 Rejeb 1947", "Minggu,Pahing": "7 Sapar 1946", "Minggu,Pon": "23 Mulud 1948",
       "Minggu,Wage": "11 Bakda Mulud 1945", "Minggu,Kliwon": "29 Jumadilakir 1949",
@@ -396,24 +462,18 @@
       return javaneseDates[key] || "10 Sura 1946 (perkiraan)";
     }
     
-    // ========== PERBAIKAN PERHITUNGAN WETON ==========
-    // Menggunakan patokan 1 Januari 2020 = Rabu (index 3) dan Legi (index 0)
-    // Ini adalah patokan yang lebih akurat berdasarkan referensi kalender Jawa.
-    const referenceDate = new Date(2020, 0, 1); // 1 Januari 2020
-    const referenceDayIndex = 3;      // Rabu
-    const referencePasaranIndex = 0;  // Legi
+    const referenceDate = new Date(2020, 0, 1);
+    const referenceDayIndex = 3;
+    const referencePasaranIndex = 0;
     
     function getWetonFromDate(date) {
-      // Membuat tanggal tanpa waktu (UTC) untuk menghindari masalah zona waktu
       const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
       const refDate = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate());
       const diffDays = Math.floor((targetDate - refDate) / (1000 * 60 * 60 * 24));
-      
       let dayIndex = (referenceDayIndex + diffDays) % 7;
       if (dayIndex < 0) dayIndex += 7;
       let pasaranIndex = (referencePasaranIndex + diffDays) % 5;
       if (pasaranIndex < 0) pasaranIndex += 5;
-      
       return { dayIndex, pasaranIndex, dayName: namaHari[dayIndex], pasaranName: namaPasaran[pasaranIndex] };
     }
     
@@ -427,7 +487,6 @@
       }
     }
     
-    // Event konversi
     document.getElementById('konversiPriaBtn').addEventListener('click', () => {
       const tglInput = document.getElementById('tglLahirPria').value;
       if (!tglInput) { alert("Pilih tanggal lahir terlebih dahulu."); return; }
@@ -450,7 +509,6 @@
       alert(`Weton berhasil diisi: ${hari} ${pasaran}`);
     });
     
-    // ========== SISANYA SAMA (RAMALAN, LINTRIK, TANGGAL BAIK) ==========
     const kategori = {
       1: { name: "🌿 PEGAT", desc: "Hubungan rentan konflik berat dan berpotensi berakhir di tengah jalan. Perlu komunikasi ekstra dan saling memaafkan.", saran: "Jaga komitmen dan hindari campur tangan pihak ketiga. Rutin melakukan 'semedi bersama' bisa memperkuat ikatan." },
       2: { name: "👑 RATU", desc: "Pasangan sangat harmonis, dihormati, dan bakal menjadi pasangan sejati. Kehidupan rumah tangga akan bahagia.", saran: "Weton ini sangat langka, pertahankan dengan saling menghargai dan syukuri." },
