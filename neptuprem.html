@@ -16,7 +16,7 @@
       padding: 0;
       position: relative;
     }
-    /* ========== BACKGROUND MOTIF BATIK JAWA ========== */
+    /* Background motif batik */
     body::before {
       content: '';
       position: fixed;
@@ -37,7 +37,6 @@
       position: relative;
       z-index: 1;
     }
-    /* sisanya sama seperti sebelumnya (navbar, card, form, dll) */
     .navbar {
       background: rgba(20, 12, 28, 0.85);
       backdrop-filter: blur(12px);
@@ -76,6 +75,26 @@
       cursor: pointer;
       color: #e09d32;
     }
+    /* Tombol WA di navbar */
+    .wa-nav-btn {
+      background: #25D366;
+      border: none;
+      border-radius: 40px;
+      padding: 0.4rem 1rem;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      margin-left: 1rem;
+    }
+    .wa-nav-btn:hover {
+      background: #1da851;
+      transform: scale(0.97);
+    }
     @media (max-width: 768px) {
       .nav-links {
         position: fixed;
@@ -96,6 +115,31 @@
       }
       .nav-links.active { left: 0; }
       .hamburger { display: block; }
+      .wa-nav-btn { margin-left: 0.5rem; padding: 0.3rem 0.7rem; font-size: 0.7rem; }
+    }
+    /* Floating WA Button */
+    .wa-float {
+      position: fixed;
+      bottom: 6rem;
+      right: 1.5rem;
+      background: #25D366;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.5);
+      transition: 0.2s;
+      z-index: 1050;
+      font-size: 2rem;
+      color: white;
+      text-decoration: none;
+    }
+    .wa-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 25px rgba(37, 211, 102, 0.8);
     }
     .music-fab {
       position: fixed;
@@ -357,6 +401,7 @@
       .music-fab { width: 45px; height: 45px; font-size: 1.3rem; bottom: 1rem; right: 1rem; }
       .tarot-card { width: 180px; }
       .tarot-img { font-size: 4rem; }
+      .wa-float { width: 50px; height: 50px; font-size: 1.6rem; bottom: 5.5rem; right: 1rem; }
     }
     .glow { animation: fadeGlow 0.6s ease; }
     @keyframes fadeGlow {
@@ -421,15 +466,22 @@
   </style>
 </head>
 <body>
-  <!-- konten sama persis dengan sebelumnya -->
   <nav class="navbar">
     <div class="logo">ZinXploit</div>
-    <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <!-- Tombol WA di navbar -->
+      <a href="https://wa.me/6285735605012" target="_blank" class="wa-nav-btn">
+        <i class="fab fa-whatsapp"></i> <span class="hide-mobile">Konsultasi</span>
+      </a>
+      <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+    </div>
     <ul class="nav-links" id="navLinks">
       <li><a href="home.html">Beranda</a></li>
-      <li><a href="neptu.html">Ramal Jodoh</a></li>
+      <li><a href="index.html">Ramal Jodoh</a></li>
+      <li><a href="https://wa.me/6285735605012" target="_blank"><i class="fab fa-whatsapp"></i> WA</a></li>
     </ul>
   </nav>
+
   <div class="container">
     <div class="mystic-card">
       <h1><i class="fas fa-moon stars"></i> WETON TAROT + LINTRIK + TANGGAL PERNIKAHAN <i class="fas fa-hand-sparkles"></i></h1>
@@ -512,8 +564,18 @@
         <div id="tanggalHasilArea" class="wedding-date-box" style="margin-top: 1rem;"><i class="fas fa-hourglass-half"></i> Silakan klik cari untuk mendapatkan rekomendasi tanggal pernikahan berdasarkan weton Anda.</div>
       </div>
     </div>
-    <footer>© Created by ZinXploit 2026 - update | <span id="versionInfo">v2.0</span></footer>
+    <footer>
+      © Created by ZinXploit 2026 - update | <span id="versionInfo">v2.0</span> |
+      <a href="https://wa.me/6285735605012" target="_blank" style="color: #25D366; text-decoration: none;">
+        <i class="fab fa-whatsapp"></i> Hubungi Kami
+      </a>
+    </footer>
   </div>
+
+  <!-- Floating WhatsApp Button -->
+  <a href="https://wa.me/6285735605012" target="_blank" class="wa-float" title="Chat WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 
   <!-- Tombol musik -->
   <div class="music-fab" id="musicToggleBtn">
@@ -523,7 +585,7 @@
     <source src="gending-temanten-adat-jawa-kebo-giro-128-ytshorts.savetube.me.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- SCRIPT (sama persis seperti sebelumnya, tidak perlu diubah) -->
+  <!-- SCRIPT (sama persis seperti sebelumnya) -->
   <script>
     // ========== MUSIK ==========
     const audio = document.getElementById('bgMusic');
@@ -610,7 +672,6 @@
       7:{name:"🕊️ SUJANAN",desc:"Rawan perselingkuhan dan pihak ketiga. Perlu pengawasan dan komitmen kuat.",saran:"Transparansi dalam segala hal dan perkuat kepercayaan."}
     };
 
-    // Tarot dengan pesan yang lebih dalam
     const tarotDeck = [
       {name:"The Lovers",simbol:"💑",arti:"Pilihan dan ikatan suci",pesan:"Cinta sejati membutuhkan komitmen dan kepercayaan. Hubungan ini memiliki potensi besar jika dirawat dengan tulus."},
       {name:"Two of Cups",simbol:"🏺❤️",arti:"Kesepakatan hati",pesan:"Ada keseimbangan emosional yang kuat. Kalian saling memahami tanpa banyak kata."},
