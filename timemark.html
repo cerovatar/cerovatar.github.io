@@ -6,783 +6,347 @@
     <title>GeoTime Foto Mark</title>
     <style>
         :root {
-            --primary: #00e5ff;
-            --primary-dark: #0097a7;
-            --bg: #0a0e14;
-            --surface: #141a24;
-            --card: #1c2533;
-            --text: #e8edf5;
-            --text-muted: #8899aa;
+            --primary: #00ffcc;
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --text: #ffffff;
             --danger: #ff4757;
-            --success: #2ed573;
-            --shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        /* ===== HEADER ===== */
         header {
-            padding: 12px 18px;
-            background: var(--surface);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            flex-shrink: 0;
-            z-index: 10;
+            padding: 1rem; background: var(--surface); display: flex; justify-content: space-between; align-items: center; z-index: 10;
+            border-bottom: 1px solid #333;
         }
-        .logo {
-            font-weight: 700;
-            font-size: 1.1rem;
-            letter-spacing: 0.3px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .logo .icon { font-size: 1.4rem; }
-        .logo .highlight { color: var(--primary); }
+        .logo { font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); }
+        .status-dot.active { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
 
-        .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--danger);
-            transition: 0.3s;
-            box-shadow: 0 0 6px rgba(255,71,87,0.3);
-        }
-        .status-dot.active {
-            background: var(--success);
-            box-shadow: 0 0 12px rgba(46,213,115,0.5);
-        }
+        main { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: #000; }
 
-        /* ===== MAIN VIEWPORT ===== */
-        main {
-            flex: 1;
-            position: relative;
-            background: #000;
-            overflow: hidden;
-        }
+        video { width: 100%; height: 100%; object-fit: cover; display: none; }
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
+        .camera-placeholder {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px; z-index: 1;
         }
+        .camera-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+        .error-msg { color: var(--danger); font-weight: bold; margin-bottom: 10px; }
+        .info-msg { color: #aaa; font-size: 0.9rem; max-width: 400px; line-height: 1.5; }
 
         canvas { display: none; }
 
-        /* ===== PLACEHOLDER / ERROR ===== */
-        .placeholder {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 30px;
-            background: radial-gradient(circle at center, #141a24, #0a0e14);
-            z-index: 2;
+        /* HUD Overlay — tampilan jam & lokasi di layar */
+        .camera-overlay {
+            position: absolute; bottom: 30px; left: 20px; right: 20px; pointer-events: none; z-index: 5;
+            display: flex; flex-direction: column; align-items: flex-start;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
         }
-        .placeholder .big-icon { font-size: 4rem; opacity: 0.6; margin-bottom: 16px; }
-        .placeholder .title { font-size: 1.2rem; font-weight: 600; color: var(--text-muted); }
-        .placeholder .sub { font-size: 0.9rem; color: #556; margin-top: 6px; max-width: 360px; line-height: 1.5; }
-        .placeholder .error { color: var(--danger); font-weight: 600; margin-top: 8px; }
-        .placeholder .btn-retry {
-            margin-top: 20px;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 10px 32px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: none;
+        .hud-time {
+            font-size: 1.8rem; font-weight: 700; color: #fff; background: rgba(0,0,0,0.5);
+            padding: 6px 16px; border-radius: 30px; backdrop-filter: blur(4px);
+            border-left: 4px solid var(--primary);
+            margin-bottom: 6px;
         }
-
-        /* ===== HUD OVERLAY ===== */
-        .hud {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 16px 18px;
-            pointer-events: none;
-            z-index: 5;
-            display: none;
-            background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
-        }
-
-        .hud-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
         .hud-location {
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 12px;
-            padding: 10px 14px;
-            border: 1px solid rgba(255,255,255,0.06);
-            min-width: 140px;
-            flex: 1;
-        }
-        .hud-location .label {
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--primary);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .hud-location .coords {
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-top: 2px;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.3px;
-        }
-        .hud-location .address {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 2px;
+            font-size: 0.9rem; color: #ddd; background: rgba(0,0,0,0.5);
+            padding: 6px 16px; border-radius: 30px; backdrop-filter: blur(4px);
+            max-width: 90%;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
-        }
-        .hud-location .status-text {
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-        .hud-location .status-text .loading {
-            animation: pulse 1.2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
         }
 
-        .hud-clock {
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 12px;
-            padding: 8px 16px;
-            border: 1px solid rgba(255,255,255,0.06);
-            text-align: center;
-            min-width: 100px;
-            flex-shrink: 0;
-        }
-        .hud-clock .time {
-            font-size: 1.5rem;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-            color: #fff;
-            line-height: 1.2;
-        }
-        .hud-clock .date {
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 0.8px;
-        }
-
-        /* ===== BOTTOM CONTROLS ===== */
         .controls {
-            background: var(--surface);
-            padding: 16px 20px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-shrink: 0;
-            border-top: 1px solid rgba(255,255,255,0.06);
+            background: var(--surface); padding: 20px; display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 10;
         }
-
         .btn-shutter {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.3);
-            background: transparent;
-            position: relative;
-            cursor: pointer;
-            transition: 0.2s;
-            padding: 0;
-            flex-shrink: 0;
+            width: 70px; height: 70px; border-radius: 50%; border: 4px solid white; background: transparent; position: relative; padding: 0;
         }
         .btn-shutter::after {
-            content: '';
-            position: absolute;
-            inset: 6px;
-            border-radius: 50%;
-            background: #fff;
-            transition: 0.15s;
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 54px; height: 54px; background: white; border-radius: 50%; transition: 0.2s;
         }
-        .btn-shutter:active::after { background: var(--primary); transform: scale(0.92); }
-        .btn-shutter:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
+        .btn-shutter:active::after { background: var(--primary); }
+        .btn-shutter:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        .btn-shutter .inner-ring {
-            position: absolute;
-            inset: -2px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            transition: 0.3s;
-        }
-        .btn-shutter.active .inner-ring {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(0,229,255,0.2);
-        }
-
-        .btn-extra {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: var(--text-muted);
-            padding: 8px 14px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-extra:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-        }
+        .btn { border: none; outline: none; cursor: pointer; background: #333; color: white; padding: 10px 18px; border-radius: 8px; font-weight: 600; }
+        .btn-retry { background: var(--primary); color: #000; display: none; }
 
         .flash {
-            position: absolute;
-            inset: 0;
-            background: white;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 20;
-            transition: opacity 0.05s;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 20;
         }
 
-        /* ===== MODAL PREVIEW ===== */
+        /* Modal Preview */
         .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 50;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92);
+            z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center;
         }
         .modal.open { display: flex; }
-        .modal img {
-            max-width: 100%;
-            max-height: 70vh;
-            border-radius: 16px;
-            box-shadow: 0 0 40px rgba(0,229,255,0.1);
-            object-fit: contain;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .modal-actions .btn {
-            padding: 12px 28px;
-            border-radius: 30px;
-            border: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-close-modal {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-        }
-        .btn-close-modal:hover { background: rgba(255,255,255,0.15); }
-        .btn-save-modal {
-            background: var(--primary);
-            color: #000;
-            text-decoration: none;
-        }
-        .btn-save-modal:hover { background: #00b8d4; transform: scale(1.02); }
+        .modal img { max-width: 90%; max-height: 70vh; border-radius: 8px; box-shadow: 0 0 30px var(--primary); margin-bottom: 20px; }
+        .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .btn-save { background: var(--primary); color: #000; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; }
+        .btn-close { background: #333; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 480px) {
-            .hud-clock .time { font-size: 1.2rem; }
-            .hud-location .coords { font-size: 0.75rem; }
-            .hud-location .address { max-width: 120px; font-size: 0.6rem; }
-            .btn-shutter { width: 64px; height: 64px; }
-            .controls { padding: 12px 16px 16px; gap: 12px; }
-        }
-        @media (orientation: landscape) and (max-height: 480px) {
-            .hud { padding: 8px 14px; }
-            .hud-location { padding: 6px 12px; }
-            .hud-clock { padding: 4px 12px; }
-            .hud-clock .time { font-size: 1rem; }
-            .hud-location .coords { font-size: 0.65rem; }
-            .btn-shutter { width: 56px; height: 56px; }
-            .controls { padding: 8px 16px; }
+        @media (max-width: 600px) {
+            .hud-time { font-size: 1.2rem; padding: 4px 12px; }
+            .hud-location { font-size: 0.75rem; padding: 4px 12px; max-width: 95%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
     <header>
-        <div class="logo">
-            <span class="icon">📸</span>
-            <span>Geo<span class="highlight">Time</span> Mark</span>
-        </div>
-        <div class="status-badge">
-            <span id="cam-status">Menyala</span>
-            <span class="status-dot" id="cam-dot"></span>
+        <div class="logo"><span>📸</span> GeoTime Mark</div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem;">
+            <span id="cam-status">Kamera Off</span>
+            <div class="status-dot" id="cam-dot"></div>
         </div>
     </header>
 
-    <!-- MAIN -->
     <main>
-        <!-- Video & Canvas -->
+        <div class="camera-placeholder" id="placeholder">
+            <div class="camera-icon">📷</div>
+            <div id="error-display" class="error-msg"></div>
+            <div id="info-display" class="info-msg">Menunggu inisialisasi kamera...</div>
+            <button class="btn btn-retry" id="btn-retry-cam" onclick="startCamera()">Coba Lagi</button>
+        </div>
+
         <video id="video" autoplay playsinline muted></video>
         <canvas id="canvas"></canvas>
         <div class="flash" id="flash"></div>
 
-        <!-- Placeholder -->
-        <div class="placeholder" id="placeholder">
-            <div class="big-icon">📷</div>
-            <div class="title" id="place-title">Kamera Tidak Aktif</div>
-            <div class="sub" id="place-sub">Menunggu izin akses kamera...</div>
-            <div class="error" id="place-error"></div>
-            <button class="btn-retry" id="btn-retry-cam">Coba Lagi</button>
-        </div>
-
-        <!-- HUD -->
-        <div class="hud" id="hud">
-            <div class="hud-top">
-                <div class="hud-location" id="hud-location">
-                    <div class="label">📍 Lokasi</div>
-                    <div class="coords" id="geo-coords">--</div>
-                    <div class="address" id="geo-address">--</div>
-                    <div class="status-text" id="geo-status"><span class="loading">Mencari sinyal GPS...</span></div>
-                </div>
-                <div class="hud-clock">
-                    <div class="time" id="clock-time">00:00</div>
-                    <div class="date" id="clock-date">--</div>
-                </div>
-            </div>
+        <!-- HUD Overlay -->
+        <div class="camera-overlay" id="hud" style="display:none;">
+            <div class="hud-time" id="hud-clock">--:--:--</div>
+            <div class="hud-location" id="hud-location">📍 Mencari lokasi...</div>
         </div>
     </main>
 
-    <!-- CONTROLS -->
     <div class="controls">
-        <button class="btn-extra" id="btn-flip" title="Flip camera">🔄</button>
-        <button class="btn-shutter" id="shutter-btn" disabled>
-            <span class="inner-ring"></span>
-        </button>
-        <button class="btn-extra" id="btn-info" title="Info">ℹ️</button>
+        <button class="btn-shutter" id="shutter-btn" disabled></button>
     </div>
 
-    <!-- MODAL PREVIEW -->
+    <!-- Modal Preview -->
     <div class="modal" id="modal">
-        <img id="preview-img" alt="Hasil foto">
+        <img id="preview-img" alt="Hasil">
         <div class="modal-actions">
-            <button class="btn btn-close-modal" onclick="closeModal()">✕ Tutup</button>
-            <a id="dl-link" class="btn btn-save-modal" download>⬇ Simpan Foto</a>
+            <button class="btn-close" onclick="closeModal()">Tutup</button>
+            <a id="dl-link" class="btn-save">⬇️ Simpan Foto</a>
         </div>
     </div>
 
     <script>
-        // =============================================================
-        // DOM REFS
-        // =============================================================
+        // ============ DOM ============
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const shutterBtn = document.getElementById('shutter-btn');
-        const flash = document.getElementById('flash');
-
         const placeholder = document.getElementById('placeholder');
-        const placeTitle = document.getElementById('place-title');
-        const placeSub = document.getElementById('place-sub');
-        const placeError = document.getElementById('place-error');
-        const btnRetry = document.getElementById('btn-retry-cam');
-
+        const errorDisplay = document.getElementById('error-display');
+        const infoDisplay = document.getElementById('info-display');
         const hud = document.getElementById('hud');
-        const geoCoords = document.getElementById('geo-coords');
-        const geoAddress = document.getElementById('geo-address');
-        const geoStatus = document.getElementById('geo-status');
-        const clockTime = document.getElementById('clock-time');
-        const clockDate = document.getElementById('clock-date');
+        const btnRetryCam = document.getElementById('btn-retry-cam');
         const camDot = document.getElementById('cam-dot');
         const camStatus = document.getElementById('cam-status');
+        const hudClock = document.getElementById('hud-clock');
+        const hudLocation = document.getElementById('hud-location');
 
-        const modal = document.getElementById('modal');
-        const previewImg = document.getElementById('preview-img');
-        const dlLink = document.getElementById('dl-link');
-
-        // =============================================================
-        // STATE
-        // =============================================================
         let stream = null;
         let currentPos = null;
-        let currentAddress = '';
-        let facingMode = 'environment';
-        let isCameraReady = false;
-        let geoWatchId = null;
+        let currentAddress = 'Mencari alamat...';
 
-        // =============================================================
-        // JAM REAL-TIME (tanpa setInterval berlebihan)
-        // =============================================================
-        function updateClock() {
-            const now = new Date();
-            const hh = String(now.getHours()).padStart(2, '0');
-            const mm = String(now.getMinutes()).padStart(2, '0');
-            const ss = String(now.getSeconds()).padStart(2, '0');
-            clockTime.textContent = `${hh}:${mm}:${ss}`;
-
-            const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-            const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-            const dayName = days[now.getDay()];
-            const dateNum = now.getDate();
-            const monthName = months[now.getMonth()];
-            const year = now.getFullYear();
-            clockDate.textContent = `${dayName}, ${dateNum} ${monthName} ${year}`;
-        }
-        updateClock();
-        setInterval(updateClock, 1000);
-
-        // =============================================================
-        // KAMERA
-        // =============================================================
+        // ============ KAMERA ============
         async function startCamera() {
-            // Reset UI
             placeholder.style.display = 'flex';
             video.style.display = 'none';
             hud.style.display = 'none';
             shutterBtn.disabled = true;
-            placeError.textContent = '';
-            placeTitle.textContent = 'Memulai Kamera...';
-            placeSub.textContent = 'Meminta akses ke kamera perangkat.';
-            btnRetry.style.display = 'none';
-            camDot.className = 'status-dot';
-            camStatus.textContent = 'Memulai...';
+            errorDisplay.innerText = '';
+            infoDisplay.innerText = 'Meminta akses kamera...';
+            btnRetryCam.style.display = 'none';
 
-            // Cek HTTPS
             if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                showPlaceholder(
-                    '🔒 Keamanan',
-                    'Kamera hanya bisa diakses lewat HTTPS.<br>Gunakan localhost atau hosting (GitHub Pages, Netlify).',
-                    'Aman'
-                );
+                showError("Keamanan Browser", "Kamera tidak bisa diakses karena bukan HTTPS.<br>Gunakan localhost atau hosting dengan HTTPS.");
                 return;
             }
-
-            // Cek support
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                showPlaceholder(
-                    '⚠️ Browser Tidak Support',
-                    'Browser Anda tidak mendukung akses kamera.<br>Gunakan Chrome, Edge, atau Safari terbaru.',
-                    'Error'
-                );
+                showError("Browser Tidak Support", "Browser Anda tidak mendukung API MediaDevices.");
                 return;
             }
 
             try {
-                const constraints = {
-                    video: {
-                        facingMode: facingMode,
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 }
-                    },
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
                     audio: false
-                };
-
-                stream = await navigator.mediaDevices.getUserMedia(constraints);
+                });
                 video.srcObject = stream;
                 video.onloadedmetadata = () => {
                     video.play();
-                    isCameraReady = true;
                     placeholder.style.display = 'none';
                     video.style.display = 'block';
                     hud.style.display = 'block';
                     shutterBtn.disabled = false;
-                    camDot.className = 'status-dot active';
-                    camStatus.textContent = 'Live';
-                    // Mulai GPS
-                    startGeo();
+                    camDot.classList.add('active');
+                    camStatus.innerText = "Live";
+                    initGeo();
                 };
             } catch (err) {
-                console.error('Camera error:', err);
+                console.error(err);
                 handleCameraError(err);
             }
         }
 
         function handleCameraError(err) {
-            let title = '⚠️ Gagal Akses Kamera';
-            let sub = '';
-
-            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                sub = 'Anda menolak izin kamera.<br>Refresh halaman dan klik <strong>"Izinkan"</strong> pada pop-up browser.';
-            } else if (err.name === 'NotFoundError') {
-                sub = 'Tidak ditemukan kamera di perangkat ini.<br>Pastikan kamera terpasang dan aktif.';
-            } else if (err.name === 'NotReadableError') {
-                sub = 'Kamera digunakan oleh aplikasi lain.<br>Tutup aplikasi (Zoom/Meet/Instagram) lalu coba lagi.';
-            } else {
-                sub = `Error: ${err.message}`;
-            }
-            showPlaceholder('📷 ' + title, sub, 'Error');
-            btnRetry.style.display = 'inline-block';
-            camDot.className = 'status-dot';
-            camStatus.textContent = 'Error';
+            let msg = '';
+            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')
+                msg = 'Anda menolak akses kamera. Refresh dan izinkan.';
+            else if (err.name === 'NotFoundError')
+                msg = 'Tidak ada kamera terdeteksi.';
+            else if (err.name === 'NotReadableError')
+                msg = 'Kamera digunakan aplikasi lain. Tutup Zoom/Meet.';
+            else
+                msg = err.message;
+            showError('Error Kamera', msg);
         }
 
-        function showPlaceholder(title, sub, type) {
+        function showError(title, msg) {
             placeholder.style.display = 'flex';
             video.style.display = 'none';
-            hud.style.display = 'none';
-            shutterBtn.disabled = true;
-            placeTitle.textContent = title;
-            placeSub.innerHTML = sub;
-            placeError.textContent = type === 'Error' ? 'Coba lagi atau periksa pengaturan.' : '';
-            if (type === 'Error') {
-                placeTitle.style.color = 'var(--danger)';
-            } else {
-                placeTitle.style.color = '';
-            }
+            errorDisplay.innerText = title;
+            infoDisplay.innerHTML = msg;
+            btnRetryCam.style.display = 'inline-block';
+            camDot.classList.remove('active');
+            camStatus.innerText = "Error";
         }
 
-        // =============================================================
-        // GPS / LOKASI
-        // =============================================================
-        function startGeo() {
-            if (geoWatchId) navigator.geolocation.clearWatch(geoWatchId);
-
+        // ============ GPS & ALAMAT LENGKAP ============
+        function initGeo() {
             if (!navigator.geolocation) {
-                geoStatus.innerHTML = '❌ GPS tidak didukung browser.';
+                hudLocation.innerText = '⚠️ GPS tidak didukung.';
                 return;
             }
-
-            geoStatus.innerHTML = '<span class="loading">🔍 Mendapatkan lokasi...</span>';
-            geoCoords.textContent = '--';
-            geoAddress.textContent = '--';
-
-            geoWatchId = navigator.geolocation.watchPosition(
-                (pos) => {
-                    currentPos = pos;
-                    const { latitude, longitude, accuracy } = pos.coords;
-                    geoCoords.textContent = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-                    geoStatus.innerHTML = `🟢 Akurasi ±${Math.round(accuracy || 0)}m`;
-
-                    // Reverse geocode
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=16`)
-                        .then(r => r.json())
-                        .then(data => {
-                            if (data.display_name) {
-                                const parts = data.display_name.split(',').slice(0, 3).join(',');
-                                currentAddress = parts;
-                                geoAddress.textContent = parts;
-                            }
-                        })
-                        .catch(() => { geoAddress.textContent = 'Alamat tidak tersedia'; });
-                },
-                (err) => {
-                    console.warn('GPS error:', err);
-                    geoStatus.innerHTML = `⚠️ ${err.message}`;
-                    if (err.code === 1) {
-                        geoStatus.innerHTML = '⚠️ Izin GPS ditolak. Aktifkan di pengaturan perangkat.';
+            navigator.geolocation.watchPosition(async (pos) => {
+                currentPos = pos;
+                const { latitude, longitude } = pos.coords;
+                // Update HUD lokasi dengan alamat lengkap
+                try {
+                    const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1&zoom=18`);
+                    const data = await resp.json();
+                    if (data.display_name) {
+                        currentAddress = data.display_name; // alamat lengkap tanpa potongan
+                        hudLocation.innerText = `📍 ${currentAddress}`;
+                    } else {
+                        hudLocation.innerText = `📍 ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
                     }
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 60000
+                } catch (e) {
+                    hudLocation.innerText = `📍 ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
                 }
-            );
+            }, (e) => {
+                hudLocation.innerText = '⚠️ Gagal dapat lokasi.';
+            }, { enableHighAccuracy: true, timeout: 10000 });
         }
 
-        // =============================================================
-        // AMBIL FOTO
-        // =============================================================
-        shutterBtn.addEventListener('click', () => {
-            if (!isCameraReady) {
-                alert('Kamera belum siap, tunggu sebentar.');
-                return;
-            }
+        // ============ JAM REAL-TIME ============
+        function updateClock() {
+            const now = new Date();
+            const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][now.getDay()];
+            const tgl = now.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+            const jam = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+            hudClock.innerText = `${hari}, ${tgl}  •  ${jam}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ============ AMBIL FOTO ============
+        shutterBtn.onclick = () => {
             if (!currentPos) {
-                alert('Tunggu lokasi GPS ditemukan (lihat di layar).');
+                alert('Tunggu sampai lokasi terdeteksi (tulisan lokasi muncul di layar).');
                 return;
             }
 
             // Flash
-            flash.style.opacity = 1;
-            setTimeout(() => { flash.style.opacity = 0; }, 120);
+            const flash = document.getElementById('flash');
+            flash.style.opacity = '1';
+            setTimeout(() => flash.style.opacity = '0', 120);
 
-            // Capture
-            const w = video.videoWidth || 1280;
-            const h = video.videoHeight || 720;
-            canvas.width = w;
-            canvas.height = h;
             const ctx = canvas.getContext('2d');
-
-            // Gambar video
-            ctx.drawImage(video, 0, 0, w, h);
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
 
             // ---- Watermark ----
-            const boxHeight = 120;
-            const margin = 20;
-            const yStart = h - boxHeight - margin;
+            const pad = 30;
+            const boxH = 140;
+            const w = canvas.width, h = canvas.height;
 
-            // Background transparan
+            // Background transparan di bawah
             ctx.fillStyle = 'rgba(0,0,0,0.65)';
-            ctx.shadowColor = 'rgba(0,0,0,0.4)';
-            ctx.shadowBlur = 20;
-            ctx.beginPath();
-            ctx.roundRect(margin, yStart, w - 2*margin, boxHeight, 12);
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            ctx.fillRect(0, h - boxH, w, boxH);
 
             // Garis aksen atas
-            ctx.fillStyle = '#00e5ff';
-            ctx.beginPath();
-            ctx.roundRect(margin, yStart, w - 2*margin, 4, 2);
-            ctx.fill();
+            ctx.fillStyle = '#00ffcc';
+            ctx.fillRect(0, h - boxH, w, 4);
 
-            // Waktu
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '600 28px "Segoe UI", system-ui, sans-serif';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
-            ctx.fillText(`🕒 ${timeStr}`, margin + 20, yStart + 12);
 
-            ctx.font = '400 16px "Segoe UI", system-ui, sans-serif';
-            ctx.fillStyle = '#ccddee';
-            ctx.fillText(dateStr, margin + 20, yStart + 50);
+            // ---------- KIRI BAWAH: Tanggal + Hari ----------
+            const now = new Date();
+            const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][now.getDay()];
+            const tglStr = now.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+            const jamStr = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+            const dateTime = `${hari}, ${tglStr}  •  ${jamStr} WIB`;
 
-            // Lokasi
-            const lat = currentPos.coords.latitude.toFixed(6);
-            const lng = currentPos.coords.longitude.toFixed(6);
-            ctx.font = '600 18px "Segoe UI", system-ui, sans-serif';
-            ctx.fillStyle = '#00e5ff';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 32px Segoe UI, sans-serif';
+            ctx.fillText(dateTime, pad, h - boxH + 16);
+
+            // ---------- LOKASI LENGKAP (di bawah tanggal) ----------
+            const alamat = currentAddress || 'Alamat tidak tersedia';
+            ctx.font = '24px Segoe UI, sans-serif';
+            ctx.fillStyle = '#dddddd';
+            // Batasi panjang agar tidak terlalu ke kanan (wrap manual jika perlu)
+            let addrText = alamat;
+            if (addrText.length > 70) {
+                // Potong kata agar tidak overflow (opsional, tapi kita tampilkan full di 2 baris)
+                const mid = addrText.indexOf(',', 50);
+                if (mid > 0 && mid < 100) {
+                    ctx.fillText(addrText.substring(0, mid+1), pad, h - boxH + 68);
+                    ctx.fillText(addrText.substring(mid+1).trim(), pad, h - boxH + 100);
+                } else {
+                    // fallback
+                    ctx.fillText(addrText, pad, h - boxH + 68);
+                }
+            } else {
+                ctx.fillText(addrText, pad, h - boxH + 68);
+            }
+
+            // ---------- KOORDINAT (opsional, kecil di pojok kanan bawah) ----------
             ctx.textAlign = 'right';
-            ctx.textBaseline = 'top';
-            ctx.fillText(`📍 ${lat}, ${lng}`, w - margin - 20, yStart + 12);
+            ctx.textBaseline = 'bottom';
+            ctx.font = '18px monospace';
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            const coord = `${currentPos.coords.latitude.toFixed(6)}, ${currentPos.coords.longitude.toFixed(6)}`;
+            ctx.fillText(coord, w - pad, h - pad);
 
-            ctx.font = '400 14px "Segoe UI", system-ui, sans-serif';
-            ctx.fillStyle = '#aabbcc';
-            ctx.textAlign = 'right';
-            const addr = currentAddress || 'Alamat tidak ditemukan';
-            ctx.fillText(addr, w - margin - 20, yStart + 46);
-
-            // Footer kecil
-            ctx.font = '300 12px "Segoe UI", system-ui, sans-serif';
-            ctx.fillStyle = 'rgba(255,255,255,0.3)';
-            ctx.textAlign = 'right';
-            ctx.fillText('© GeoTime Mark', w - margin - 20, yStart + boxHeight - 14);
-
-            // Simpan
+            // Tampilkan modal
             const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-            previewImg.src = dataUrl;
-            dlLink.href = dataUrl;
-            const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-            dlLink.download = `GeoTime_${ts}.jpg`;
-            modal.classList.add('open');
-        });
+            document.getElementById('preview-img').src = dataUrl;
+            const dl = document.getElementById('dl-link');
+            dl.href = dataUrl;
+            dl.download = `GeoTime_${Date.now()}.jpg`;
+            document.getElementById('modal').classList.add('open');
+        };
 
-        // =============================================================
-        // FLIP KAMERA
-        // =============================================================
-        document.getElementById('btn-flip').addEventListener('click', () => {
-            if (stream) {
-                stream.getTracks().forEach(t => t.stop());
-                stream = null;
-            }
-            facingMode = (facingMode === 'environment') ? 'user' : 'environment';
-            startCamera();
-        });
-
-        // =============================================================
-        // RETRY
-        // =============================================================
-        btnRetry.addEventListener('click', startCamera);
-
-        // =============================================================
-        // MODAL
-        // =============================================================
         function closeModal() {
-            modal.classList.remove('open');
-        }
-        // klik backdrop close
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-
-        // =============================================================
-        // ROUNDRECT POLYFILL untuk Canvas
-        // =============================================================
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-                if (r > w/2) r = w/2;
-                if (r > h/2) r = h/2;
-                this.moveTo(x + r, y);
-                this.arcTo(x + w, y, x + w, y + h, r);
-                this.arcTo(x + w, y + h, x, y + h, r);
-                this.arcTo(x, y + h, x, y, r);
-                this.arcTo(x, y, x + w, y, r);
-                return this;
-            };
+            document.getElementById('modal').classList.remove('open');
         }
 
-        // =============================================================
-        // START
-        // =============================================================
-        window.addEventListener('load', startCamera);
-        // Jika gagal karena autoplay, coba ulang
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && !stream) {
-                startCamera();
-            }
-        });
+        // ============ START ============
+        window.onload = startCamera;
     </script>
 </body>
 </html>
