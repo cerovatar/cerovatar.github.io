@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Cek Wetonmu Lengkap | Primbon Jawa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #1e1a0c 0%, #2c2416 100%);
+            font-family: 'Quicksand', sans-serif;
+            color: #f3e9c0;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23c9a03d' opacity='0.06' d='M20,20 L30,10 L40,20 L30,30 Z'/%3E%3Ccircle cx='70' cy='70' r='8' fill='%23c9a03d' opacity='0.06'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 50px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .card {
+            background: rgba(30, 20, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            border: 1px solid #c9a03d;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+        }
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #f3c682, #d4af37);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.3rem;
+        }
+        .sub {
+            text-align: center;
+            color: #cfb284;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group { margin-bottom: 1rem; }
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            color: #f3c682;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 2rem;
+            background: #2a2418;
+            border: 1px solid #c9a03d;
+            color: #f3e9c0;
+            font-family: inherit;
+            outline: none;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        .flex-row .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        button {
+            background: linear-gradient(95deg, #c9a03d, #d4af37);
+            border: none;
+            border-radius: 2rem;
+            padding: 0.7rem 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #1e1a0c;
+            transition: 0.2s;
+            width: 100%;
+            font-size: 1rem;
+        }
+        button:hover {
+            transform: scale(0.98);
+            background: linear-gradient(95deg, #d4af37, #e0b84d);
+        }
+        .result-area {
+            background: #2a2418;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin-top: 1.5rem;
+            border-left: 5px solid #c9a03d;
+        }
+        .weton-badge {
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0.3rem 0;
+            background: #c9a03d;
+            color: #1e1a0c;
+        }
+        .neptu-box {
+            background: #3e3522;
+            border-radius: 1rem;
+            padding: 0.5rem 1rem;
+            display: inline-block;
+            margin: 0.2rem;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .detail-item {
+            background: #1e1a0c;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            border-left: 3px solid #c9a03d;
+        }
+        .detail-item h4 {
+            color: #f3c682;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .detail-item p {
+            font-size: 0.85rem;
+            color: #cfb284;
+        }
+        .cocok-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-top: 0.3rem;
+        }
+        .cocok-item {
+            background: #3e3522;
+            border-radius: 2rem;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.8rem;
+            border: 1px solid #c9a03d;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #8b7355;
+            margin-top: 2rem;
+        }
+        @media (max-width: 700px) {
+            .card { padding: 1.2rem; }
+            h1 { font-size: 1.6rem; }
+            .detail-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1><i class="fas fa-moon"></i> Cek Weton Lengkap</h1>
+        <div class="sub">Temukan weton, neptu, kecocokan, dan pekerjaan yang cocok menurut primbon Jawa</div>
+
+        <div class="flex-row">
+            <div class="form-group">
+                <label><i class="fas fa-calendar-alt"></i> Tanggal Lahir (Masehi)</label>
+                <input type="date" id="birthDate" value="">
+            </div>
+            <div class="form-group" style="flex:0.5; min-width:100px;">
+                <label>&nbsp;</label>
+                <button id="cekBtn"><i class="fas fa-search"></i> Cek Weton</button>
+            </div>
+        </div>
+
+        <div id="resultArea" class="result-area">
+            <i class="fas fa-info-circle"></i> Masukkan tanggal lahir Anda untuk melihat weton, kecocokan, dan pekerjaan yang cocok.
+        </div>
+    </div>
+
+    <!-- Tabel Referensi 7 Weton -->
+    <div class="card">
+        <h2 style="font-family: 'Cormorant Garamond', serif; color: #f3c682; font-size:1.4rem; margin-bottom:0.5rem;"><i class="fas fa-book"></i> 7 Weton & Penjelasannya</h2>
+        <div id="referenceTable" style="font-size:0.85rem;">
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.3rem; padding:0.3rem; background:#1e1a0c; border-radius:0.5rem; margin-bottom:0.3rem;">
+                <span style="font-weight:bold; color:#f3c682;">Weton</span>
+                <span style="font-weight:bold; color:#f3c682;">Makna Singkat</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.3rem; padding:0.3rem; border-bottom:1px solid #3e3522;">
+                <span style="color:#c9a03d;">Idhu Geni</span>
+                <span style="color:#cfb284;">Api kemuliaan, berwibawa, suka memimpin, banyak penghormatan.</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.3rem; padding:0.3rem; border-bottom:1px solid #3e3522;">
+                <span style="color:#c9a03d;">Sabdo Dadi</span>
+                <span style="color:#cfb284;">Perkataan menjadi kenyataan, karismatik, disegani.</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.3rem; padding:0.3rem; border-bottom:1px solid #3e3522;">
+                <span style="color:#c9a03d;">Si Pahit Lidah</span>
+                <span style="color:#cfb284;">Berbicara pedas, tajam, namun jujur, sering dipercaya.</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.3rem; padding:0.3rem; border-bottom:1px solid #3e3522;">
+                <span style="color:#c9a03d;">Si Ratu</span>
+                <span style="color:#cfb284;">Berkah kemakmuran, dihormati, rezeki melimpah.</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.3rem; padding:0.3rem; border-bottom:1px solid #3e3522;">
+                <span style="color:#c9a03d;">Si Gedhong</span>
+                <span style="color:#cfb284;">Kaya raya, banyak harta, rezeki berlimpah.</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.3rem; padding:0.3rem; border-bottom:1px solid #3e3522;">
+                <span style="color:#c9a03d;">Si Penganten</span>
+                <span style="color:#cfb284;">Peruntungan dalam cinta, mudah mendapatkan jodoh.</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:0.3rem; padding:0.3rem;">
+                <span style="color:#c9a03d;">Si Jodoh</span>
+                <span style="color:#cfb284;">Cocok dengan banyak orang, harmonis, banyak teman.</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>© 2026 ZinXploit — Primbon Jawa berdasarkan kitab leluhur. Untuk referensi budaya dan refleksi diri.</footer>
+</div>
+
+<script>
+    // ========== DATA WETON & NEPTU ==========
+    const neptuHari = [5,4,3,7,8,6,9];
+    const neptuPasaran = [5,9,7,4,8];
+    const namaHari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+    const namaPasaran = ["Legi","Pahing","Pon","Wage","Kliwon"];
+
+    const refDate = new Date(2020,0,1);
+    const refDayIdx = 3;
+    const refPasIdx = 0;
+
+    // 7 KATEGORI WETON (sisa bagi 7)
+    const wetonKategori = {
+        1: { name: "Idhu Geni", icon: "🔥", desc: "Api kemuliaan. Orang dengan weton ini memiliki kharisma tinggi, berwibawa, dan disegani. Mereka cenderung menjadi pemimpin yang baik, namun perlu menjaga ego agar tidak arogan.", watak: "Berani, tegas, suka tantangan, ambisius.", rezeki: "Rezeki mengalir dari usaha sendiri dan kepemimpinan. Banyak peluang datang dari penghormatan orang lain." },
+        2: { name: "Sabdo Dadi", icon: "🗣️", desc: "Perkataan menjadi kenyataan. Orang weton ini memiliki daya tarik dan kemampuan mempengaruhi orang lain. Apa yang diucapkan sering menjadi kenyataan, sehingga harus bijak dalam berbicara.", watak: "Karismatik, pandai bicara, disegani, suka menolong.", rezeki: "Rezeki datang dari profesi yang membutuhkan komunikasi, seperti diplomat, penasihat, atau pemuka." },
+        3: { name: "Si Pahit Lidah", icon: "🌶️", desc: "Lidah pedas, namun jujur. Mereka terkenal dengan ucapan yang tajam dan terus terang. Meskipun terkadang dianggap kasar, ketulusan mereka membuat orang lain percaya.", watak: "Jujur, tegas, tidak suka basa-basi, sering dijadikan penengah.", rezeki: "Rezeki dari pekerjaan yang membutuhkan kejujuran, seperti hakim, auditor, atau penasihat." },
+        4: { name: "Si Ratu", icon: "👑", desc: "Berkah kemakmuran. Weton ini membawa keberuntungan besar. Mereka dihormati dan sering menjadi panutan. Kehidupan mereka cenderung makmur dan bahagia.", watak: "Bijaksana, dermawan, disegani, memiliki pengaruh luas.", rezeki: "Rezeki melimpah dari berbagai sumber. Mereka sering mendapat warisan atau kepercayaan orang lain." },
+        5: { name: "Si Gedhong", icon: "🏦", desc: "Kaya raya. Mereka memiliki bakat mengelola harta dan bisnis. Rezeki mengalir deras dan mereka pandai menabung.", watak: "Praktis, hemat, ambisius dalam ekonomi, suka berinvestasi.", rezeki: "Sangat lancar, terutama dari bisnis, perdagangan, dan investasi jangka panjang." },
+        6: { name: "Si Penganten", icon: "💕", desc: "Peruntungan cinta. Weton ini sangat baik dalam hal asmara. Mereka mudah menarik lawan jenis dan memiliki kehidupan cinta yang harmonis.", watak: "Romantis, setia, mudah bergaul, disukai banyak orang.", rezeki: "Rezeki datang dari hubungan personal, kerja sama, dan kemitraan." },
+        7: { name: "Si Jodoh", icon: "🤝", desc: "Cocok dengan banyak orang. Mereka memiliki kemampuan bersosialisasi yang tinggi, mudah beradaptasi, dan disukai oleh semua kalangan.", watak: "Fleksibel, ramah, suka membantu, mudah berteman.", rezeki: "Rezeki dari jaringan pertemanan dan kerja sama tim. Banyak peluang datang dari relasi." }
+    };
+
+    // Data pekerjaan yang cocok per kategori
+    const pekerjaanCocok = {
+        1: { 
+            bidang: "Kepemimpinan & Manajemen", 
+            daftar: "Direktur, Manajer Umum, CEO, Ketua Organisasi, Pengusaha, Komandan Militer, Kepala Desa/Pamong",
+            alasan: "Karisma dan wibawa tinggi, cocok menjadi pemimpin yang disegani."
+        },
+        2: { 
+            bidang: "Komunikasi & Diplomasi", 
+            daftar: "Diplomat, Dosen, Guru, Pembicara Publik, Penasihat, Konsultan, Psikolog, Humas",
+            alasan: "Kemampuan berbicara dan mempengaruhi orang lain sangat kuat."
+        },
+        3: { 
+            bidang: "Hukum & Keadilan", 
+            daftar: "Hakim, Jaksa, Pengacara, Auditor, Inspektur, Penegak Hukum, Wartawan Investigasi",
+            alasan: "Kejujuran dan ketegasan membuatnya cocok di bidang hukum dan penegakan aturan."
+        },
+        4: { 
+            bidang: "Manajemen & Administrasi", 
+            daftar: "Pejabat Pemerintahan, Direktur, Manajer SDM, Administrator, Konsultan Manajemen",
+            alasan: "Kebijaksanaan dan pengaruh luas membuatnya ideal sebagai pemimpin dan pengelola."
+        },
+        5: { 
+            bidang: "Bisnis & Keuangan", 
+            daftar: "Pengusaha, Investor, Bankir, Akuntan, Analis Keuangan, Manajer Investasi",
+            alasan: "Bakat mengelola harta dan ambisi ekonomi sangat tinggi."
+        },
+        6: { 
+            bidang: "Hubungan Masyarakat & Kemitraan", 
+            daftar: "HRD, Konsultan Pernikahan, Psikolog, Pemasaran, Event Organizer, Perhotelan",
+            alasan: "Kemampuan menjalin hubungan personal dan kemitraan sangat baik."
+        },
+        7: { 
+            bidang: "Jaringan & Sosialisasi", 
+            daftar: "Sales, Marketing, Public Relations, Diplomat, Mediator, Networking Specialist",
+            alasan: "Mudah beradaptasi dan bergaul dengan semua kalangan, cocok di bidang yang membutuhkan relasi."
+        }
+    };
+
+    // Fungsi untuk mencari weton yang cocok (berdasarkan selisih neptu)
+    function getCocokWeton(neptu) {
+        const semuaWeton = [];
+        for (let h = 0; h < 7; h++) {
+            for (let p = 0; p < 5; p++) {
+                const n = neptuHari[h] + neptuPasaran[p];
+                const selisih = Math.abs(neptu - n);
+                semuaWeton.push({
+                    hari: namaHari[h],
+                    pasaran: namaPasaran[p],
+                    neptu: n,
+                    selisih: selisih,
+                    kategori: wetonKategori[n % 7 === 0 ? 7 : n % 7].name
+                });
+            }
+        }
+        // Urutkan berdasarkan selisih terkecil
+        semuaWeton.sort((a,b) => a.selisih - b.selisih);
+        // Ambil 5 weton dengan selisih terkecil (kecuali weton sendiri)
+        const hasil = [];
+        let count = 0;
+        for (let i = 0; i < semuaWeton.length && count < 5; i++) {
+            // skip jika weton sama persis dengan neptu yang sama (hindari diri sendiri)
+            if (semuaWeton[i].neptu === neptu) continue;
+            hasil.push(semuaWeton[i]);
+            count++;
+        }
+        return hasil;
+    }
+
+    // ========== FUNGSI HITUNG WETON ==========
+    function getWetonFromDate(date) {
+        const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const diff = Math.floor((target - refDate) / (1000 * 60 * 60 * 24));
+        let dayIdx = (refDayIdx + diff) % 7;
+        if (dayIdx < 0) dayIdx += 7;
+        let pasIdx = (refPasIdx + diff) % 5;
+        if (pasIdx < 0) pasIdx += 5;
+        return { dayIdx, pasIdx, dayName: namaHari[dayIdx], pasaranName: namaPasaran[pasIdx] };
+    }
+
+    function hitungNeptu(hariIdx, pasIdx) {
+        return neptuHari[hariIdx] + neptuPasaran[pasIdx];
+    }
+
+    function getWetonKategori(totalNeptu) {
+        let sisa = totalNeptu % 7;
+        if (sisa === 0) sisa = 7;
+        return wetonKategori[sisa];
+    }
+
+    // ========== FORMAT TANGGAL ==========
+    function formatDate(date) {
+        const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+        const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    // ========== EVENT CEK ==========
+    document.getElementById('cekBtn').addEventListener('click', function() {
+        const dateInput = document.getElementById('birthDate').value;
+        if (!dateInput) {
+            alert('Silakan pilih tanggal lahir terlebih dahulu.');
+            return;
+        }
+        const date = new Date(dateInput);
+        if (isNaN(date)) {
+            alert('Tanggal tidak valid.');
+            return;
+        }
+
+        const weton = getWetonFromDate(date);
+        const neptu = hitungNeptu(weton.dayIdx, weton.pasIdx);
+        const kategori = getWetonKategori(neptu);
+        const tanggalFormatted = formatDate(date);
+
+        // Dapatkan kecocokan weton
+        const cocokList = getCocokWeton(neptu);
+        // Dapatkan pekerjaan yang cocok
+        const pekerjaan = pekerjaanCocok[neptu % 7 === 0 ? 7 : neptu % 7];
+
+        // Render hasil
+        let cocokHtml = '<div class="cocok-list">';
+        cocokList.forEach(item => {
+            cocokHtml += `<span class="cocok-item">${item.hari} ${item.pasaran} (${item.neptu})</span>`;
+        });
+        cocokHtml += '</div>';
+
+        const area = document.getElementById('resultArea');
+        area.innerHTML = `
+            <div style="text-align:center; margin-bottom:1rem;">
+                <div style="font-size:0.8rem; color:#cfb284;">${tanggalFormatted}</div>
+                <div style="font-size:1.5rem; font-weight:bold;">${weton.dayName} ${weton.pasaranName}</div>
+                <div class="neptu-box">Neptu: ${neptu}</div>
+                <div style="margin-top:0.5rem;">
+                    <span class="weton-badge">${kategori.icon} ${kategori.name}</span>
+                </div>
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <h4><i class="fas fa-user-astronaut"></i> Watak</h4>
+                    <p>${kategori.watak}</p>
+                </div>
+                <div class="detail-item">
+                    <h4><i class="fas fa-chart-line"></i> Rezeki</h4>
+                    <p>${kategori.rezeki}</p>
+                </div>
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <h4><i class="fas fa-scroll"></i> Deskripsi Lengkap</h4>
+                    <p>${kategori.desc}</p>
+                </div>
+                <!-- KECOCOKAN WETON -->
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <h4><i class="fas fa-handshake"></i> Weton yang Cocok (selisih neptu kecil)</h4>
+                    ${cocokHtml}
+                    <div style="margin-top:0.3rem; font-size:0.7rem; color:#8b7355;">*Semakin kecil selisih neptu, semakin tinggi kecocokan menurut primbon.</div>
+                </div>
+                <!-- PEKERJAAN YANG COCOK -->
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <h4><i class="fas fa-briefcase"></i> Pekerjaan yang Cocok</h4>
+                    <p><strong>Bidang:</strong> ${pekerjaan.bidang}</p>
+                    <p><strong>Profesi:</strong> ${pekerjaan.daftar}</p>
+                    <p style="font-size:0.8rem; color:#8b7355; margin-top:0.3rem;"><i class="fas fa-info-circle"></i> ${pekerjaan.alasan}</p>
+                </div>
+            </div>
+            <div style="margin-top:1rem; font-size:0.8rem; color:#8b7355; border-top:1px dashed #c9a03d; padding-top:0.5rem;">
+                <i class="fas fa-info-circle"></i> Berdasarkan sisa bagi neptu total (${neptu}) dengan 7 = ${neptu % 7 || 7}
+            </div>
+        `;
+    });
+
+    // ========== SET DEFAULT TANGGAL HARI INI ==========
+    (function setDefaultDate() {
+        const today = new Date();
+        const day = today.getDate().toString().padStart(2, '0');
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const year = today.getFullYear();
+        document.getElementById('birthDate').value = `${year}-${month}-${day}`;
+    })();
+
+    window.addEventListener('load', function() {
+        document.getElementById('cekBtn').click();
+    });
+</script>
+</body>
+</html>
