@@ -29,7 +29,6 @@
             text-align: center;
             position: relative;
         }
-        /* Tombol musik */
         .music-btn {
             position: absolute;
             top: 1rem;
@@ -161,6 +160,38 @@
         }
         .small-note { font-size: 0.7rem; margin-top: 1rem; color: #ad8b67; }
         .loading { display: none; margin-top: 1rem; }
+
+        .qris-box {
+            background: #2a1e18;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+            border: 2px solid #e09d32;
+        }
+        .qris-box img {
+            max-width: 100%;
+            border-radius: 12px;
+            background: #fff;
+            padding: 8px;
+            margin: 10px 0;
+        }
+        .qris-box .nominal {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #4ade80;
+            margin: 8px 0;
+        }
+        .qris-box .info-qris {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 0.8rem;
+            color: #cfb284;
+            text-align: left;
+            margin-top: 8px;
+        }
+        .qris-box .info-qris strong { color: #f3c682; }
     </style>
 </head>
 <body>
@@ -170,12 +201,13 @@
     </div>
     <h2><i class="fas fa-coins"></i> Pilih Paket Ramalan</h2>
     <div class="package-group">
-        <div class="package-btn active" data-package="basic">📜 Basic (Rp50.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik</span></div>
-        <div class="package-btn" data-package="premium">🌟 Premium (Rp100.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik + Tanggal Pernikahan</span></div>
+        <div class="package-btn active" data-package="basic" data-price="50000">📜 Basic (Rp50.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik</span></div>
+        <div class="package-btn" data-package="premium" data-price="100000">🌟 Premium (Rp100.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik + Tanggal Pernikahan</span></div>
     </div>
     <p style="margin-top: 0.5rem;">Pilih metode pembayaran & upload bukti</p>
     <div class="payment-method">
-        <div class="method-btn active" data-method="seabank">Bank Seabank</div>
+        <div class="method-btn active" data-method="qris">QRIS</div>
+        <div class="method-btn" data-method="seabank">Bank Seabank</div>
         <div class="method-btn" data-method="bri">Bank BRI</div>
         <div class="method-btn" data-method="ewallet">E-Wallet</div>
     </div>
@@ -193,7 +225,6 @@
     <button id="kirimWaBtn" class="btn-pay"><i class="fab fa-whatsapp"></i> Kirim Bukti ke WA & Lanjutkan</button>
     <div id="loading" class="loading"><i class="fas fa-spinner fa-spin"></i> Mengirim...</div>
     
-    <!-- Tombol lanjutan manual setelah kirim bukti -->
     <div id="manualLanjut" style="display: none; margin-top: 1rem;">
         <hr style="border-color: #b8860b; margin: 1rem 0;">
         <p><i class="fas fa-check-circle"></i> <strong>Sudah kirim bukti?</strong> Silakan lanjutkan ke halaman ramalan:</p>
@@ -203,20 +234,16 @@
     <div class="small-note">*Klik "Kirim Bukti ke WA" untuk membuka WhatsApp & kirim pesan. Setelah itu, klik tombol di bawah untuk melanjutkan.</div>
 </div>
 
-<!-- Audio latar (musik) -->
 <audio id="bgMusic" loop>
     <source src="gending-temanten-adat-jawa-kebo-giro-128-ytshorts.savetube.me.mp3" type="audio/mpeg">
-    <!-- Fallback jika file tidak tersedia -->
     Your browser does not support the audio element.
 </audio>
 
 <script>
-    // ========== MUSIK PLAYER ==========
+    // ========== MUSIK ==========
     const audio = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicToggleBtn');
     let isMusicPlaying = false;
-
-    // Coba set volume rendah
     audio.volume = 0.3;
 
     function toggleMusic() {
@@ -226,37 +253,51 @@
             musicBtn.style.background = '#2e1f1a';
             musicBtn.style.color = '#f3c682';
         } else {
-            audio.play().catch(e => console.log('Autoplay diblokir, klik tombol musik lagi.'));
-            // Beberapa browser tetap butuh interaksi, tapi user sudah klik tombol sehingga biasanya berhasil
+            audio.play().catch(e => console.log('Autoplay diblokir.'));
             musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
             musicBtn.style.background = '#e09d32';
             musicBtn.style.color = '#1a0f0c';
         }
         isMusicPlaying = !isMusicPlaying;
     }
-
     musicBtn.addEventListener('click', toggleMusic);
-
-    // Jika audio gagal dimuat (karena link mati), beri notifikasi lembut
     audio.addEventListener('error', () => {
-        console.warn('Gagal memuat musik latar. Periksa koneksi atau ganti sumber audio.');
         musicBtn.style.opacity = '0.5';
         musicBtn.title = 'Musik tidak tersedia';
     });
 
-    // ========== LOGIKA PEMBAYARAN (tetap sama) ==========
-    let paymentMethod = 'seabank';
+    // ========== PEMBAYARAN ==========
+    let paymentMethod = 'qris';
     let selectedPackage = 'basic';
+    let selectedPrice = 50000;
     let buktiDataURL = null;
+
+    // ============================================================
+    // GAMBAR QRIS
+    // ============================================================
+    const QRIS_IMAGE = 'https://i.ibb.co.com/YBNk4nj8/React-Native-snapshot-image2670473178426281551.png';
 
     function updateDetail() {
         const div = document.getElementById('paymentDetail');
-        if(paymentMethod === 'seabank') {
+        if (paymentMethod === 'qris') {
+            div.innerHTML = `
+                <div class="qris-box">
+                    <p style="color:#f3c682;font-weight:700;">💳 Pembayaran QRIS</p>
+                    <img src="${QRIS_IMAGE}" alt="QRIS ZIA SHOP - FAST FOOD">
+                    <div class="nominal">Rp ${selectedPrice.toLocaleString('id-ID')}</div>
+                    <div class="info-qris">
+                        <strong>Merchant:</strong> ZIA SHOP - FAST FOOD<br>
+                        <strong>NMID:</strong> ID1026598864985<br>
+                        <strong>Kode:</strong> A01
+                    </div>
+                </div>
+            `;
+        } else if (paymentMethod === 'seabank') {
             div.innerHTML = `<p><i class="fas fa-university"></i> Bank Seabank</p><p>No. Rekening: <strong>901531141482</strong> <button class="copy-btn" onclick="copyText('901531141482')">Copy</button></p><p>a.n Mario Adi Saputra</p>`;
-        } else if(paymentMethod === 'bri') {
+        } else if (paymentMethod === 'bri') {
             div.innerHTML = `<p><i class="fas fa-university"></i> Bank BRI</p><p>No. Rekening: <strong>081401029377530</strong> <button class="copy-btn" onclick="copyText('081401029377530')">Copy</button></p><p>a.n Idi Harjanto</p>`;
         } else {
-            div.innerHTML = `<p><i class="fab fa-google-pay"></i> E-Wallet (Dana / OVO / GoPay)</p><p>No. Handphone: <strong>083171754073</strong> <button class="copy-btn" onclick="copyText('083171754073')">Copy</button></p><p>Kirim ke nomor ini, lalu konfirmasi.</p>`;
+            div.innerHTML = `<p><i class="fab fa-google-pay"></i> E-Wallet (Dana / GoPay)</p><p>No. Handphone: <strong>083171754073</strong> <button class="copy-btn" onclick="copyText('083171754073')">Copy</button></p><p>Kirim ke nomor ini, lalu konfirmasi.</p>`;
         }
     }
 
@@ -265,18 +306,18 @@
         alert("Nomor disalin: " + text); 
     };
 
-    // Pilihan paket
+    // Pilih paket — Basic Rp 50.000, Premium Rp 100.000
     document.querySelectorAll('.package-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.package-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             selectedPackage = btn.dataset.package;
-            const amount = selectedPackage === 'basic' ? 50000 : 100000;
-            document.getElementById('amount').value = amount;
+            selectedPrice = parseInt(btn.dataset.price);
+            document.getElementById('amount').value = selectedPrice;
+            updateDetail();
         });
     });
 
-    // Pilihan metode
     document.querySelectorAll('.method-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
@@ -286,10 +327,9 @@
         });
     });
 
-    // Preview gambar bukti
     document.getElementById('buktiFile').addEventListener('change', function(e) {
         const file = e.target.files[0];
-        if(file) {
+        if (file) {
             const reader = new FileReader();
             reader.onload = function(event) {
                 buktiDataURL = event.target.result;
@@ -304,49 +344,46 @@
         }
     });
 
-    // Tombol Kirim ke WA
     document.getElementById('kirimWaBtn').addEventListener('click', async () => {
         const amount = parseInt(document.getElementById('amount').value);
-        const minAmount = selectedPackage === 'basic' ? 50000 : 100000;
-        if(amount < minAmount) {
-            alert(`Minimal pembayaran untuk paket ${selectedPackage === 'basic' ? 'Basic' : 'Premium'} adalah Rp ${minAmount.toLocaleString('id-ID')}`);
+        if (amount < selectedPrice) {
+            alert('Minimal pembayaran Rp ' + selectedPrice.toLocaleString('id-ID'));
             return;
         }
-        if(!buktiDataURL) {
+        if (!buktiDataURL) {
             alert("Silakan upload bukti pembayaran terlebih dahulu.");
             return;
         }
-        
+
         localStorage.setItem('temp_amount', amount);
         localStorage.setItem('temp_method', paymentMethod);
         localStorage.setItem('temp_bukti', buktiDataURL);
         localStorage.setItem('temp_package', selectedPackage);
-        
-        const adminWa = '6285735605012';
+
+        const adminWa = '6283171754073';
         let metodeText = "";
-        if(paymentMethod === 'seabank') metodeText = "Bank Seabank (901531141482 a.n Mario Adi Saputra)";
-        else if(paymentMethod === 'bri') metodeText = "Bank BRI (081401029377530 a.n Idi Harjanto)";
+        if (paymentMethod === 'qris') metodeText = "QRIS (ZIA SHOP - FAST FOOD)";
+        else if (paymentMethod === 'seabank') metodeText = "Bank Seabank (901531141482 a.n Mario Adi Saputra)";
+        else if (paymentMethod === 'bri') metodeText = "Bank BRI (081401029377530 a.n Idi Harjanto)";
         else metodeText = "E-Wallet (083171754073)";
-        
+
         const message = `*PEMBAYARAN RAMAL JODOH*%0A%0ANominal: Rp ${amount.toLocaleString('id-ID')}%0AMetode: ${metodeText}%0APaket: ${selectedPackage.toUpperCase()}%0A%0ABukti pembayaran terlampir (saya akan kirim manual).%0A%0A_Mohon segera diproses._`;
         const waUrl = `https://wa.me/${adminWa}?text=${message}`;
         window.open(waUrl, '_blank');
-        
+
         document.getElementById('manualLanjut').style.display = 'block';
         document.getElementById('kirimWaBtn').disabled = true;
         document.getElementById('kirimWaBtn').style.opacity = '0.6';
         alert("Pesan WhatsApp telah dibuka. Setelah mengirim bukti, klik tombol 'Lanjutkan ke Ramalan Jodoh'.");
     });
-    
-    // Tombol lanjut
+
     document.getElementById('lanjutBtn').addEventListener('click', () => {
         const amount = parseInt(document.getElementById('amount').value);
-        const minAmount = selectedPackage === 'basic' ? 50000 : 100000;
-        if(amount < minAmount) {
-            alert(`Minimal pembayaran Rp ${minAmount.toLocaleString('id-ID')}`);
+        if (amount < selectedPrice) {
+            alert('Minimal pembayaran Rp ' + selectedPrice.toLocaleString('id-ID'));
             return;
         }
-        if(!buktiDataURL) {
+        if (!buktiDataURL) {
             alert("Bukti belum diupload.");
             return;
         }
@@ -354,8 +391,7 @@
         localStorage.setItem('payment_amount', amount);
         localStorage.setItem('payment_method', paymentMethod);
         localStorage.setItem('payment_package', selectedPackage);
-        
-        // Arahkan sesuai paket
+
         if (selectedPackage === 'basic') {
             window.location.href = 'neptubsc.html';
         } else {
