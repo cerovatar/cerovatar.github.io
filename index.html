@@ -1,619 +1,628 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Portofolio — Mario Adi Saputra | ZinXploit</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      line-height: 1.6;
-    }
-
-    :root {
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #111111;
-      --card-bg: rgba(255, 255, 255, 0.05);
-      --text-primary: #e0e0e0;
-      --text-secondary: #a0a0a0;
-      --accent: #d63031;
-      --accent-glow: rgba(214, 48, 49, 0.4);
-      --border-light: rgba(255, 255, 255, 0.1);
-      --nav-bg: rgba(10, 10, 10, 0.95);
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      --progress-bg: rgba(255, 255, 255, 0.1);
-      --btn-hover: #ff6b6b;
-    }
-
-    body.light {
-      --bg-primary: #f8fafc;
-      --bg-secondary: #ffffff;
-      --card-bg: rgba(0, 0, 0, 0.03);
-      --text-primary: #1e2a3a;
-      --text-secondary: #4a5568;
-      --accent: #e53e3e;
-      --accent-glow: rgba(229, 62, 62, 0.2);
-      --border-light: rgba(0, 0, 0, 0.1);
-      --nav-bg: rgba(255, 255, 255, 0.95);
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      --progress-bg: #e2e8f0;
-    }
-
-    body {
-      background: var(--bg-primary);
-      color: var(--text-primary);
-    }
-
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-primary); }
-    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
-
-    /* Header & Navigation */
-    header {
-      background: var(--nav-bg);
-      backdrop-filter: blur(12px);
-      padding: 1rem 5%;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), #ff8a5c);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    nav a {
-      color: var(--text-primary);
-      margin-left: 2rem;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-    nav a:hover, nav a.active { color: var(--accent); }
-
-    .theme-toggle {
-      background: var(--card-bg);
-      border: 1px solid var(--border-light);
-      border-radius: 40px;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .menu-btn {
-      display: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-primary);
-    }
-
-    /* Hero */
-    .hero {
-      min-height: 85vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: radial-gradient(circle at 30% 10%, var(--accent-glow) 0%, var(--bg-primary) 80%);
-      padding: 2rem;
-    }
-    .hero h2 {
-      font-size: 3.2rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-    .hero h2 span { color: var(--accent); }
-    .hero p {
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-      margin-bottom: 2rem;
-    }
-    .btn {
-      display: inline-block;
-      background: transparent;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-      padding: 0.8rem 2rem;
-      border-radius: 40px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-    .btn:hover {
-      background: var(--accent);
-      color: white;
-      box-shadow: 0 0 20px var(--accent-glow);
-      transform: translateY(-3px);
-    }
-
-    /* Container */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-    }
-    .section-title {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 3rem;
-      position: relative;
-    }
-    .section-title::after {
-      content: '';
-      display: block;
-      width: 60px;
-      height: 3px;
-      background: var(--accent);
-      margin: 0.8rem auto 0;
-      border-radius: 3px;
-    }
-
-    .about-card, .skills-container, .contact-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(8px);
-      border-radius: 24px;
-      padding: 2.5rem;
-      border: 1px solid var(--border-light);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .about-card:hover, .skills-container:hover, .contact-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow);
-    }
-
-    /* Skills */
-    .skill-item { margin-bottom: 1.5rem; }
-    .skill-info { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500; }
-    .progress-bg { background: var(--progress-bg); height: 8px; border-radius: 10px; overflow: hidden; }
-    .progress-bar {
-      width: 0;
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), #ff8a5c);
-      border-radius: 10px;
-      transition: width 1.2s;
-    }
-
-    /* Projects Grid */
-    .projects {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-    }
-    .project-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid var(--border-light);
-      transition: all 0.3s;
-    }
-    .project-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: var(--shadow); }
-    .project-img-wrapper { height: 200px; overflow: hidden; }
-    .project-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-    .project-card:hover img { transform: scale(1.05); }
-    .project-info { padding: 1.5rem; }
-    .tag {
-      display: inline-block;
-      background: var(--accent-glow);
-      color: var(--accent);
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 0.2rem 0.8rem;
-      border-radius: 20px;
-      margin-bottom: 0.8rem;
-    }
-    .btn-download {
-      display: inline-block;
-      background: var(--accent);
-      color: white;
-      padding: 0.4rem 1rem;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      text-decoration: none;
-    }
-    .btn-download:hover { background: var(--btn-hover); }
-
-    /* Carousel Sertifikat */
-    .certificate-carousel {
-      position: relative;
-      max-width: 700px;
-      margin: 0 auto;
-      overflow: hidden;
-      border-radius: 20px;
-    }
-    .carousel-container {
-      display: flex;
-      transition: transform 0.4s ease;
-    }
-    .certificate-slide {
-      flex: 0 0 100%;
-      background: var(--card-bg);
-      border-radius: 20px;
-      overflow: hidden;
-      text-align: center;
-      padding: 1rem;
-    }
-    .certificate-slide img {
-      width: 100%;
-      height: auto;
-      max-height: 400px;
-      object-fit: contain;
-      border-radius: 16px;
-      background: #fff;
-    }
-    .certificate-slide .certificate-info {
-      margin-top: 1rem;
-    }
-    .certificate-slide h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.3rem;
-    }
-    .certificate-slide p {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.6);
-      border: none;
-      color: white;
-      font-size: 1.5rem;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: 0.2s;
-      z-index: 10;
-    }
-    .carousel-btn:hover { background: var(--accent); }
-    .btn-prev { left: 10px; }
-    .btn-next { right: 10px; }
-    .dots {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--text-secondary);
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .dot.active { background: var(--accent); transform: scale(1.2); }
-
-    /* Contact */
-    .contact-card {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-    }
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 1rem;
-    }
-    .contact-item i { font-size: 1.4rem; color: var(--accent); }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      background: var(--bg-secondary);
-      border-top: 1px solid var(--border-light);
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-    }
-
-    /* Music control */
-    .music-control {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 50px;
-      height: 50px;
-      background: var(--accent);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 15px var(--accent-glow);
-      transition: all 0.3s;
-      z-index: 1000;
-    }
-    .music-control:hover { transform: scale(1.1); }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .menu-btn { display: block; }
-      nav {
-        position: absolute;
-        top: 70px;
-        left: 0;
-        width: 100%;
-        background: var(--nav-bg);
-        flex-direction: column;
-        padding: 1rem 0;
-        display: none;
-      }
-      nav.show { display: flex; }
-      nav a { margin: 0.8rem 2rem; }
-      .hero h2 { font-size: 2.2rem; }
-      .container { padding: 2rem 1rem; }
-      .certificate-carousel { max-width: 100%; }
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="logo">Mario<span>.Dev</span></div>
-    <div class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
-    <nav id="menuNav">
-      <a href="home.html">Home</a>
-      <a href="neptu.html">Neptu</a>
-      <a href="Caljawa.html">Kalender Jawa</a>
-      <a href="#about">Tentang</a>
-      <a href="#skills">Keahlian</a>
-      <a href="#projects">Proyek</a>
-      <a href="#certificates">Sertifikat</a>
-      <a href="#contact">Kontak</a>
-    </nav>
-    <div class="theme-toggle" id="themeToggle">
-      <i class="fas fa-sun"></i>
-      <i class="fas fa-moon" style="display: none;"></i>
-      <span>Mode</span>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Portofolio — Mario Adi Saputra | ZinXploit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      line-height: 1.6;
+    }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --accent: #d63031;
+      --accent-glow: rgba(214, 48, 49, 0.4);
+      --border-light: rgba(255, 255, 255, 0.1);
+      --nav-bg: rgba(10, 10, 10, 0.95);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      --progress-bg: rgba(255, 255, 255, 0.1);
+      --btn-hover: #ff6b6b;
+    }
+
+    body.light {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --card-bg: rgba(0, 0, 0, 0.03);
+      --text-primary: #1e2a3a;
+      --text-secondary: #4a5568;
+      --accent: #e53e3e;
+      --accent-glow: rgba(229, 62, 62, 0.2);
+      --border-light: rgba(0, 0, 0, 0.1);
+      --nav-bg: rgba(255, 255, 255, 0.95);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      --progress-bg: #e2e8f0;
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+    /* Header & Navigation */
+    header {
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      padding: 1rem 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), #ff8a5c);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    nav a {
+      color: var(--text-primary);
+      margin-left: 2rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+
+    .theme-toggle {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 40px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .menu-btn {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: radial-gradient(circle at 30% 10%, var(--accent-glow) 0%, var(--bg-primary) 80%);
+      padding: 2rem;
+    }
+    .hero h2 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .hero h2 span { color: var(--accent); }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+    .btn {
+      display: inline-block;
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      padding: 0.8rem 2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn:hover {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 0 20px var(--accent-glow);
+      transform: translateY(-3px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: var(--accent);
+      margin: 0.8rem auto 0;
+      border-radius: 3px;
+    }
+
+    .about-card, .skills-container, .contact-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 2.5rem;
+      border: 1px solid var(--border-light);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .about-card:hover, .skills-container:hover, .contact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    /* Skills */
+    .skill-item { margin-bottom: 1.5rem; }
+    .skill-info { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500; }
+    .progress-bg { background: var(--progress-bg); height: 8px; border-radius: 10px; overflow: hidden; }
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #ff8a5c);
+      border-radius: 10px;
+      transition: width 1.2s;
+    }
+
+    /* Projects Grid */
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .project-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      transition: all 0.3s;
+    }
+    .project-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: var(--shadow); }
+    .project-img-wrapper { height: 200px; overflow: hidden; }
+    .project-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .project-card:hover img { transform: scale(1.05); }
+    .project-info { padding: 1.5rem; }
+    .tag {
+      display: inline-block;
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      margin-bottom: 0.8rem;
+    }
+    .btn-download {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      text-decoration: none;
+    }
+    .btn-download:hover { background: var(--btn-hover); }
+
+    /* Carousel Sertifikat */
+    .certificate-carousel {
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+    .carousel-container {
+      display: flex;
+      transition: transform 0.4s ease;
+    }
+    .certificate-slide {
+      flex: 0 0 100%;
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      text-align: center;
+      padding: 1rem;
+    }
+    .certificate-slide img {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #fff;
+    }
+    .certificate-slide .certificate-info {
+      margin-top: 1rem;
+    }
+    .certificate-slide h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+    }
+    .certificate-slide p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.6);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: 0.2s;
+      z-index: 10;
+    }
+    .carousel-btn:hover { background: var(--accent); }
+    .btn-prev { left: 10px; }
+    .btn-next { right: 10px; }
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-secondary);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .dot.active { background: var(--accent); transform: scale(1.2); }
+
+    /* Contact */
+    .contact-card {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 1rem;
+    }
+    .contact-item i { font-size: 1.4rem; color: var(--accent); }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    /* Music control */
+    .music-control {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--accent-glow);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    .music-control:hover { transform: scale(1.1); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .menu-btn { display: block; }
+      nav {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: var(--nav-bg);
+        flex-direction: column;
+        padding: 1rem 0;
+        display: none;
+      }
+      nav.show { display: flex; }
+      nav a { margin: 0.8rem 2rem; }
+      .hero h2 { font-size: 2.2rem; }
+      .container { padding: 2rem 1rem; }
+      .certificate-carousel { max-width: 100%; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Mario<span>.Dev</span></div>
+    <div class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+    <nav id="menuNav">
+      <a href="home.html">Home</a>
+      <a href="neptu.html">Neptu</a>
+      <a href="Caljawa.html">Kalender Jawa</a>
+      <a href="#about">Tentang</a>
+      <a href="#skills">Keahlian</a>
+      <a href="#projects">Proyek</a>
+      <a href="#certificates">Sertifikat</a>
+      <a href="#contact">Kontak</a>
+    </nav>
+    <div class="theme-toggle" id="themeToggle">
+      <i class="fas fa-sun"></i>
+      <i class="fas fa-moon" style="display: none;"></i>
+      <span>Mode</span>
+    </div>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <h2>Halo, Saya <br> <span>Mario Adi Saputra</span></h2>
+      <p>Web Developer & UI/UX Designer. Membangun website modern, cepat, dan fungsional.</p>
+      <a href="#projects" class="btn">Lihat Karya Saya</a>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- About -->
+    <section id="about">
+      <h2 class="section-title">Tentang Saya</h2>
+      <div class="about-card">
+        <p style="text-align: center; max-width: 800px; margin: 0 auto;">
+          Saya seorang profesional web development yang berfokus pada website modern, responsif, dan fungsional. Passion mengubah ide menjadi realitas digital.
+        </p>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills">
+      <h2 class="section-title">Keahlian Teknis</h2>
+      <div class="skills-container">
+        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-html5"></i> HTML5</span><span>95%</span></div><div class="progress-bg"><div class="progress-bar" data-width="95%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-css3-alt"></i> CSS3</span><span>90%</span></div><div class="progress-bg"><div class="progress-bar" data-width="90%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-js"></i> JavaScript</span><span>85%</span></div><div class="progress-bg"><div class="progress-bar" data-width="85%"></div></div></div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+      <h2 class="section-title">Proyek Unggulan</h2>
+      <div class="projects">
+        <div class="project-card">
+    <div class="project-img-wrapper"><img src="https://d.top4top.io/p_3631ygdly0.png" alt="Website Neptu"></div>
+    <div class="project-info">
+        <span class="tag">Javanese App</span>
+        <h3>Website Neptu</h3>
+        <p style="margin-bottom: 1rem;">Platform Neptu modern dengan UI/UX premium. Yang di sesuaikan untuk keperluan kedua mempelai serta menentukan tanggal pernikahan dengan akurat 100% sesuai dengan primbon peninggalan leluhur.</p>
+        <!-- TOMBOL AKSI BARU -->
+        <a href="https://cerovatar.github.io/neptu.html" class="btn-download" style="display: inline-block; margin-top: 5px;"><i class="fas fa-external-link-alt"></i> Buka url</a>
     </div>
-  </header>
-
-  <section id="home" class="hero">
-    <div class="hero-content">
-      <h2>Halo, Saya <br> <span>Mario Adi Saputra</span></h2>
-      <p>Web Developer & UI/UX Designer. Membangun website modern, cepat, dan fungsional.</p>
-      <a href="#projects" class="btn">Lihat Karya Saya</a>
-    </div>
-  </section>
-
-  <div class="container">
-    <!-- About -->
-    <section id="about">
-      <h2 class="section-title">Tentang Saya</h2>
-      <div class="about-card">
-        <p style="text-align: center; max-width: 800px; margin: 0 auto;">
-          Saya seorang profesional web development yang berfokus pada website modern, responsif, dan fungsional. Passion mengubah ide menjadi realitas digital.
-        </p>
-      </div>
-    </section>
-
-    <!-- Skills -->
-    <section id="skills">
-      <h2 class="section-title">Keahlian Teknis</h2>
-      <div class="skills-container">
-        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-html5"></i> HTML5</span><span>95%</span></div><div class="progress-bg"><div class="progress-bar" data-width="95%"></div></div></div>
-        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-css3-alt"></i> CSS3</span><span>90%</span></div><div class="progress-bg"><div class="progress-bar" data-width="90%"></div></div></div>
-        <div class="skill-item"><div class="skill-info"><span><i class="fab fa-js"></i> JavaScript</span><span>85%</span></div><div class="progress-bg"><div class="progress-bar" data-width="85%"></div></div></div>
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects">
-      <h2 class="section-title">Proyek Unggulan</h2>
-      <div class="projects">
-        <div class="project-card"><div class="project-img-wrapper"><img src="https://d.top4top.io/p_3631ygdly0.png" alt="Website Neptu"></div><div class="project-info"><span class="tag">Javanese App</span><h3>Website Neptu</h3><p>Platform Cek Khodam & Neptu modern dengan UI/UX premium.</p></div></div>
-        <div class="project-card"><div class="project-img-wrapper"><img src="https://f.top4top.io/p_3631lxov70.png" alt="Aplikasi Kasir"></div><div class="project-info"><span class="tag">Web App</span><h3>Aplikasi Kasir (POS)</h3><p>Sistem Point of Sale berbasis web dengan manajemen stok dan laporan real-time.</p></div></div>
-        <div class="project-card"><div class="project-img-wrapper"><img src="https://c.top4top.io/p_3631sek070.png" alt="Landing Page"></div><div class="project-info"><span class="tag">Marketing</span><h3>Landing Page Produk</h3><p>Halaman landing page interaktif dengan konversi tinggi.</p></div></div>
-        <div class="project-card"><div class="project-img-wrapper"><img src="https://i.top4top.io/p_3670elsa90.jpg" alt="Kalender Jawa"></div><div class="project-info"><span class="tag">Utility</span><h3>Aplikasi Kalender Jawa</h3><p>Kalender Masehi-Jawa lengkap dengan hari pasaran, wuku, dan ramadhan.</p><a href="#" class="btn-download">Unduh APK</a></div></div>
-      </div>
-    </section>
-
-    <!-- Certificates Carousel -->
-    <section id="certificates">
-      <h2 class="section-title">Sertifikat Profesional</h2>
-      <div class="certificate-carousel">
-        <button class="carousel-btn btn-prev" id="prevCertBtn"><i class="fas fa-chevron-left"></i></button>
-        <div class="carousel-container" id="certCarousel">
-          <!-- Slide 1: Bootcamp Juara Coding -->
-          <div class="certificate-slide">
-            <img src="https://e.top4top.io/p_3802elevf0.jpg" alt="Sertifikat Bootcamp Juara Coding">
-            <div class="certificate-info">
-              <h3>Bootcamp Juara Coding</h3>
-              <p>Lifetime Certificate - Juara Coding | 2022</p>
-            </div>
-          </div>
-          <!-- Slide 2: Full Stack Web Development -->
-          <div class="certificate-slide">
-            <img src="https://k.top4top.io/p_38021qjmc0.jpg" alt="Sertifikat Full Stack Web Development">
-            <div class="certificate-info">
-              <h3>Full Stack Web Development</h3>
-              <p>Coding Academy | 2022</p>
-            </div>
-          </div>
-          <!-- Slide 3: Praktik Kerja Lapangan (PKL) - GAMBAR SUDAH DIGANTI -->
-          <div class="certificate-slide">
-            <img src="https://e.top4top.io/p_3802qef180.jpg" alt="Sertifikat Praktik Kerja Lapangan">
-            <div class="certificate-info">
-              <h3>Praktik Kerja Lapangan (PKL)</h3>
-              <p>Penyelenggara / Instansi | 2022</p>
-            </div>
-          </div>
-          <!-- Slide 4: Software Engineering -->
-          <div class="certificate-slide">
-            <img src="https://g.top4top.io/p_3802xsd8p2.jpg" alt="Sertifikat Software Engineering">
-            <div class="certificate-info">
-              <h3>Software Engineering</h3>
-              <p>Certified Software Engineer | 2022</p>
-            </div>
-          </div>
-        </div>
-        <button class="carousel-btn btn-next" id="nextCertBtn"><i class="fas fa-chevron-right"></i></button>
-        <div class="dots" id="certDots"></div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact">
-      <h2 class="section-title">Hubungi Saya</h2>
-      <div class="contact-card">
-        <div class="contact-item"><i class="fas fa-envelope"></i><span>cerovatarzinakawara@gmail.com</span></div>
-        <div class="contact-item"><i class="fab fa-instagram"></i><span>@taring.off</span></div>
-        <div class="contact-item"><i class="fab fa-tiktok"></i><span>@zinxploit.ofc</span></div>
-        <div class="contact-item"><i class="fas fa-phone"></i><span>0857-3560-5012</span></div>
-      </div>
-    </section>
-  </div>
-
-  <footer>
-    <p>© 2026 Portofolio ZinXploit. All Rights Reserved.</p>
-  </footer>
-
-  <div class="music-control" id="musicBtn"><i class="fas fa-music"></i></div>
-  <audio id="bgm" loop><source src="Kimetsu no Yaiba OST [Go Shinna ft Nami Nakagawa - Kamado Tanjirou no Uta] Lirik & Terjemahan.mp3" type="audio/mpeg"></audio>
-
-  <script>
-    // Theme Toggle
-    const themeToggle = document.getElementById('themeToggle');
-    const sunIcon = themeToggle.querySelector('.fa-sun');
-    const moonIcon = themeToggle.querySelector('.fa-moon');
-    function setTheme(theme) {
-      if (theme === 'light') {
-        document.body.classList.add('light');
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'inline-block';
-      } else {
-        document.body.classList.remove('light');
-        sunIcon.style.display = 'inline-block';
-        moonIcon.style.display = 'none';
-      }
-      localStorage.setItem('theme', theme);
-    }
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) setTheme(savedTheme);
-    else setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    themeToggle.addEventListener('click', () => setTheme(document.body.classList.contains('light') ? 'dark' : 'light'));
-
-    // Skills animation
-    const skillsContainer = document.querySelector('.skills-container');
-    const progressBars = document.querySelectorAll('.progress-bar');
-    const animateSkills = () => progressBars.forEach(bar => bar.style.width = bar.getAttribute('data-width'));
-    const resetSkills = () => progressBars.forEach(bar => bar.style.width = '0');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => entry.isIntersecting ? animateSkills() : resetSkills());
-    }, { threshold: 0.2 });
-    if (skillsContainer) observer.observe(skillsContainer);
-
-    // Carousel Sertifikat
-    const container = document.getElementById('certCarousel');
-    const slides = document.querySelectorAll('.certificate-slide');
-    const prevBtn = document.getElementById('prevCertBtn');
-    const nextBtn = document.getElementById('nextCertBtn');
-    const dotsContainer = document.getElementById('certDots');
-    let currentIndex = 0;
-    let totalSlides = slides.length;
-
-    function updateCarousel() {
-      container.style.transform = `translateX(-${currentIndex * 100}%)`;
-      document.querySelectorAll('.dot').forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentIndex);
-      });
-    }
-    function createDots() {
-      dotsContainer.innerHTML = '';
-      for (let i = 0; i < totalSlides; i++) {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        if (i === currentIndex) dot.classList.add('active');
-        dot.addEventListener('click', () => {
-          currentIndex = i;
-          updateCarousel();
-        });
-        dotsContainer.appendChild(dot);
-      }
-    }
-    prevBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-      updateCarousel();
-    });
-    nextBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex + 1) % totalSlides;
-      updateCarousel();
-    });
-    // Touch swipe support
-    let touchStartX = 0;
-    let touchEndX = 0;
-    container.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
-    container.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      if (touchEndX < touchStartX - 50) nextBtn.click();
-      if (touchEndX > touchStartX + 50) prevBtn.click();
-    });
-    createDots();
-    updateCarousel();
-
-    // Menu Mobile
-    function toggleMenu() { document.getElementById('menuNav').classList.toggle('show'); }
-
-    // Music Player
-    const bgm = document.getElementById('bgm');
-    const musicBtn = document.getElementById('musicBtn');
-    const musicIcon = musicBtn.querySelector('i');
-    let isPlaying = false;
-    bgm.volume = 0.3;
-    function toggleMusic() {
-      if (isPlaying) {
-        bgm.pause();
-        musicIcon.className = 'fas fa-music';
-      } else {
-        bgm.play().catch(e => console.log('Autoplay prevented'));
-        musicIcon.className = 'fas fa-pause';
-      }
-      isPlaying = !isPlaying;
-    }
-    musicBtn.addEventListener('click', toggleMusic);
-    document.body.addEventListener('click', function initAudio() {
-      if (!isPlaying && bgm.paused) { bgm.play().then(() => { isPlaying = true; musicIcon.className = 'fas fa-pause'; }).catch(() => {}); }
-      document.body.removeEventListener('click', initAudio);
-    }, { once: true });
-
-    // Scroll Animation
-    const animatedElements = document.querySelectorAll('.project-card, .about-card, .contact-card, .certificate-slide');
-    const scrollObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animation = 'fadeInUp 0.8s ease forwards';
-          scrollObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    animatedElements.forEach(el => { el.style.opacity = '0'; scrollObserver.observe(el); });
-  </script>
-</body>
+</div>
+        <div class="project-card"><div class="project-img-wrapper"><img src="https://f.top4top.io/p_3631lxov70.png" alt="Aplikasi Kasir"></div><div class="project-info"><span class="tag">Web App</span><h3>Aplikasi Kasir (POS)</h3><p>Sistem Point of Sale berbasis web dengan manajemen stok dan laporan real-time.</p></div></div>
+        <div class="project-card"><div class="project-img-wrapper"><img src="https://c.top4top.io/p_3631sek070.png" alt="Landing Page"></div><div class="project-info"><span class="tag">Marketing</span><h3>Landing Page Produk</h3><p>Halaman landing page interaktif dengan konversi tinggi.</p></div></div>
+        <div class="project-card"><div class="project-img-wrapper"><img src="https://i.top4top.io/p_3670elsa90.jpg" alt="Kalender Jawa"></div><div class="project-info"><span class="tag">Utility</span><h3>Aplikasi Kalender Jawa</h3><p>Kalender Masehi-Jawa lengkap dengan hari pasaran, wuku, dan ramadhan.</p><a href="https://appsgeyser.io/19452331/Kalender Jawa" class="btn-download">Unduh APK</a></div></div>
+      </div>
+    </section>
+
+    <!-- Certificates Carousel -->
+    <section id="certificates">
+      <h2 class="section-title">Sertifikat Profesional</h2>
+      <div class="certificate-carousel">
+        <button class="carousel-btn btn-prev" id="prevCertBtn"><i class="fas fa-chevron-left"></i></button>
+        <div class="carousel-container" id="certCarousel">
+          <!-- Slide 1: Bootcamp Juara Coding -->
+          <div class="certificate-slide">
+            <img src="https://e.top4top.io/p_3802elevf0.jpg" alt="Sertifikat Bootcamp Juara Coding">
+            <div class="certificate-info">
+              <h3>Bootcamp Juara Coding</h3>
+              <p>Lifetime Certificate - Juara Coding | 2022</p>
+            </div>
+          </div>
+          <!-- Slide 2: Full Stack Web Development -->
+          <div class="certificate-slide">
+            <img src="https://k.top4top.io/p_38021qjmc0.jpg" alt="Sertifikat Full Stack Web Development">
+            <div class="certificate-info">
+              <h3>Full Stack Web Development</h3>
+              <p>Coding Academy | 2022</p>
+            </div>
+          </div>
+          <!-- Slide 3: Praktik Kerja Lapangan (PKL) - GAMBAR SUDAH DIGANTI -->
+          <div class="certificate-slide">
+            <img src="https://e.top4top.io/p_3802qef180.jpg" alt="Sertifikat Praktik Kerja Lapangan">
+            <div class="certificate-info">
+              <h3>Praktik Kerja Lapangan (PKL)</h3>
+              <p>Penyelenggara / Instansi | 2022</p>
+            </div>
+          </div>
+          <!-- Slide 4: Software Engineering -->
+          <div class="certificate-slide">
+            <img src="https://g.top4top.io/p_3802xsd8p2.jpg" alt="Sertifikat Software Engineering">
+            <div class="certificate-info">
+              <h3>Software Engineering</h3>
+              <p>Certified Software Engineer | 2022</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn btn-next" id="nextCertBtn"><i class="fas fa-chevron-right"></i></button>
+        <div class="dots" id="certDots"></div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <h2 class="section-title">Hubungi Saya</h2>
+      <div class="contact-card">
+        <div class="contact-item"><i class="fas fa-envelope"></i><span>cerovatarzinakawara@gmail.com</span></div>
+        <div class="contact-item"><i class="fab fa-instagram"></i><span>@taring.off</span></div>
+        <div class="contact-item"><i class="fab fa-tiktok"></i><span>@zinxploit.ofc</span></div>
+        <div class="contact-item"><i class="fas fa-phone"></i><span>0831-7175-4073</span></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>© 2026 Portofolio ZinXploit. All Rights Reserved.</p>
+  </footer>
+
+  <div class="music-control" id="musicBtn"><i class="fas fa-music"></i></div>
+  <audio id="bgm" loop><source src="Kimetsu no Yaiba OST [Go Shinna ft Nami Nakagawa - Kamado Tanjirou no Uta] Lirik & Terjemahan.mp3" type="audio/mpeg"></audio>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = themeToggle.querySelector('.fa-sun');
+    const moonIcon = themeToggle.querySelector('.fa-moon');
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.body.classList.add('light');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'inline-block';
+      } else {
+        document.body.classList.remove('light');
+        sunIcon.style.display = 'inline-block';
+        moonIcon.style.display = 'none';
+      }
+      localStorage.setItem('theme', theme);
+    }
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) setTheme(savedTheme);
+    else setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    themeToggle.addEventListener('click', () => setTheme(document.body.classList.contains('light') ? 'dark' : 'light'));
+
+    // Skills animation
+    const skillsContainer = document.querySelector('.skills-container');
+    const progressBars = document.querySelectorAll('.progress-bar');
+    const animateSkills = () => progressBars.forEach(bar => bar.style.width = bar.getAttribute('data-width'));
+    const resetSkills = () => progressBars.forEach(bar => bar.style.width = '0');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => entry.isIntersecting ? animateSkills() : resetSkills());
+    }, { threshold: 0.2 });
+    if (skillsContainer) observer.observe(skillsContainer);
+
+    // Carousel Sertifikat
+    const container = document.getElementById('certCarousel');
+    const slides = document.querySelectorAll('.certificate-slide');
+    const prevBtn = document.getElementById('prevCertBtn');
+    const nextBtn = document.getElementById('nextCertBtn');
+    const dotsContainer = document.getElementById('certDots');
+    let currentIndex = 0;
+    let totalSlides = slides.length;
+
+    function updateCarousel() {
+      container.style.transform = `translateX(-${currentIndex * 100}%)`;
+      document.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+    }
+    function createDots() {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (i === currentIndex) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          updateCarousel();
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+    });
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % totalSlides;
+      updateCarousel();
+    });
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    container.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+    container.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) nextBtn.click();
+      if (touchEndX > touchStartX + 50) prevBtn.click();
+    });
+    createDots();
+    updateCarousel();
+
+    // Menu Mobile
+    function toggleMenu() { document.getElementById('menuNav').classList.toggle('show'); }
+
+    // Music Player
+    const bgm = document.getElementById('bgm');
+    const musicBtn = document.getElementById('musicBtn');
+    const musicIcon = musicBtn.querySelector('i');
+    let isPlaying = false;
+    bgm.volume = 0.3;
+    function toggleMusic() {
+      if (isPlaying) {
+        bgm.pause();
+        musicIcon.className = 'fas fa-music';
+      } else {
+        bgm.play().catch(e => console.log('Autoplay prevented'));
+        musicIcon.className = 'fas fa-pause';
+      }
+      isPlaying = !isPlaying;
+    }
+    musicBtn.addEventListener('click', toggleMusic);
+    document.body.addEventListener('click', function initAudio() {
+      if (!isPlaying && bgm.paused) { bgm.play().then(() => { isPlaying = true; musicIcon.className = 'fas fa-pause'; }).catch(() => {}); }
+      document.body.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    // Scroll Animation
+    const animatedElements = document.querySelectorAll('.project-card, .about-card, .contact-card, .certificate-slide');
+    const scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fadeInUp 0.8s ease forwards';
+          scrollObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    animatedElements.forEach(el => { el.style.opacity = '0'; scrollObserver.observe(el); });
+  </script>
+</body>
 </html>
