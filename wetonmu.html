@@ -13,7 +13,7 @@
             font-family: 'Quicksand', sans-serif;
             color: #f3e9c0;
             min-height: 100vh;
-            padding: 1rem;
+            padding: 0 0 1rem 0; /* Padding atas dihapus karena ada header */
         }
         body::before {
             content: '';
@@ -28,9 +28,104 @@
             background-repeat: repeat;
             background-size: 50px;
         }
+
+        /* ========== HEADER BAR NAVIGASI ========== */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(30, 20, 10, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(201, 160, 61, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .top-bar-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #f3c682;
+            letter-spacing: 1px;
+        }
+
+        .menu-container {
+            position: relative;
+        }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid #c9a03d;
+            color: #c9a03d;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: 0.3s;
+        }
+
+        .menu-btn:hover, .menu-btn.active {
+            background: #c9a03d;
+            color: #1e1a0c;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 140%;
+            right: 0;
+            background: rgba(30, 20, 10, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid #c9a03d;
+            border-radius: 1rem;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            min-width: 200px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a {
+            text-decoration: none;
+            color: #cfb284;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.7rem 1rem;
+            border-radius: 0.5rem;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .dropdown-menu a:hover {
+            background: #c9a03d;
+            color: #1e1a0c;
+        }
+        /* ===================================== */
+
         .container {
             max-width: 900px;
-            margin: 0 auto;
+            margin: 1.5rem auto 0 auto;
+            padding: 0 1rem;
             position: relative;
             z-index: 1;
         }
@@ -86,7 +181,7 @@
             flex: 1;
             min-width: 150px;
         }
-        button {
+        button.btn-cek {
             background: linear-gradient(95deg, #c9a03d, #d4af37);
             border: none;
             border-radius: 2rem;
@@ -98,7 +193,7 @@
             width: 100%;
             font-size: 1rem;
         }
-        button:hover {
+        button.btn-cek:hover {
             transform: scale(0.98);
             background: linear-gradient(95deg, #d4af37, #e0b84d);
         }
@@ -167,6 +262,8 @@
             margin-top: 2rem;
         }
         @media (max-width: 700px) {
+            .top-bar-title { font-size: 1.3rem; }
+            .menu-btn { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
             .card { padding: 1.2rem; }
             h1 { font-size: 1.6rem; }
             .detail-grid { grid-template-columns: 1fr; }
@@ -174,6 +271,24 @@
     </style>
 </head>
 <body>
+
+<!-- HEADER BAR BARU -->
+<header class="top-bar">
+    <div class="top-bar-title">Wetonmu</div>
+    <div class="menu-container">
+        <button class="menu-btn" id="menuToggleBtn">
+            Menu <i class="fas fa-bars"></i>
+        </button>
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="home.html"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html"><i class="fas fa-briefcase"></i> Portofolio</a>
+            <a href="neptu.html"><i class="fas fa-moon"></i> Neptu</a>
+            <a href="Game.html"><i class="fas fa-gamepad"></i> Game</a>
+        </div>
+    </div>
+</header>
+
 <div class="container">
     <div class="card">
         <h1><i class="fas fa-moon"></i> Cek Weton Lengkap</h1>
@@ -186,7 +301,7 @@
             </div>
             <div class="form-group" style="flex:0.5; min-width:100px;">
                 <label>&nbsp;</label>
-                <button id="cekBtn"><i class="fas fa-search"></i> Cek Weton</button>
+                <button class="btn-cek" id="cekBtn"><i class="fas fa-search"></i> Cek Weton</button>
             </div>
         </div>
 
@@ -238,6 +353,24 @@
 </div>
 
 <script>
+    // ========== LOGIKA MENU DROPDOWN ==========
+    const menuBtn = document.getElementById('menuToggleBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    menuBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Mencegah klik menutup menu secara langsung
+        dropdownMenu.classList.toggle('show');
+        menuBtn.classList.toggle('active');
+    });
+
+    // Menutup menu jika klik di luar area menu
+    document.addEventListener('click', function(e) {
+        if (!dropdownMenu.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+            menuBtn.classList.remove('active');
+        }
+    });
+
     // ========== DATA WETON & NEPTU ==========
     const neptuHari = [5,4,3,7,8,6,9];
     const neptuPasaran = [5,9,7,4,8];
@@ -261,41 +394,13 @@
 
     // Data pekerjaan yang cocok per kategori
     const pekerjaanCocok = {
-        1: { 
-            bidang: "Kepemimpinan & Manajemen", 
-            daftar: "Direktur, Manajer Umum, CEO, Ketua Organisasi, Pengusaha, Komandan Militer, Kepala Desa/Pamong",
-            alasan: "Karisma dan wibawa tinggi, cocok menjadi pemimpin yang disegani."
-        },
-        2: { 
-            bidang: "Komunikasi & Diplomasi", 
-            daftar: "Diplomat, Dosen, Guru, Pembicara Publik, Penasihat, Konsultan, Psikolog, Humas",
-            alasan: "Kemampuan berbicara dan mempengaruhi orang lain sangat kuat."
-        },
-        3: { 
-            bidang: "Hukum & Keadilan", 
-            daftar: "Hakim, Jaksa, Pengacara, Auditor, Inspektur, Penegak Hukum, Wartawan Investigasi",
-            alasan: "Kejujuran dan ketegasan membuatnya cocok di bidang hukum dan penegakan aturan."
-        },
-        4: { 
-            bidang: "Manajemen & Administrasi", 
-            daftar: "Pejabat Pemerintahan, Direktur, Manajer SDM, Administrator, Konsultan Manajemen",
-            alasan: "Kebijaksanaan dan pengaruh luas membuatnya ideal sebagai pemimpin dan pengelola."
-        },
-        5: { 
-            bidang: "Bisnis & Keuangan", 
-            daftar: "Pengusaha, Investor, Bankir, Akuntan, Analis Keuangan, Manajer Investasi",
-            alasan: "Bakat mengelola harta dan ambisi ekonomi sangat tinggi."
-        },
-        6: { 
-            bidang: "Hubungan Masyarakat & Kemitraan", 
-            daftar: "HRD, Konsultan Pernikahan, Psikolog, Pemasaran, Event Organizer, Perhotelan",
-            alasan: "Kemampuan menjalin hubungan personal dan kemitraan sangat baik."
-        },
-        7: { 
-            bidang: "Jaringan & Sosialisasi", 
-            daftar: "Sales, Marketing, Public Relations, Diplomat, Mediator, Networking Specialist",
-            alasan: "Mudah beradaptasi dan bergaul dengan semua kalangan, cocok di bidang yang membutuhkan relasi."
-        }
+        1: { bidang: "Kepemimpinan & Manajemen", daftar: "Direktur, Manajer Umum, CEO, Ketua Organisasi, Pengusaha, Komandan Militer, Kepala Desa/Pamong", alasan: "Karisma dan wibawa tinggi, cocok menjadi pemimpin yang disegani." },
+        2: { bidang: "Komunikasi & Diplomasi", daftar: "Diplomat, Dosen, Guru, Pembicara Publik, Penasihat, Konsultan, Psikolog, Humas", alasan: "Kemampuan berbicara dan mempengaruhi orang lain sangat kuat." },
+        3: { bidang: "Hukum & Keadilan", daftar: "Hakim, Jaksa, Pengacara, Auditor, Inspektur, Penegak Hukum, Wartawan Investigasi", alasan: "Kejujuran dan ketegasan membuatnya cocok di bidang hukum dan penegakan aturan." },
+        4: { bidang: "Manajemen & Administrasi", daftar: "Pejabat Pemerintahan, Direktur, Manajer SDM, Administrator, Konsultan Manajemen", alasan: "Kebijaksanaan dan pengaruh luas membuatnya ideal sebagai pemimpin dan pengelola." },
+        5: { bidang: "Bisnis & Keuangan", daftar: "Pengusaha, Investor, Bankir, Akuntan, Analis Keuangan, Manajer Investasi", alasan: "Bakat mengelola harta dan ambisi ekonomi sangat tinggi." },
+        6: { bidang: "Hubungan Masyarakat & Kemitraan", daftar: "HRD, Konsultan Pernikahan, Psikolog, Pemasaran, Event Organizer, Perhotelan", alasan: "Kemampuan menjalin hubungan personal dan kemitraan sangat baik." },
+        7: { bidang: "Jaringan & Sosialisasi", daftar: "Sales, Marketing, Public Relations, Diplomat, Mediator, Networking Specialist", alasan: "Mudah beradaptasi dan bergaul dengan semua kalangan, cocok di bidang yang membutuhkan relasi." }
     };
 
     // Fungsi untuk mencari weton yang cocok (berdasarkan selisih neptu)
@@ -314,13 +419,10 @@
                 });
             }
         }
-        // Urutkan berdasarkan selisih terkecil
         semuaWeton.sort((a,b) => a.selisih - b.selisih);
-        // Ambil 5 weton dengan selisih terkecil (kecuali weton sendiri)
         const hasil = [];
         let count = 0;
         for (let i = 0; i < semuaWeton.length && count < 5; i++) {
-            // skip jika weton sama persis dengan neptu yang sama (hindari diri sendiri)
             if (semuaWeton[i].neptu === neptu) continue;
             hasil.push(semuaWeton[i]);
             count++;
@@ -374,12 +476,9 @@
         const kategori = getWetonKategori(neptu);
         const tanggalFormatted = formatDate(date);
 
-        // Dapatkan kecocokan weton
         const cocokList = getCocokWeton(neptu);
-        // Dapatkan pekerjaan yang cocok
         const pekerjaan = pekerjaanCocok[neptu % 7 === 0 ? 7 : neptu % 7];
 
-        // Render hasil
         let cocokHtml = '<div class="cocok-list">';
         cocokList.forEach(item => {
             cocokHtml += `<span class="cocok-item">${item.hari} ${item.pasaran} (${item.neptu})</span>`;
