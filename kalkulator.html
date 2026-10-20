@@ -1,200 +1,883 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>    
-</head>
-<style>
-	.calculator {
-    text-align: center;
-    margin: 0 auto;
-    padding-top: 200px;
-    width: 400px;
-}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyber Calculator Sains & Konversi</title>    
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-.calculator-screen {
-    width: 100%;
-    height: 100px;
-    background-color: #252525;
-    color: #fff;
-    text-align: right;
-    font-size: 36px;
-    border: none;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
+        /* Tema Cyber / Dark Hacker */
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #050505;
+            /* Grid background pattern */
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #e0e0e0;
+        }
 
-.calculator-keys {
-    width: 100%;
-}
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh; 
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 60%);
+        }
 
-.row {
-    display: flex;
-}
+        /* Header Tabs */
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 15px 0 15px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            z-index: 10;
+        }
 
-button {
-    height: 80px;
-    background-color: gray;
-    border: 1px solid black;
-    font-size: 32px;
-    color: #fff;
-    width: 25%;
-    outline: none;
-}
+        .top-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex: 1;
+            padding-bottom: 10px;
+        }
 
-button:hover {
-    background-color: darkgray;
-}
+        .top-tabs div {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #888;
+            cursor: pointer;
+            padding-bottom: 10px;
+            position: relative;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
 
-.all-clear, .zero-btn {
-    width: 50%;
-}
+        .top-tabs div.active {
+            color: #00f0ff;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
 
-.operator, .equal-sign {
-    background-color: orange;
-}
+        .top-tabs div.active::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #00f0ff;
+            box-shadow: 0 0 10px #00f0ff;
+        }
 
-.operator:hover, .equal-sign:hover {
-    background-color: darkorange;
-}
-</style>
+        /* Area Kalkulator */
+        .calculator-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Layar Angka */
+        .screen-header {
+            flex-shrink: 0;
+            display: flex;
+            align-items: flex-end;
+            padding: 15px 20px;
+            min-height: 120px;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0, 240, 255, 0.03) 100%);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .calculator-screen {
+            width: 100%;
+            height: 100px;
+            background-color: transparent;
+            color: #00f0ff;
+            font-family: 'Share Tech Mono', monospace;
+            text-align: right;
+            font-size: 3.5rem;
+            font-weight: 500;
+            border: none;
+            padding: 0 10px;
+            outline: none;
+            text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+            overflow-x: auto;
+        }
+
+        /* Area Tombol Utama */
+        .calculator-keys {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0 10px;
+            overflow-y: auto;
+        }
+
+        /* Mode Sains */
+        .scientific-keys {
+            display: none; 
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        .show-sains .scientific-keys {
+            display: grid;
+        }
+
+        .scientific-keys button {
+            height: 50px;
+            font-size: 0.9rem !important;
+            color: #00f0ff !important;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            transition: 0.2s;
+        }
+
+        .scientific-keys button:active {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+        }
+
+        .basic-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        /* Desain Tombol Glassmorphism */
+        .calculator-keys button {
+            width: 100%;
+            height: 65px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            font-size: 1.8rem;
+            color: #e0e0e0;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.15s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .calculator-keys button:active {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0.95);
+        }
+
+        /* Operator Warna Neon */
+        .operator, .equal-sign {
+            color: #ff0055 !important; 
+            border-color: rgba(255, 0, 85, 0.3) !important;
+            background: rgba(255, 0, 85, 0.05) !important;
+            font-size: 2rem;
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+        }
+        
+        .operator:active, .equal-sign:active {
+            background: rgba(255, 0, 85, 0.2) !important;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+        }
+
+        .backspace-icon {
+            font-size: 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 2px 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .backspace-icon i {
+            font-size: 0.9rem;
+            margin-left: 2px;
+        }
+
+        .func-btn {
+            font-size: 1.5rem !important;
+            color: #00f0ff !important;
+            border-color: rgba(0, 240, 255, 0.3) !important;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Drag Handle untuk Riwayat */
+        .drag-container {
+            width: 100%;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+            background: transparent;
+            flex-shrink: 0;
+        }
+
+        .drag-handle {
+            width: 50px;
+            height: 5px;
+            background: rgba(0, 240, 255, 0.3);
+            border-radius: 10px;
+            transition: 0.2s;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        /* FOOTER */
+        .footer-cyber {
+            text-align: center;
+            color: rgba(0, 240, 255, 0.4);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            padding: 10px 0;
+            flex-shrink: 0;
+            letter-spacing: 1px;
+            background: #050505;
+            border-top: 1px solid rgba(0, 240, 255, 0.1);
+        }
+
+        /* FITUR ROTASI (LANDSCAPE) */
+        @media (orientation: landscape) {
+            .header-top { display: none; }
+            .calculator-wrapper {
+                flex-direction: row;
+                padding: 10px;
+            }
+            .screen-header {
+                flex: 0 0 35%;
+                align-items: center;
+                padding: 0 20px;
+                border-right: 1px solid rgba(0, 240, 255, 0.1);
+                border-bottom: none;
+            }
+            .calculator-screen {
+                height: auto;
+                font-size: 4rem;
+            }
+            .calculator-keys {
+                flex: 1;
+                padding: 0 0 0 15px;
+            }
+            .scientific-keys {
+                display: grid;
+            }
+            .calculator-keys button {
+                height: 55px;
+                font-size: 1.4rem;
+            }
+            .drag-container {
+                display: none;
+            }
+        }
+
+        /* PANEL RIWAYAT (Laci) */
+        .history-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70%; 
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 2px solid #00f0ff;
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            box-shadow: 0 -10px 30px rgba(0, 240, 255, 0.1);
+            padding: 20px;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .history-panel.active { transform: translateY(0); }
+
+        .history-drag-handle {
+            width: 40px;
+            height: 5px;
+            background: rgba(0, 240, 255, 0.5);
+            border-radius: 10px;
+            margin: 0 auto 15px auto;
+            cursor: pointer;
+        }
+
+        .history-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 240, 255, 0.2); padding-bottom: 15px; margin-bottom: 15px; flex-shrink: 0; }
+        .history-header h3 { font-weight: 600; font-size: 1.2rem; color: #00f0ff; text-shadow: 0 0 10px rgba(0, 240, 255, 0.4); font-family: 'Share Tech Mono', monospace; }
+        .clear-history-btn { background: transparent; border: 1px solid #ff0055; color: #ff0055; border-radius: 8px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-family: 'Share Tech Mono', monospace; }
+        .clear-history-btn:active { background: rgba(255, 0, 85, 0.2); }
+        
+        .history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; cursor: pointer; border-left: 3px solid #00f0ff; border-top: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .history-expression { color: #888; font-size: 0.85rem; margin-bottom: 3px; font-family: 'Share Tech Mono', monospace; }
+        .history-result { color: #00f0ff; font-size: 1.3rem; font-weight: 600; text-align: right; text-shadow: 0 0 5px rgba(0, 240, 255, 0.3); font-family: 'Share Tech Mono', monospace; }
+
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(3px);
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* PANEL MENU LAINNYA */
+        .menu-panel, .converter-panel, .kurs-panel {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050505; padding: 20px; z-index: 50;
+            display: none; flex-direction: column;
+        }
+
+        .menu-panel.active, .converter-panel.active, .kurs-panel.active { display: flex; }
+
+        .menu-header, .conv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(0, 240, 255, 0.2); padding-bottom: 15px; flex-shrink: 0; }
+        .menu-header h3, .conv-header h3 { font-size: 1.2rem; color: #00f0ff; font-family: 'Share Tech Mono', monospace; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; overflow-y: auto; padding-bottom: 20px; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px 5px; cursor: pointer; border: 1px solid rgba(0, 240, 255, 0.1); height: 100px; transition: 0.2s; }
+        .menu-item:active { background: rgba(0, 240, 255, 0.1); border-color: #00f0ff; }
+        .menu-item i { font-size: 1.8rem; color: #00f0ff; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
+        .menu-item span { font-size: 0.75rem; color: #ccc; text-align: center; font-weight: 500; }
+
+        .conv-body { background: rgba(255,255,255,0.02); border-radius: 15px; padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); }
+        .input-box-vertical { display: flex; flex-direction: column; gap: 8px; }
+        .input-box-vertical label { color: #888; font-size: 0.9rem; }
+        .input-box-vertical select, .input-box-vertical input { width: 100%; background: #111; border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 10px; padding: 14px; color: #00f0ff; font-size: 1rem; outline: none; font-family: 'Share Tech Mono', monospace; }
+        .input-box-vertical input:focus, .input-box-vertical select:focus { border-color: #00f0ff; box-shadow: 0 0 10px rgba(0,240,255,0.2); }
+        
+        .swap-btn { text-align: center; color: #ff0055; font-size: 1.5rem; padding: 5px; cursor: pointer; text-shadow: 0 0 10px rgba(255,0,85,0.5); }
+
+        .loading-text { color: #00f0ff; text-align: center; margin-top: 20px; font-family: 'Share Tech Mono', monospace; }
+        .error-text { color: #ff0055; text-align: center; margin-top: 20px; font-family: 'Share Tech Mono', monospace; }
+    </style>
 <body>
-    <div class="calculator">
-        <input type="text" class="calculator-screen" value="0" disabled>
-        <div class="calculator-keys">
-            <div class="row">
-                <button class="all-clear">AC</button>
-                  <button class="operator" value="/">&divide;</button>
-            </div>
-
-            <div class="row">
-                <button class="number" value="7">7</button>
-                <button class="number" value="8">8</button>
-                <button class="number" value="9">9</button>
-                <button class="operator" value="*">&times;</button>
-            </div>
-            <div class="row">
-                <button class="number" value="4">4</button>
-                <button class="number" value="5">5</button>
-                <button class="number" value="6">6</button>
-                <button class="operator" value="-">&minus;</button>
-            </div>
-            <div class="row">
-                <button class="number" value="1">1</button>
-                <button class="number" value="2">2</button>
-                <button class="number" value="3">3</button>
-                <button class="operator" value="+">+</button>
-            </div>
-            <div class="row">
-                <button class="number zero-btn" value="0">0</button>
-                <button class="decimal" value=".">.</button>
-                <button class="equal-sign">=</button>
+    <div class="app-container">
+        
+        <!-- HEADER -->
+        <div class="header-top">
+            <div class="top-tabs">
+                <div class="active">Kalkulator</div>
+                <div onclick="openKursTab()">Nilai Tukar</div>
+                <div onclick="openMenuTab()">Selengkapnya</div>
             </div>
         </div>
-    </div>  
+
+        <!-- KALKULATOR UTAMA -->
+        <div class="calculator-wrapper">
+            
+            <div class="screen-header">
+                <input type="text" class="calculator-screen" value="0" disabled id="screen">
+            </div>
+
+            <div class="calculator-keys" id="calculatorKeysContainer">
+                
+                <div class="scientific-keys">
+                    <button onclick="inputSains('sin(')">sin</button>
+                    <button onclick="inputSains('cos(')">cos</button>
+                    <button onclick="inputSains('tan(')">tan</button>
+                    <button onclick="inputSains('sqrt(')">√</button>
+                    <button onclick="inputSains('^')">x^y</button>
+                    <button onclick="inputSains('log(')">log</button>
+                    <button onclick="inputSains('ln(')">ln</button>
+                    <button onclick="inputSains('pi')">π</button>
+                    <button onclick="inputSains('e')">e</button>
+                    <button onclick="inputSains('!')">x!</button>
+                </div>
+
+                <div class="drag-container" onclick="bukaRiwayat()">
+                    <div class="drag-handle"></div>
+                </div>
+
+                <div class="basic-keys">
+                    <!-- Baris 1 -->
+                    <button class="func-btn" onclick="clearAllFunc()">C</button>
+                    <button class="func-btn" onclick="inputPercentFunc()">%</button>
+                    <button onclick="backspaceFunc()"><div class="backspace-icon"><i class="fas fa-chevron-left"></i><i class="fas fa-times"></i></div></button>
+                    <button class="operator" value="/">&divide;</button>
+
+                    <!-- Baris 2 -->
+                    <button class="number" value="7">7</button>
+                    <button class="number" value="8">8</button>
+                    <button class="number" value="9">9</button>
+                    <button class="operator" value="*">&times;</button>
+
+                    <!-- Baris 3 -->
+                    <button class="number" value="4">4</button>
+                    <button class="number" value="5">5</button>
+                    <button class="number" value="6">6</button>
+                    <button class="operator" value="-">&minus;</button>
+
+                    <!-- Baris 4 -->
+                    <button class="number" value="1">1</button>
+                    <button class="number" value="2">2</button>
+                    <button class="number" value="3">3</button>
+                    <button class="operator" value="+">+</button>
+
+                    <!-- Baris 5 -->
+                    <button class="number" value="0">0</button>
+                    <button class="number" value="00">00</button>
+                    <button class="decimal" value=",">,</button>
+                    <button class="equal-sign">=</button>
+                </div>
+            </div>
+
+            <!-- FOOTER YANG DIMINTA -->
+            <footer class="footer-cyber">
+                &copy; 2026 Kalkulator by ZinXploit. All Rights Reserved.
+            </footer>
+            
+        </div>  
+
+        <!-- OVERLAY -->
+        <div class="overlay" id="overlay" onclick="tutupRiwayat()"></div>
+
+        <!-- PANEL RIWAYAT (Laci) -->
+        <div class="history-panel" id="historyPanel">
+            <div class="history-drag-handle" onclick="tutupRiwayat()"></div>
+            <div class="history-header">
+                <h3><i class="fas fa-terminal"></i> SYSTEM LOG</h3>
+                <button class="clear-history-btn" id="clearHistoryBtn">PURGE</button>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="empty-history" style="color:#666; text-align:center; margin-top:20px; font-family:'Share Tech Mono', monospace;">> NO RECORDS FOUND</div>
+            </div>
+        </div>
+
+        <!-- PANEL MENU (Selengkapnya) -->
+        <div class="menu-panel" id="menuPanel">
+            <div class="menu-header">
+                <h3><i class="fas fa-th-large"></i> SYSTEM MODULES</h3>
+                <button onclick="closeMenu()" style="background:transparent;border:none;color:#00f0ff;font-size:1.3rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="aktifkanModeSains()" style="background: rgba(0, 240, 255, 0.05); border-color: rgba(0, 240, 255, 0.4);">
+                    <i class="fas fa-square-root-alt"></i><span>SCIENTIFIC</span>
+                </div>
+                <div class="menu-item" onclick="openConverter('panjang')"><i class="fas fa-ruler-horizontal"></i><span>PANJANG</span></div>
+                <div class="menu-item" onclick="openConverter('luas')"><i class="fas fa-vector-square"></i><span>LUAS</span></div>
+                <div class="menu-item" onclick="openConverter('volume')"><i class="fas fa-cube"></i><span>VOLUME</span></div>
+                <div class="menu-item" onclick="openConverter('kecepatan')"><i class="fas fa-tachometer-alt"></i><span>KECEPATAN</span></div>
+                <div class="menu-item" onclick="openConverter('berat')"><i class="fas fa-weight-hanging"></i><span>BERAT</span></div>
+                <div class="menu-item" onclick="openConverter('suhu')"><i class="fas fa-thermometer-half"></i><span>SUHU</span></div>
+                <div class="menu-item" onclick="openConverter('daya')"><i class="fas fa-bolt"></i><span>DAYA</span></div>
+                <div class="menu-item" onclick="openConverter('tekanan')"><i class="fas fa-compress-arrows-alt"></i><span>TEKANAN</span></div>
+            </div>
+        </div>
+
+        <!-- PANEL KONVERSI -->
+        <div class="converter-panel" id="converterPanel">
+            <div class="conv-header">
+                <button onclick="backToMenu()" style="background:transparent;border:none;color:#00f0ff;font-size:1.3rem;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
+                <h3 id="convTitle">MODULE</h3>
+            </div>
+            <div class="conv-body">
+                <div class="input-box-vertical">
+                    <label>INPUT DATA</label>
+                    <select id="selectFrom" onchange="doConvert()"></select>
+                    <input type="number" id="inputFrom" placeholder="0" oninput="doConvert()">
+                </div>
+                <div class="swap-btn" onclick="swapUnits()"><i class="fas fa-exchange-alt"></i></div>
+                <div class="input-box-vertical">
+                    <label>OUTPUT RESULT</label>
+                    <select id="selectTo" onchange="doConvert()"></select>
+                    <input type="number" id="inputTo" placeholder="0" readonly style="background: rgba(0,240,255,0.05); color: #00f0ff; font-weight: bold; border-color: rgba(0,240,255,0.4); box-shadow: 0 0 10px rgba(0,240,255,0.1);">
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL KURS MATA UANG -->
+        <div class="kurs-panel" id="kursPanel">
+            <div class="conv-header">
+                <button onclick="closeKurs()" style="background:transparent;border:none;color:#00f0ff;font-size:1.3rem;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
+                <h3><i class="fas fa-globe"></i> EXCHANGE RATES</h3>
+            </div>
+            <div id="kursLoading" class="loading-text">> FETCHING DATA...</div>
+            <div id="kursError" class="error-text" style="display:none;"></div>
+            <div class="conv-body" id="kursBody" style="display:none;">
+                <div class="input-box-vertical">
+                    <label>BASE CURRENCY</label>
+                    <select id="kursSelectFrom" onchange="hitungKurs()"></select>
+                    <input type="number" id="kursInputFrom" placeholder="1" value="1" oninput="hitungKurs()">
+                </div>
+                <div class="swap-btn" onclick="swapKurs()"><i class="fas fa-exchange-alt"></i></div>
+                <div class="input-box-vertical">
+                    <label>TARGET CURRENCY</label>
+                    <select id="kursSelectTo" onchange="hitungKurs()"></select>
+                    <input type="number" id="kursInputTo" placeholder="0" readonly style="background: rgba(0,240,255,0.05); color: #00f0ff; font-weight: bold; border-color: rgba(0,240,255,0.4); box-shadow: 0 0 10px rgba(0,240,255,0.1);">
+                </div>
+                <div style="text-align:center; font-size:0.75rem; color:#666; margin-top:10px; font-family: 'Share Tech Mono', monospace;">
+                    SYS: <a href="https://www.exchangerate-api.com" target="_blank" style="color:#00f0ff; text-decoration:none;">ExchangeRate-API</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-    	let prevNumber = '';
-let calculationOperator = '';
-let currentNumber = '0';
+        // ================= LOGIKA KALKULATOR =================
+        let prevNumber = '';
+        let calculationOperator = '';
+        let currentNumber = '0';
+        let historyData = [];
+        let isDegree = true;
 
-const numbers = document.querySelectorAll(".number");
-const calculatorScreen = document.querySelector('.calculator-screen');
-const operators = document.querySelectorAll(".operator");
-const equalSign = document.querySelector('.equal-sign');
-const clearBtn = document.querySelector('.all-clear');
-const decimal = document.querySelector('.decimal');
+        const calculatorScreen = document.getElementById('screen');
+        const numbers = document.querySelectorAll(".number");
+        const operators = document.querySelectorAll(".operator");
+        const equalSign = document.querySelector('.equal-sign');
+        const decimal = document.querySelector('.decimal');
+        const historyPanel = document.getElementById('historyPanel');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const overlay = document.getElementById('overlay');
+        const calculatorKeysContainer = document.getElementById('calculatorKeysContainer');
 
-const clearAll = () => {
-    prevNumber = '';
-    calculationOperator = '';
-    currentNumber = '0';
-}
+        function aktifkanModeSains() {
+            calculatorKeysContainer.classList.add('show-sains');
+            closeMenu(); 
+        }
 
-clearBtn.addEventListener('click', () => {
-    clearAll();
-    updateScreen(currentNumber);
-});
+        function bukaRiwayat() {
+            historyPanel.classList.add('active');
+            overlay.classList.add('active');
+        }
 
-const inputNumber = (number) => {
-    if (currentNumber === '0') {
-        currentNumber = number;
-    } else {
-        currentNumber += number;
-    }
-}
+        function tutupRiwayat() {
+            historyPanel.classList.remove('active');
+            overlay.classList.remove('active');
+        }
 
-inputDecimal = (dot) => {
-    if (currentNumber.includes('.')) {
-        return;
-    }
-    currentNumber += dot;
-}
-
-const inputOperator = (operator) => {
-    if (calculationOperator === '') {
-        prevNumber = currentNumber;
-    }
-    calculationOperator = operator;
-    currentNumber = '0';
-}
-
-const updateScreen = (number) => {
-    calculatorScreen.value = number;
-}
-
-decimal.addEventListener('click', (event) => {
-    inputDecimal(event.target.value);
-    updateScreen(currentNumber);
-});
-
-
-operators.forEach((operator) => {
-    operator.addEventListener("click", (event) => {
-        inputOperator(event.target.value);
-    });
-});
-
-numbers.forEach((number) => {
-    number.addEventListener("click", (event) => {        
-        inputNumber(event.target.value);
-        updateScreen(currentNumber);
+        window.clearAllFunc = () => { prevNumber = ''; calculationOperator = ''; currentNumber = '0'; updateScreen(currentNumber); }
         
-    });
-});
+        window.backspaceFunc = () => {
+            if (currentNumber === 'Error') { currentNumber = '0'; }
+            else if (currentNumber.length > 1) { currentNumber = currentNumber.slice(0, -1); }
+            else { currentNumber = '0'; }
+            updateScreen(currentNumber);
+        }
 
-const calculate = () => {
-    let result = '';
-    switch(calculationOperator) {
-        case "+":
-            result = parseFloat(prevNumber) + parseFloat(currentNumber);
-            break;
-        case "-":
-            result = parseFloat(prevNumber) - parseFloat(currentNumber);
-            break;
-        case "*":
-            result = parseFloat(prevNumber) * parseFloat(currentNumber);
-            break;
-        case "/":
-            result = parseFloat(prevNumber) / parseFloat(currentNumber);
-            break;
-        case "%":
-            result = parseFloat(prevNumber) % parseFloat(currentNumber);
-            break;
-        default:
-            return;
-    }
-    currentNumber = result;
-    calculationOperator = '';
-}
+        window.inputPercentFunc = () => {
+            if (currentNumber !== '0' && currentNumber !== 'Error') {
+                if (!currentNumber.includes('%')) {
+                    currentNumber += '%';
+                    updateScreen(currentNumber);
+                }
+            }
+        }
 
-equalSign.addEventListener('click', () => {
-    calculate();
-    updateScreen(currentNumber);
-});
+        window.inputSains = (val) => {
+            if (currentNumber === 'Error') currentNumber = '0';
+            if (val === 'pi') { currentNumber += 'π'; }
+            else if (val === 'e') { currentNumber += 'e'; }
+            else { 
+                if (currentNumber === '0') currentNumber = val; 
+                else currentNumber += val; 
+            }
+            updateScreen(currentNumber);
+        }
 
-</script>
-    </body>
-  </html>
+        const updateScreen = (number) => { calculatorScreen.value = number; }
+
+        const inputNumber = (number) => {
+            if (currentNumber === '0' || currentNumber === 'Error') currentNumber = number;
+            else currentNumber += number;
+        }
+        
+        const inputDecimal = (dot) => {
+            if (currentNumber.includes('.')) return;
+            if (currentNumber === 'Error') currentNumber = '0';
+            currentNumber += '.';
+        }
+
+        numbers.forEach((number) => number.addEventListener("click", (event) => { inputNumber(event.target.value); updateScreen(currentNumber); }));
+        decimal.addEventListener('click', (event) => { inputDecimal(event.target.value); updateScreen(currentNumber); });
+
+        const inputOperator = (operator) => {
+            if (calculationOperator === '') prevNumber = currentNumber;
+            calculationOperator = operator;
+            currentNumber = '0';
+        }
+
+        operators.forEach((operator) => {
+            operator.addEventListener("click", (event) => {
+                const val = event.target.value;
+                inputOperator(val);
+            });
+        });
+
+        const calculate = () => {
+            if (calculationOperator === '' && !currentNumber.match(/[+\-*/%πesincoltaqrx!^]/)) return;
+
+            let originalExpression = calculationOperator !== '' ? prevNumber + ' ' + calculationOperator + ' ' + currentNumber : currentNumber;
+
+            try {
+                let expressionToEval = currentNumber;
+
+                expressionToEval = expressionToEval
+                    .replace(/π/g, 'Math.PI')
+                    .replace(/e/g, 'Math.E')
+                    .replace(/sin\(/g, 'Math.sin(')
+                    .replace(/cos\(/g, 'Math.cos(')
+                    .replace(/tan\(/g, 'Math.tan(')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/ln\(/g, 'Math.log(')
+                    .replace(/sqrt\(/g, 'Math.sqrt(')
+                    .replace(/\^/g, '**');
+
+                if (isDegree) {
+                    expressionToEval = expressionToEval
+                        .replace(/Math\.sin\(([^)]+)\)/g, 'Math.sin(($1) * Math.PI / 180)')
+                        .replace(/Math\.cos\(([^)]+)\)/g, 'Math.cos(($1) * Math.PI / 180)')
+                        .replace(/Math\.tan\(([^)]+)\)/g, 'Math.tan(($1) * Math.PI / 180)');
+                }
+
+                if (expressionToEval.includes('!')) {
+                    const num = parseFloat(expressionToEval.replace('!', ''));
+                    let fact = 1; for (let i = 1; i <= num; i++) fact *= i;
+                    expressionToEval = fact.toString();
+                }
+
+                if (expressionToEval.includes('%')) {
+                    if (calculationOperator !== '') {
+                        let numPercent = parseFloat(currentNumber.replace('%', ''));
+                        let baseNum = parseFloat(prevNumber);
+                        let percentValue = (baseNum * numPercent) / 100;
+                        
+                        if(calculationOperator === '+') expressionToEval = baseNum + percentValue;
+                        else if(calculationOperator === '-') expressionToEval = baseNum - percentValue;
+                        else if(calculationOperator === '*') expressionToEval = baseNum * (numPercent / 100);
+                        else if(calculationOperator === '/') expressionToEval = baseNum / (numPercent / 100);
+                        
+                    } else {
+                        expressionToEval = expressionToEval.replace('%', '/100');
+                    }
+                }
+
+                if (calculationOperator !== '' && !expressionToEval.includes('%') && !expressionToEval.includes('Math.')) {
+                     switch(calculationOperator) {
+                        case "+": expressionToEval = parseFloat(prevNumber) + parseFloat(currentNumber); break;
+                        case "-": expressionToEval = parseFloat(prevNumber) - parseFloat(currentNumber); break;
+                        case "*": expressionToEval = parseFloat(prevNumber) * parseFloat(currentNumber); break;
+                        case "/": expressionToEval = parseFloat(prevNumber) / parseFloat(currentNumber); break;
+                    }
+                } else if (calculationOperator !== '' && expressionToEval.includes('Math.')) {
+                     expressionToEval = prevNumber + calculationOperator + expressionToEval;
+                }
+
+                let result = eval(expressionToEval);
+                if (result % 1 !== 0) result = parseFloat(result.toFixed(8));
+                currentNumber = result.toString();
+                
+                addHistory(originalExpression, currentNumber);
+
+                calculationOperator = ''; prevNumber = '';
+            } catch (error) {
+                currentNumber = 'Error'; calculationOperator = ''; prevNumber = '';
+            }
+        }
+
+        equalSign.addEventListener('click', () => { calculate(); updateScreen(currentNumber); });
+
+        function addHistory(expression, result) {
+            if (result === 'Error') return;
+            historyData.unshift({ expression, result });
+            renderHistory();
+        }
+        function renderHistory() {
+            historyList.innerHTML = historyData.length === 0 ? '<div class="empty-history" style="color:#666;text-align:center;margin-top:20px; font-family:\'Share Tech Mono\', monospace;">> NO RECORDS FOUND</div>' : '';
+            historyData.forEach((item) => {
+                const div = document.createElement('div');
+                div.classList.add('history-item');
+                div.innerHTML = `<div class="history-expression">> ${item.expression} =</div><div class="history-result">${item.result}</div>`;
+                div.addEventListener('click', () => { 
+                    currentNumber = item.result; 
+                    updateScreen(currentNumber); 
+                    tutupRiwayat(); 
+                });
+                historyList.appendChild(div);
+            });
+        }
+        clearHistoryBtn.addEventListener('click', () => { historyData = []; renderHistory(); });
+
+
+        // ================= LOGIKA MENU TAB =================
+        function openMenuTab() { document.getElementById('menuPanel').classList.add('active'); }
+        function closeMenu() { document.getElementById('menuPanel').classList.remove('active'); }
+        function backToMenu() { document.getElementById('converterPanel').classList.remove('active'); document.getElementById('menuPanel').classList.add('active'); }
+        function openKursTab() { document.getElementById('kursPanel').classList.add('active'); loadKursData(); }
+        function closeKurs() { document.getElementById('kursPanel').classList.remove('active'); }
+
+        // ================= LOGIKA KONVERSI SATUAN =================
+        const conversionData = {
+            panjang: { title: "KONVERSI PANJANG", units: { m: "Meter (m)", km: "Kilometer (km)", cm: "Sentimeter (cm)", mm: "Milimeter (mm)", mi: "Mil (mi)", yd: "Yard (yd)", ft: "Kaki (ft)", in: "Inci (in)" }, rates: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.34, yd: 0.9144, ft: 0.3048, in: 0.0254 } },
+            luas: { title: "KONVERSI LUAS", units: { m2: "Meter Persegi", km2: "Kilometer Persegi", cm2: "Sentimeter Persegi", ha: "Hektar", acre: "Acre", ft2: "Kaki Persegi" }, rates: { m2: 1, km2: 1000000, cm2: 0.0001, ha: 10000, acre: 4046.86, ft2: 0.092903 } },
+            volume: { title: "KONVERSI VOLUME", units: { l: "Liter (L)", ml: "Mililiter (mL)", m3: "Meter Kubik", gal: "Galon (US)", qt: "Quart (US)", pt: "Pint (US)" }, rates: { l: 1, ml: 0.001, m3: 1000, gal: 3.78541, qt: 0.946353, pt: 0.473176 } },
+            kecepatan: { title: "KONVERSI KECEPATAN", units: { kmh: "Km/jam", ms: "Meter/detik", mph: "Mil/jam", knot: "Knot" }, rates: { kmh: 1, ms: 3.6, mph: 1.60934, knot: 1.852 } },
+            berat: { title: "KONVERSI BERAT", units: { kg: "Kilogram (kg)", g: "Gram (g)", mg: "Miligram (mg)", ton: "Ton", lb: "Pon (lb)", oz: "Ons (oz)" }, rates: { kg: 1, g: 0.001, mg: 0.000001, ton: 1000, lb: 0.453592, oz: 0.0283495 } },
+            suhu: { title: "KONVERSI SUHU", units: { c: "Celsius (°C)", f: "Fahrenheit (°F)", k: "Kelvin (K)", r: "Reamur (°R)" }, special: true },
+            daya: { title: "KONVERSI DAYA", units: { w: "Watt (W)", kw: "Kilowatt (kW)", hp: "Horsepower (hp)", ps: "Pferdestarke (PS)" }, rates: { w: 1, kw: 1000, hp: 745.7, ps: 735.5 } },
+            tekanan: { title: "KONVERSI TEKANAN", units: { pa: "Pascal (Pa)", kpa: "Kilopascal (kPa)", bar: "Bar", atm: "Atmosfer", psi: "PSI" }, rates: { pa: 1, kpa: 1000, bar: 100000, atm: 101325, psi: 6894.76 } }
+        };
+
+        let currentConvType = '';
+
+        function openConverter(type) {
+            currentConvType = type;
+            const data = conversionData[type];
+            document.getElementById('convTitle').innerText = data.title;
+            document.getElementById('menuPanel').classList.remove('active');
+            document.getElementById('converterPanel').classList.add('active');
+
+            const selectFrom = document.getElementById('selectFrom');
+            const selectTo = document.getElementById('selectTo');
+            selectFrom.innerHTML = ''; selectTo.innerHTML = '';
+            Object.keys(data.units).forEach(key => {
+                selectFrom.innerHTML += `<option value="${key}">${data.units[key]}</option>`;
+                selectTo.innerHTML += `<option value="${key}">${data.units[key]}</option>`;
+            });
+            const keys = Object.keys(data.units);
+            if(keys.length > 1) selectTo.value = keys[1];
+            document.getElementById('inputFrom').value = '';
+            document.getElementById('inputTo').value = '';
+        }
+
+        function swapUnits() {
+            const selectFrom = document.getElementById('selectFrom');
+            const selectTo = document.getElementById('selectTo');
+            const temp = selectFrom.value;
+            selectFrom.value = selectTo.value;
+            selectTo.value = temp;
+            doConvert();
+        }
+
+        function doConvert() {
+            const val = parseFloat(document.getElementById('inputFrom').value);
+            const fromUnit = document.getElementById('selectFrom').value;
+            const toUnit = document.getElementById('selectTo').value;
+            const resultField = document.getElementById('inputTo');
+
+            if (isNaN(val)) { resultField.value = ''; return; }
+
+            let result = 0;
+            const data = conversionData[currentConvType];
+
+            if (data.special && currentConvType === 'suhu') {
+                let celsius = val;
+                if (fromUnit === 'f') celsius = (val - 32) * 5/9;
+                else if (fromUnit === 'k') celsius = val - 273.15;
+                else if (fromUnit === 'r') celsius = val * 5/4;
+
+                if (toUnit === 'c') result = celsius;
+                else if (toUnit === 'f') result = (celsius * 9/5) + 32;
+                else if (toUnit === 'k') result = celsius + 273.15;
+                else if (toUnit === 'r') result = celsius * 4/5;
+            } else {
+                const baseValue = val * data.rates[fromUnit];
+                result = baseValue / data.rates[toUnit];
+            }
+
+            if (Math.abs(result) < 0.000001 && result !== 0) {
+                resultField.value = result.toExponential(4);
+            } else {
+                resultField.value = parseFloat(result.toFixed(8));
+            }
+        }
+
+        // ================= LOGIKA KURS MATA UANG =================
+        let kursRates = {};
+        async function loadKursData() {
+            if (Object.keys(kursRates).length > 0) {
+                document.getElementById('kursBody').style.display = 'block';
+                document.getElementById('kursLoading').style.display = 'none';
+                return;
+            }
+            document.getElementById('kursLoading').style.display = 'block';
+            document.getElementById('kursError').style.display = 'none';
+            document.getElementById('kursBody').style.display = 'none';
+
+            try {
+                const response = await fetch('https://open.er-api.com/v6/latest/USD');
+                const data = await response.json();
+                if (data.result === 'success') {
+                    kursRates = data.rates;
+                    const kursSelectFrom = document.getElementById('kursSelectFrom');
+                    const kursSelectTo = document.getElementById('kursSelectTo');
+                    kursSelectFrom.innerHTML = ''; kursSelectTo.innerHTML = '';
+                    const sortedCodes = Object.keys(kursRates).sort();
+                    sortedCodes.forEach(code => {
+                        kursSelectFrom.innerHTML += `<option value="${code}">${code}</option>`;
+                        kursSelectTo.innerHTML += `<option value="${code}">${code}</option>`;
+                    });
+                    kursSelectFrom.value = 'USD';
+                    kursSelectTo.value = 'IDR';
+                    document.getElementById('kursLoading').style.display = 'none';
+                    document.getElementById('kursBody').style.display = 'block';
+                    hitungKurs();
+                } else {
+                    throw new Error('Gagal memuat data kurs.');
+                }
+            } catch (error) {
+                document.getElementById('kursLoading').style.display = 'none';
+                document.getElementById('kursError').style.display = 'block';
+                document.getElementById('kursError').innerText = '> CONNECTION FAILED. CHECK INTERNET.';
+            }
+        }
+
+        function swapKurs() {
+            const kursSelectFrom = document.getElementById('kursSelectFrom');
+            const kursSelectTo = document.getElementById('kursSelectTo');
+            const temp = kursSelectFrom.value;
+            kursSelectFrom.value = kursSelectTo.value;
+            kursSelectTo.value = temp;
+            hitungKurs();
+        }
+
+        function hitungKurs() {
+            const amount = parseFloat(document.getElementById('kursInputFrom').value);
+            const from = document.getElementById('kursSelectFrom').value;
+            const to = document.getElementById('kursSelectTo').value;
+
+            if (isNaN(amount) || amount <= 0) { document.getElementById('kursInputTo').value = ''; return; }
+            const rateFrom = kursRates[from];
+            const rateTo = kursRates[to];
+
+            if (rateFrom && rateTo) {
+                const result = (amount / rateFrom) * rateTo;
+                if (result < 0.01) {
+                     document.getElementById('kursInputTo').value = result.toFixed(6);
+                } else {
+                     document.getElementById('kursInputTo').value = parseFloat(result.toFixed(4));
+                }
+            } else {
+                document.getElementById('kursInputTo').value = '';
+            }
+        }
+    </script>
+</body>
 </html>
