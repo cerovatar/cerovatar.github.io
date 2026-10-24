@@ -2,404 +2,394 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ZinXploit - Pembayaran Ramal Jodoh</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran & Akses | Neptu Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background: linear-gradient(145deg, #1a0f0c 0%, #2c1a1a 100%);
-            font-family: 'Quicksand', sans-serif;
-            color: #f9e7c2;
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #e2e8f0;
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 1rem;
-        }
-        .payment-card {
-            background: #1e1714;
-            border-radius: 2rem;
-            border: 1px solid #e09d32;
-            max-width: 500px;
-            width: 100%;
-            padding: 2rem;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.5);
-            text-align: center;
+            align-items: center;
+            padding: 20px;
             position: relative;
         }
-        .music-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: #2e1f1a;
-            border: 1px solid #b8860b;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #f3c682;
-            font-size: 1.2rem;
-            z-index: 10;
-        }
-        .music-btn:hover {
-            background: #e09d32;
-            color: #1a0f0c;
-            transform: scale(1.05);
-        }
-        h2 { margin-bottom: 1rem; color: #f3c682; }
-        .package-group {
-            display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .package-btn {
-            background: #2e1f1a;
-            border: 1px solid #b8860b;
-            border-radius: 60px;
-            padding: 8px 14px;
-            cursor: pointer;
-            color: #f9e7c2;
-            transition: 0.2s;
-            font-size: 0.85rem;
-            flex: 1;
-        }
-        .package-btn.active {
-            background: #e09d32;
-            color: #1a0f0c;
-            border-color: #ffd966;
-        }
-        .payment-method {
-            display: flex;
-            gap: 0.8rem;
-            justify-content: center;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-        .method-btn {
-            background: #2e1f1a;
-            border: 1px solid #b8860b;
-            border-radius: 60px;
-            padding: 8px 14px;
-            cursor: pointer;
-            color: #f9e7c2;
-            transition: 0.2s;
-            font-size: 0.85rem;
-        }
-        .method-btn.active {
-            background: #e09d32;
-            color: #1a0f0c;
-            border-color: #ffd966;
-        }
-        .payment-detail {
-            background: #2a1e18;
-            border-radius: 1.5rem;
-            padding: 1rem;
-            margin: 1rem 0;
-            text-align: left;
-        }
-        .copy-btn {
-            background: #b87c2e;
-            border: none;
-            border-radius: 30px;
-            padding: 4px 12px;
-            cursor: pointer;
-            margin-left: 8px;
-            font-size: 0.7rem;
-        }
-        input, .file-label {
-            width: 100%;
-            padding: 10px;
-            background: #2e1f1a;
-            border: 1px solid #b8860b;
-            border-radius: 60px;
-            color: white;
-            margin: 10px 0;
-            display: inline-block;
-            text-align: center;
-            cursor: pointer;
-        }
-        input[type="file"] {
-            display: none;
-        }
-        .file-label {
-            background: #2e1f1a;
-        }
-        .preview-img {
-            max-width: 100%;
-            max-height: 150px;
-            margin: 10px 0;
-            border-radius: 1rem;
-            display: none;
-        }
-        .btn-pay, .btn-lanjut {
-            background: linear-gradient(95deg, #b87c2e, #e09d32);
-            width: 100%;
-            border: none;
-            border-radius: 60px;
-            padding: 12px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-top: 1rem;
-            cursor: pointer;
-        }
-        .btn-lanjut {
-            background: linear-gradient(95deg, #2c6e2c, #1f9e4a);
-            margin-top: 0.5rem;
-        }
-        .btn-lanjut:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .small-note { font-size: 0.7rem; margin-top: 1rem; color: #ad8b67; }
-        .loading { display: none; margin-top: 1rem; }
 
-        .qris-box {
-            background: #2a1e18;
-            border-radius: 1.5rem;
-            padding: 1rem;
-            margin: 1rem 0;
-            text-align: center;
-            border: 2px solid #e09d32;
+        /* Motif Batik Halus */
+        body::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23fbbf24' d='M20,20 Q30,10 40,20 Q50,30 40,40 Q30,50 20,40 Q10,30 20,20 Z'/%3E%3Ccircle cx='70' cy='70' r='10' fill='none' stroke='%23fbbf24' stroke-width='2'/%3E%3C/svg%3E");
+            background-size: 80px 80px;
+            z-index: 0;
         }
-        .qris-box img {
-            max-width: 100%;
+
+        /* Kartu Utama */
+        .payment-card {
+            position: relative; z-index: 10;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 24px; width: 100%; max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(251, 191, 36, 0.05);
+            padding: 30px;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 1px solid #334155; padding-bottom: 15px;}
+        .header i { font-size: 2.5rem; color: #fbbf24; margin-bottom: 10px; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: #fff; }
+        .header p { color: #94a3b8; font-size: 0.85rem; margin-top: 5px; }
+
+        /* Pilihan Paket */
+        .package-section { margin-bottom: 15px; }
+        .package-section h3 { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 10px; }
+        
+        .package-grid { display: flex; gap: 10px; }
+        .package-card {
+            flex: 1; background: rgba(0, 0, 0, 0.3); border: 1px solid #334155;
+            border-radius: 12px; padding: 15px; cursor: pointer; text-align: center; transition: 0.3s;
+        }
+        .package-card:hover { border-color: #fbbf24; }
+        .package-card.active { background: rgba(251, 191, 36, 0.1); border-color: #fbbf24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.2); }
+        
+        .package-card .title { font-weight: 700; color: #fff; font-size: 1rem; margin-bottom: 5px; }
+        .package-card .price { font-size: 1.1rem; color: #38bdf8; font-weight: bold; }
+        .package-card .desc { font-size: 0.7rem; color: #94a3b8; margin-top: 5px; }
+
+        /* FITUR PREMIUM */
+        .premium-features {
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid rgba(251, 191, 36, 0.3);
             border-radius: 12px;
-            background: #fff;
-            padding: 8px;
-            margin: 10px 0;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: block;
+            animation: fadeIn 0.4s ease;
         }
-        .qris-box .nominal {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #4ade80;
-            margin: 8px 0;
+        .premium-features h4 {
+            color: #fbbf24;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 1px dashed rgba(251, 191, 36, 0.3);
+            padding-bottom: 5px;
         }
-        .qris-box .info-qris {
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 10px;
-            font-size: 0.8rem;
-            color: #cfb284;
-            text-align: left;
-            margin-top: 8px;
+        .premium-features ul { list-style: none; padding: 0; }
+        .premium-features li {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
         }
-        .qris-box .info-qris strong { color: #f3c682; }
+        .premium-features li i {
+            color: #38bdf8;
+            margin-top: 3px;
+        }
+
+        /* Ringkasan Total */
+        .total-box {
+            background: rgba(0, 0, 0, 0.4); border-radius: 10px; padding: 15px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+            border-left: 4px solid #fbbf24;
+        }
+        .total-box .label { font-size: 1rem; color: #e2e8f0; }
+        .total-box .nominal { font-size: 1.5rem; font-weight: bold; color: #10b981; }
+
+        /* Metode Pembayaran */
+        .payment-methods { margin-bottom: 20px; }
+        .payment-methods h3 { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 10px; }
+        
+        .method-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .method-btn {
+            flex: 1; padding: 10px; text-align: center;
+            background: rgba(0, 0, 0, 0.3); border: 1px solid #334155;
+            border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #94a3b8; transition: 0.3s;
+        }
+        .method-btn.active { background: rgba(251, 191, 36, 0.15); border-color: #fbbf24; color: #fbbf24; }
+
+        /* Konten Metode */
+        .payment-details {
+            background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 15px;
+            border: 1px solid #334155; display: none;
+        }
+        .payment-details.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .qris-box { text-align: center; }
+        .qris-box img { max-width: 100%; border-radius: 8px; background: #fff; padding: 10px; margin: 10px 0; width: 200px; }
+        .qris-box p { font-size: 0.85rem; color: #cbd5e1; }
+
+        .bank-box p { font-size: 0.9rem; margin-bottom: 5px; color: #cbd5e1;}
+        .bank-box strong { color: #fff; }
+        .copy-btn { background: #334155; border: none; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; margin-left: 5px;}
+        .copy-btn:hover { background: #475569; }
+
+        /* Upload Bukti */
+        .upload-section { margin-bottom: 20px; }
+        .upload-section label { display: block; font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px; }
+        .file-label {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 12px; border: 1px dashed #fbbf24;
+            border-radius: 10px; cursor: pointer; color: #fbbf24; font-weight: 600; font-size: 0.9rem; transition: 0.3s;
+        }
+        .file-label:hover { background: rgba(251, 191, 36, 0.1); }
+        .file-label input { display: none; }
+        #previewImg { max-width: 100%; max-height: 150px; margin-top: 10px; border-radius: 8px; display: none; object-fit: contain;}
+
+        /* Tombol Submit */
+        .btn-pay {
+            width: 100%; padding: 15px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border: none; border-radius: 12px; color: #fff;
+            font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); }
+        .btn-pay:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
     </style>
 </head>
 <body>
-<div class="payment-card">
-    <div class="music-btn" id="musicToggleBtn">
-        <i class="fas fa-music"></i>
-    </div>
-    <h2><i class="fas fa-coins"></i> Pilih Paket Ramalan</h2>
-    <div class="package-group">
-        <div class="package-btn active" data-package="basic" data-price="50000">📜 Basic (Rp50.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik</span></div>
-        <div class="package-btn" data-package="premium" data-price="100000">🌟 Premium (Rp100.000)<br><span style="font-size:0.7rem;">Ramalan + Lintrik + Tanggal Pernikahan</span></div>
-    </div>
-    <p style="margin-top: 0.5rem;">Pilih metode pembayaran & upload bukti</p>
-    <div class="payment-method">
-        <div class="method-btn active" data-method="qris">QRIS</div>
-        <div class="method-btn" data-method="seabank">Bank Seabank</div>
-        <div class="method-btn" data-method="bri">Bank BRI</div>
-        <div class="method-btn" data-method="ewallet">E-Wallet</div>
-    </div>
-    <div id="paymentDetail" class="payment-detail"></div>
-    <div>
-        <label>Nominal Pembayaran (otomatis)</label>
-        <input type="number" id="amount" value="50000" min="50000" step="10000" readonly style="background:#3e2a1f;">
-    </div>
-    <div>
-        <label>Upload Bukti Transfer (foto/screenshot)</label>
-        <input type="file" id="buktiFile" accept="image/*">
-        <label for="buktiFile" class="file-label"><i class="fas fa-upload"></i> Pilih Bukti</label>
-        <img id="preview" class="preview-img" alt="Preview bukti">
-    </div>
-    <button id="kirimWaBtn" class="btn-pay"><i class="fab fa-whatsapp"></i> Kirim Bukti ke WA & Lanjutkan</button>
-    <div id="loading" class="loading"><i class="fas fa-spinner fa-spin"></i> Mengirim...</div>
-    
-    <div id="manualLanjut" style="display: none; margin-top: 1rem;">
-        <hr style="border-color: #b8860b; margin: 1rem 0;">
-        <p><i class="fas fa-check-circle"></i> <strong>Sudah kirim bukti?</strong> Silakan lanjutkan ke halaman ramalan:</p>
-        <button id="lanjutBtn" class="btn-lanjut"><i class="fas fa-arrow-right"></i> Lanjutkan ke Ramalan Jodoh</button>
-    </div>
-    
-    <div class="small-note">*Klik "Kirim Bukti ke WA" untuk membuka WhatsApp & kirim pesan. Setelah itu, klik tombol di bawah untuk melanjutkan.</div>
-</div>
 
-<audio id="bgMusic" loop>
-    <source src="gending-temanten-adat-jawa-kebo-giro-128-ytshorts.savetube.me.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
+    <div class="payment-card">
+        
+        <div class="header">
+            <i class="fas fa-lock"></i>
+            <h1>PENDAFTARAN & AKSES</h1>
+            <p>Pilih paket dan lakukan pembayaran</p>
+        </div>
 
-<script>
-    // ========== MUSIK ==========
-    const audio = document.getElementById('bgMusic');
-    const musicBtn = document.getElementById('musicToggleBtn');
-    let isMusicPlaying = false;
-    audio.volume = 0.3;
-
-    function toggleMusic() {
-        if (isMusicPlaying) {
-            audio.pause();
-            musicBtn.innerHTML = '<i class="fas fa-music"></i>';
-            musicBtn.style.background = '#2e1f1a';
-            musicBtn.style.color = '#f3c682';
-        } else {
-            audio.play().catch(e => console.log('Autoplay diblokir.'));
-            musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            musicBtn.style.background = '#e09d32';
-            musicBtn.style.color = '#1a0f0c';
-        }
-        isMusicPlaying = !isMusicPlaying;
-    }
-    musicBtn.addEventListener('click', toggleMusic);
-    audio.addEventListener('error', () => {
-        musicBtn.style.opacity = '0.5';
-        musicBtn.title = 'Musik tidak tersedia';
-    });
-
-    // ========== PEMBAYARAN ==========
-    let paymentMethod = 'qris';
-    let selectedPackage = 'basic';
-    let selectedPrice = 50000;
-    let buktiDataURL = null;
-
-    // ============================================================
-    // GAMBAR QRIS
-    // ============================================================
-    const QRIS_IMAGE = 'https://i.ibb.co.com/YBNk4nj8/React-Native-snapshot-image2670473178426281551.png';
-
-    function updateDetail() {
-        const div = document.getElementById('paymentDetail');
-        if (paymentMethod === 'qris') {
-            div.innerHTML = `
-                <div class="qris-box">
-                    <p style="color:#f3c682;font-weight:700;">💳 Pembayaran QRIS</p>
-                    <img src="${QRIS_IMAGE}" alt="QRIS ZIA SHOP - FAST FOOD">
-                    <div class="nominal">Rp ${selectedPrice.toLocaleString('id-ID')}</div>
-                    <div class="info-qris">
-                        <strong>Merchant:</strong> ZIA SHOP - FAST FOOD<br>
-                        <strong>NMID:</strong> ID1026598864985<br>
-                        <strong>Kode:</strong> A01
-                    </div>
+        <!-- Pilih Paket -->
+        <div class="package-section">
+            <h3>1. Pilih Paket Anda:</h3>
+            <div class="package-grid">
+                <!-- Paket Basic -->
+                <div class="package-card" id="card-basic" onclick="selectPackage('basic', 50000)">
+                    <div class="title">Basic</div>
+                    <div class="price">Rp 50.000</div>
+                    <div class="desc">Ramalan Dasar</div>
                 </div>
-            `;
-        } else if (paymentMethod === 'seabank') {
-            div.innerHTML = `<p><i class="fas fa-university"></i> Bank Seabank</p><p>No. Rekening: <strong>901531141482</strong> <button class="copy-btn" onclick="copyText('901531141482')">Copy</button></p><p>a.n Mario Adi Saputra</p>`;
-        } else if (paymentMethod === 'bri') {
-            div.innerHTML = `<p><i class="fas fa-university"></i> Bank BRI</p><p>No. Rekening: <strong>081401029377530</strong> <button class="copy-btn" onclick="copyText('081401029377530')">Copy</button></p><p>a.n Idi Harjanto</p>`;
-        } else {
-            div.innerHTML = `<p><i class="fab fa-google-pay"></i> E-Wallet (Dana / GoPay)</p><p>No. Handphone: <strong>083171754073</strong> <button class="copy-btn" onclick="copyText('083171754073')">Copy</button></p><p>Kirim ke nomor ini, lalu konfirmasi.</p>`;
+                <!-- Paket Premium -->
+                <div class="package-card active" id="card-premium" onclick="selectPackage('premium', 100000)">
+                    <div class="title">Premium</div>
+                    <div class="price">Rp 100.000</div>
+                    <div class="desc">Akses Eksklusif</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RINCIAN FITUR PREMIUM (100RB) -->
+        <div id="premiumDetailsBox" class="premium-features">
+            <h4><i class="fas fa-crown"></i> Fasilitas Paket Premium (Rp 100.000)</h4>
+            <ul>
+                <li>
+                    <i class="fas fa-heart"></i> 
+                    <span><strong>Ramalan Jodoh:</strong> Analisis kecocokan Neptu Weton secara mendalam, watak pasangan, dan prediksi masa depan hubungan.</span>
+                </li>
+                <li>
+                    <i class="fas fa-star"></i>
+                    <span><strong>Kartu Tarot:</strong> Pembacaan Kartu Tarot spiritual untuk mengungkap energi cinta, peluang, dan potensi tersembunyi dari pasangan Anda.</span>
+                </li>
+                <li>
+                    <i class="fas fa-bolt"></i>
+                    <span><strong>Lintrik:</strong> Perhitungan Energi Mistis (Lintrik) untuk melihat seberapa kuat getaran batin dan ketertarikan alami antar kedua mempelai.</span>
+                </li>
+                <li>
+                    <i class="fas fa-scroll"></i>
+                    <span><strong>Wejangan Primbon:</strong> Nasihat sakral dari leluhur Jawa, berisi ramalan sial/keberuntungan serta saran agar rumah tangga harmonis.</span>
+                </li>
+                <!-- FITUR BARU: USER LOGIN -->
+                <li>
+                    <i class="fas fa-user-shield" style="color: #10b981;"></i> 
+                    <span><strong>Akses User Login (Eksklusif):</strong> Mendapatkan akun pribadi untuk masuk ke sistem, menyimpan riwayat ramalan, dan mengakses fitur tanpa batas.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Ringkasan Total -->
+        <div class="total-box">
+            <span class="label">Total Tagihan:</span>
+            <span class="nominal" id="totalNominal">Rp 100.000</span>
+        </div>
+
+        <!-- Metode Pembayaran -->
+        <div class="payment-methods">
+            <h3>2. Metode Pembayaran:</h3>
+            <div class="method-tabs">
+                <div class="method-btn active" onclick="switchMethod('qris', this)">QRIS</div>
+                <div class="method-btn" onclick="switchMethod('seabank', this)">Seabank</div>
+                <div class="method-btn" onclick="switchMethod('ewallet', this)">E-Wallet</div>
+            </div>
+
+            <!-- Detail QRIS -->
+            <div id="details-qris" class="payment-details active">
+                <div class="qris-box">
+                    <p>Scan QRIS di bawah ini:</p>
+                    <img src="https://i.ibb.co.com/YBNk4nj8/React-Native-snapshot-image2670473178426281551.png" alt="QRIS ZIA SHOP" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><rect width=%22300%22 height=%22300%22 fill=%22%23fff%22/><text x=%22150%22 y=%22150%22 font-size=%2216%22 text-anchor=%22middle%22 fill=%22%23000%22>QRIS ZIA SHOP</text></svg>'">
+                    <p style="font-size:0.75rem; color:#94a3b8; margin-top:5px;">Merchant: ZIA SHOP - FAST FOOD</p>
+                </div>
+            </div>
+
+            <!-- Detail Seabank -->
+            <div id="details-seabank" class="payment-details">
+                <div class="bank-box">
+                    <p><strong>Bank Seabank</strong></p>
+                    <p>No. Rekening: <strong>901531141482</strong> <button class="copy-btn" onclick="copyText('901531141482')">Copy</button></p>
+                    <p>a.n Mario Adi Saputra</p>
+                </div>
+            </div>
+
+            <!-- Detail E-Wallet -->
+            <div id="details-ewallet" class="payment-details">
+                <div class="bank-box">
+                    <p><strong>DANA / OVO / GoPay</strong></p>
+                    <p>No. Handphone: <strong>083171754073</strong> <button class="copy-btn" onclick="copyText('083171754073')">Copy</button></p>
+                    <p>a.n Mario Adi Saputra</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Bukti -->
+        <div class="upload-section">
+            <h3 style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 10px;">3. Upload Bukti Transfer:</h3>
+            <label for="buktiFile" class="file-label">
+                <i class="fas fa-cloud-upload-alt"></i> Pilih Foto/Screenshot
+            </label>
+            <input type="file" id="buktiFile" accept="image/*" onchange="previewImage(event)">
+            <img id="previewImg" alt="Preview Bukti">
+        </div>
+
+        <button class="btn-pay" id="btnPay" onclick="prosesPembayaran()">
+            <i class="fab fa-whatsapp"></i> Konfirmasi & Masuk Sistem
+        </button>
+
+    </div>
+
+    <script>
+        // State
+        let selectedPackage = 'premium';
+        let price = 100000;
+        let selectedMethod = 'qris';
+        let buktiBase64 = null;
+
+        // ================= PILIH PAKET =================
+        function selectPackage(type, nominal) {
+            selectedPackage = type;
+            price = nominal;
+            
+            // UI Reset Active
+            document.getElementById('card-basic').classList.remove('active');
+            document.getElementById('card-premium').classList.remove('active');
+            
+            // UI Set Active
+            document.getElementById('card-' + type).classList.add('active');
+            
+            // Update Nominal Text
+            document.getElementById('totalNominal').innerText = 'Rp ' + nominal.toLocaleString('id-ID');
+
+            // Tampilkan/Sembunyikan Rincian Fitur Premium
+            const premiumBox = document.getElementById('premiumDetailsBox');
+            if (type === 'premium') {
+                premiumBox.style.display = 'block';
+            } else {
+                premiumBox.style.display = 'none';
+            }
         }
-    }
 
-    window.copyText = (text) => { 
-        navigator.clipboard.writeText(text); 
-        alert("Nomor disalin: " + text); 
-    };
+        // ================= GANTI METODE =================
+        function switchMethod(method, element) {
+            selectedMethod = method;
+            
+            document.querySelectorAll('.method-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
 
-    // Pilih paket — Basic Rp 50.000, Premium Rp 100.000
-    document.querySelectorAll('.package-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.package-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedPackage = btn.dataset.package;
-            selectedPrice = parseInt(btn.dataset.price);
-            document.getElementById('amount').value = selectedPrice;
-            updateDetail();
-        });
-    });
-
-    document.querySelectorAll('.method-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            paymentMethod = btn.dataset.method;
-            updateDetail();
-        });
-    });
-
-    document.getElementById('buktiFile').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                buktiDataURL = event.target.result;
-                const preview = document.getElementById('preview');
-                preview.src = buktiDataURL;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            buktiDataURL = null;
-            document.getElementById('preview').style.display = 'none';
-        }
-    });
-
-    document.getElementById('kirimWaBtn').addEventListener('click', async () => {
-        const amount = parseInt(document.getElementById('amount').value);
-        if (amount < selectedPrice) {
-            alert('Minimal pembayaran Rp ' + selectedPrice.toLocaleString('id-ID'));
-            return;
-        }
-        if (!buktiDataURL) {
-            alert("Silakan upload bukti pembayaran terlebih dahulu.");
-            return;
+            document.querySelectorAll('.payment-details').forEach(detail => detail.classList.remove('active'));
+            document.getElementById('details-' + method).classList.add('active');
         }
 
-        localStorage.setItem('temp_amount', amount);
-        localStorage.setItem('temp_method', paymentMethod);
-        localStorage.setItem('temp_bukti', buktiDataURL);
-        localStorage.setItem('temp_package', selectedPackage);
-
-        const adminWa = '6283171754073';
-        let metodeText = "";
-        if (paymentMethod === 'qris') metodeText = "QRIS (ZIA SHOP - FAST FOOD)";
-        else if (paymentMethod === 'seabank') metodeText = "Bank Seabank (901531141482 a.n Mario Adi Saputra)";
-        else if (paymentMethod === 'bri') metodeText = "Bank BRI (081401029377530 a.n Idi Harjanto)";
-        else metodeText = "E-Wallet (083171754073)";
-
-        const message = `*PEMBAYARAN RAMAL JODOH*%0A%0ANominal: Rp ${amount.toLocaleString('id-ID')}%0AMetode: ${metodeText}%0APaket: ${selectedPackage.toUpperCase()}%0A%0ABukti pembayaran terlampir (saya akan kirim manual).%0A%0A_Mohon segera diproses._`;
-        const waUrl = `https://wa.me/${adminWa}?text=${message}`;
-        window.open(waUrl, '_blank');
-
-        document.getElementById('manualLanjut').style.display = 'block';
-        document.getElementById('kirimWaBtn').disabled = true;
-        document.getElementById('kirimWaBtn').style.opacity = '0.6';
-        alert("Pesan WhatsApp telah dibuka. Setelah mengirim bukti, klik tombol 'Lanjutkan ke Ramalan Jodoh'.");
-    });
-
-    document.getElementById('lanjutBtn').addEventListener('click', () => {
-        const amount = parseInt(document.getElementById('amount').value);
-        if (amount < selectedPrice) {
-            alert('Minimal pembayaran Rp ' + selectedPrice.toLocaleString('id-ID'));
-            return;
+        // ================= COPY REKENING =================
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Nomor disalin: " + text);
+            });
         }
-        if (!buktiDataURL) {
-            alert("Bukti belum diupload.");
-            return;
-        }
-        localStorage.setItem('zinxploit_payment_done', 'true');
-        localStorage.setItem('payment_amount', amount);
-        localStorage.setItem('payment_method', paymentMethod);
-        localStorage.setItem('payment_package', selectedPackage);
 
-        if (selectedPackage === 'basic') {
-            window.location.href = 'neptubsc.html';
-        } else {
-            window.location.href = 'neptuprem.html';
+        // ================= PREVIEW GAMBAR =================
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    buktiBase64 = e.target.result;
+                    const img = document.getElementById('previewImg');
+                    img.src = buktiBase64;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                buktiBase64 = null;
+                document.getElementById('previewImg').style.display = 'none';
+            }
         }
-    });
 
-    updateDetail();
-</script>
+        // ================= PROSES PEMBAYARAN & REDIRECT =================
+        function prosesPembayaran() {
+            // Validasi wajib upload
+            if (!buktiBase64) {
+                alert("⚠️ Harap upload bukti transfer terlebih dahulu sebelum melanjutkan!");
+                return;
+            }
+
+            const btn = document.getElementById('btnPay');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengalihkan...';
+            btn.disabled = true;
+
+            // Konfigurasi WA
+            const adminWA = '6283171754073';
+            const pesan = 
+`Halo Admin Neptu,
+Saya sudah melakukan pembayaran.
+
+*Detail Transaksi:*
+📦 Paket: ${selectedPackage.toUpperCase()}
+💰 Total: Rp ${price.toLocaleString('id-ID')}
+🏦 Metode: ${selectedMethod.toUpperCase()}
+📅 Waktu: ${new Date().toLocaleString('id-ID')}
+
+Saya akan segera mengirimkan bukti transfer di chat ini.
+Mohon berikan akses masuk ke sistem. Terima kasih!`;
+
+            const encodedPesan = encodeURIComponent(pesan);
+            const waUrl = `https://wa.me/${adminWA}?text=${encodedPesan}`;
+
+            // Buka WA lalu Redirect sesuai paket
+            setTimeout(() => {
+                // 1. Buka WhatsApp di tab baru
+                window.open(waUrl, '_blank');
+                
+                // 2. Arahkan tab saat ini ke halaman yang sesuai
+                if (selectedPackage === 'basic') {
+                    window.location.href = 'neptubsc.html';
+                } else {
+                    window.location.href = 'neptuprem.html';
+                }
+            }, 1200);
+        }
+    </script>
 </body>
 </html>
