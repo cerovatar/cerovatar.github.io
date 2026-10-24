@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -436,4 +437,37 @@
                 currentOTP = null;
                 document.getElementById('otpInput').value = '';
                 
-                // Pindah ke Login setelah 2 d
+                // Pindah ke Login setelah 2 detik
+                setTimeout(() => {
+                    switchTab('login');
+                    msgBox.className = 'message'; // Reset pesan
+                    
+                    // Isi otomatis username di form login (opsional, memudahkan)
+                    document.getElementById('loginUser').value = users[users.length-1].username;
+                }, 2000);
+
+            }, 1000);
+        }
+
+        // ================= FUNGSI KIRIM ULANG OTP =================
+        function resendOTP() {
+            if(!pendingUserData) return;
+
+            // Generate OTP baru
+            currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            // Update UI
+            document.getElementById('mockOtpCode').innerText = currentOTP;
+            
+            const msgBox = document.getElementById('msgVerify');
+            msgBox.innerText = "🔄 Kode OTP baru telah dikirim!";
+            msgBox.className = 'message msg-success';
+            
+            setTimeout(() => {
+                msgBox.className = 'message';
+            }, 3000);
+        }
+
+    </script>
+</body>
+</html>
