@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hitung Cilok & Tahu - Pengeluaran Fleksibel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Inter',sans-serif;
+    background:#0b0e14;
+    color:#e6edf3;
+    min-height:100vh;
+    padding:20px;
+  }
+  .container { max-width:1200px; margin:0 auto; }
+
+  header {
+    display:flex; justify-content:space-between; align-items:center;
+    gap:15px; flex-wrap:wrap; margin-bottom:20px;
+  }
+  .title h1 { font-size:1.6rem; color:#00d4ff; }
+  .title p { color:#8892a0; font-size:.85rem; margin-top:4px; }
+
+  .summary-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:12px; margin-bottom:20px;
+  }
+  .summary-card {
+    background:#131a24; border:1px solid #243244;
+    border-radius:14px; padding:14px;
+    border-left:4px solid #00d4ff;
+  }
+  .summary-card .label { font-size:.65rem; color:#8892a0; text-transform:uppercase; letter-spacing:.5px; }
+  .summary-card .value { font-size:1.2rem; font-weight:800; margin-top:5px; color:#00d4ff; }
+  .summary-card.green { border-left-color:#4ade80; }
+  .summary-card.green .value { color:#4ade80; }
+  .summary-card.red { border-left-color:#ff6b6b; }
+  .summary-card.red .value { color:#ff6b6b; }
+  .summary-card.yellow { border-left-color:#facc15; }
+  .summary-card.yellow .value { color:#facc15; }
+  .summary-card.orange { border-left-color:#fb923c; }
+  .summary-card.orange .value { color:#fb923c; }
+  .summary-card.purple { border-left-color:#a855f7; }
+  .summary-card.purple .value { color:#a855f7; }
+
+  .main-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  @media(max-width:900px){ .main-grid{ grid-template-columns:1fr; } }
+
+  .card {
+    background:#131a24;
+    border:1px solid #243244;
+    border-radius:18px;
+    padding:22px;
+  }
+  .card h2 {
+    font-size:1rem; color:#00d4ff; margin-bottom:16px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .card h2.hijau { color:#4ade80; }
+  .card h2.orange { color:#fb923c; }
+
+  /* Counter */
+  .counter-box {
+    background:#0b0e14;
+    border:1px solid #243244;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .counter-display { text-align:center; margin-bottom:12px; }
+  .counter-display .num { font-size:2.8rem; font-weight:800; line-height:1; }
+  .counter-display .unit { color:#8892a0; font-size:.75rem; margin-top:4px; }
+  .counter-cilok .num { color:#facc15; }
+  .counter-tahu .num { color:#fb923c; }
+
+  .counter-buttons {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px; margin-bottom:8px;
+  }
+  .counter-buttons button {
+    padding:10px 0; border:none; border-radius:8px;
+    font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:.2s;
+  }
+  .btn-minus { background:#3a1d1d; color:#ff6b6b; }
+  .btn-minus:hover { background:#5a2a2a; }
+  .btn-plus { background:#1d3a2a; color:#4ade80; }
+  .btn-plus:hover { background:#2a5a3f; }
+  .counter-buttons.two-col { grid-template-columns:2fr 1fr; }
+  .btn-plus-big { background:#00d4ff; color:#0b0e14; }
+  .btn-plus-big:hover { background:#00b8e6; }
+
+  .manual-row { display:flex; gap:6px; align-items:center; margin-top:6px; }
+  .manual-row input {
+    flex:1; padding:9px 11px;
+    background:#131a24; border:1px solid #243244;
+    border-radius:8px; color:#e6edf3; font-size:.85rem;
+    outline:none;
+  }
+  .manual-row input:focus { border-color:#00d4ff; }
+  .manual-row button {
+    padding:9px 13px; border:none; border-radius:8px;
+    background:#00d4ff; color:#0b0e14; font-weight:700;
+    cursor:pointer; font-size:.8rem;
+  }
+
+  /* Pengeluaran Form */
+  .expense-form {
+    display:grid;
+    grid-template-columns:1fr 100px 120px 50px;
+    gap:6px; margin-bottom:14px;
+  }
+  @media(max-width:600px){ .expense-form{ grid-template-columns:1fr; } }
+  .expense-form input, .expense-form select {
+    padding:10px 11px; background:#0b0e14;
+    border:1px solid #243244; border-radius:8px;
+    color:#e6edf3; outline:none; font-size:.85rem;
+  }
+  .expense-form input:focus, .expense-form select:focus { border-color:#ff6b6b; }
+  .expense-form button {
+    border:none; border-radius:8px; background:#ff6b6b;
+    color:#fff; font-weight:700; cursor:pointer; font-size:1rem;
+  }
+
+  .expense-list { max-height:250px; overflow-y:auto; margin-bottom:12px; }
+  .expense-item {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 10px; border-radius:8px; margin-bottom:5px;
+    gap:8px; font-size:.83rem;
+  }
+  .expense-item.pemilik { background:rgba(56,189,248,0.08); border-left:3px solid #38bdf8; }
+  .expense-item.pedagang { background:rgba(251,146,60,0.08); border-left:3px solid #fb923c; }
+  .expense-item .ket { flex:1; }
+  .expense-item .tag {
+    font-size:.6rem; padding:2px 7px; border-radius:10px; font-weight:700;
+    text-transform:uppercase;
+  }
+  .expense-item.pemilik .tag { background:#38bdf8; color:#0b0e14; }
+  .expense-item.pedagang .tag { background:#fb923c; color:#0b0e14; }
+  .expense-item .nom { color:#ff6b6b; font-weight:700; white-space:nowrap; }
+  .expense-item button {
+    background:transparent; border:none; color:#ff6b6b;
+    cursor:pointer; font-size:.8rem;
+  }
+
+  .expense-totals {
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    padding-top:12px; border-top:1px solid #243244;
+  }
+  .expense-total-box {
+    padding:10px; border-radius:8px; text-align:center;
+  }
+  .expense-total-box.pemilik { background:rgba(56,189,248,0.08); border:1px solid #38bdf8; }
+  .expense-total-box.pedagang { background:rgba(251,146,60,0.08); border:1px solid #fb923c; }
+  .expense-total-box .lbl { font-size:.65rem; color:#8892a0; text-transform:uppercase; }
+  .expense-total-box .val { font-size:1rem; font-weight:800; margin-top:3px; }
+  .expense-total-box.pemilik .val { color:#38bdf8; }
+  .expense-total-box.pedagang .val { color:#fb923c; }
+
+  /* Rincian */
+  .calc-section {
+    background:#131a24; border:1px solid #243244;
+    border-radius:18px; padding:22px; margin:20px 0;
+  }
+  .calc-section h2 {
+    font-size:1rem; color:#a855f7; margin-bottom:16px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .calc-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px;
+  }
+  .calc-item {
+    background:#0b0e14; border:1px solid #243244;
+    border-radius:10px; padding:12px;
+  }
+  .calc-item .lbl {
+    font-size:.65rem; color:#8892a0;
+    text-transform:uppercase; letter-spacing:.5px;
+    margin-bottom:5px;
+  }
+  .calc-item .val { font-size:1rem; font-weight:800; color:#e6edf3; }
+  .calc-item.hijau .val { color:#4ade80; }
+  .calc-item.merah .val { color:#ff6b6b; }
+  .calc-item.kuning .val { color:#facc15; }
+  .calc-item.biru .val { color:#00d4ff; }
+  .calc-item.ungu .val { color:#a855f7; }
+  .calc-item.orange .val { color:#fb923c; }
+
+  .pemisah {
+    margin:16px 0 10px; padding-top:12px;
+    border-top:2px dashed #243244;
+    font-size:.7rem; color:#8892a0;
+    text-transform:uppercase; letter-spacing:1px;
+    font-weight:700;
+  }
+
+  .calc-warning {
+    background:#3a1d1d; border:1px solid #ff6b6b;
+    border-radius:10px; padding:12px; margin-top:12px;
+    font-size:.82rem; color:#ff6b6b; display:none;
+  }
+  .calc-warning.show { display:block; }
+
+  /* Action */
+  .action-row {
+    display:flex; gap:10px; flex-wrap:wrap; margin:20px 0;
+  }
+  .action-row button {
+    flex:1; min-width:140px; padding:12px;
+    border:none; border-radius:10px;
+    font-weight:700; cursor:pointer; transition:.2s;
+  }
+  .btn-save { background:#4ade80; color:#0b0e14; }
+  .btn-reset { background:#243244; color:#e6edf3; }
+  .btn-export { background:#00d4ff; color:#0b0e14; }
+
+  /* Riwayat */
+  .history-table { width:100%; border-collapse:collapse; font-size:.78rem; }
+  .history-table th, .history-table td {
+    padding:9px 6px; text-align:left;
+    border-bottom:1px solid #1a232c;
+  }
+  .history-table th { color:#8892a0; font-size:.65rem; text-transform:uppercase; }
+
+  .note {
+    background:#1a232c; border-left:4px solid #facc15;
+    padding:12px; border-radius:10px; margin-top:14px;
+    font-size:.75rem; color:#8892a0; line-height:1.5;
+  }
+
+  .toast {
+    position:fixed; top:20px; right:20px; z-index:9999;
+    padding:12px 20px; border-radius:10px;
+    font-weight:600; font-size:.85rem;
+    background:#4ade80; color:#0b0e14;
+    opacity:0; transform:translateX(300px);
+    transition:.3s; max-width:320px;
+  }
+  .toast.show { opacity:1; transform:translateX(0); }
+  .toast.error { background:#ff6b6b; color:#fff; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="title">
+      <h1>🍢 Hitung Cilok & 🧈 Tahu</h1>
+      <p>Pengeluaran bisa lu pilih: ditanggung <b style="color:#38bdf8">PEMILIK</b> atau <b style="color:#fb923c">PEDAGANG</b></p>
+    </div>
+  </header>
+
+  <!-- Ringkasan -->
+  <div class="summary-grid">
+    <div class="summary-card yellow">
+      <div class="label">Cilok</div>
+      <div class="value" id="sumCilok">0</div>
+    </div>
+    <div class="summary-card yellow">
+      <div class="label">Tahu</div>
+      <div class="value" id="sumTahu">0</div>
+    </div>
+    <div class="summary-card green">
+      <div class="label">Omzet Kotor</div>
+      <div class="value" id="sumOmzet">Rp 0</div>
+    </div>
+    <div class="summary-card purple">
+      <div class="label">Bagian Pemilik (× 700)</div>
+      <div class="value" id="sumBagianPemilik">Rp 0</div>
+    </div>
+    <div class="summary-card orange">
+      <div class="label">Bagian Pedagang (× 300)</div>
+      <div class="value" id="sumBagianPedagang">Rp 0</div>
+    </div>
+    <div class="summary-card red">
+      <div class="label">Laba Bersih Pemilik</div>
+      <div class="value" id="sumLabaPemilik">Rp 0</div>
+    </div>
+    <div class="summary-card orange">
+      <div class="label">Laba Bersih Pedagang</div>
+      <div class="value" id="sumLabaPedagang">Rp 0</div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- COUNTER -->
+    <div class="card">
+      <h2><i class="fas fa-calculator"></i> Counter Manual</h2>
+
+      <div class="counter-box counter-cilok">
+        <div class="counter-display">
+          <div class="num" id="counterCilok">0</div>
+          <div class="unit">🍢 Cilok terjual</div>
+        </div>
+        <div class="counter-buttons">
+          <button class="btn-minus" onclick="ubahCilok(-10)">-10</button>
+          <button class="btn-minus" onclick="ubahCilok(-1)">-1</button>
+          <button class="btn-plus" onclick="ubahCilok(1)">+1</button>
+          <button class="btn-plus" onclick="ubahCilok(5)">+5</button>
+        </div>
+        <div class="counter-buttons two-col">
+          <button class="btn-plus-big" onclick="ubahCilok(10)">+10 Cilok</button>
+          <button class="btn-minus" onclick="resetCilok()">Reset</button>
+        </div>
+        <div class="manual-row">
+          <input type="number" id="manualCilok" placeholder="Set jumlah cilok..." min="0">
+          <button onclick="setManual('cilok')">Set</button>
+        </div>
+      </div>
+
+      <div class="counter-box counter-tahu">
+        <div class="counter-display">
+          <div class="num" id="counterTahu">0</div>
+          <div class="unit">🧈 Tahu terjual</div>
+        </div>
+        <div class="counter-buttons">
+          <button class="btn-minus" onclick="ubahTahu(-10)">-10</button>
+          <button class="btn-minus" onclick="ubahTahu(-1)">-1</button>
+          <button class="btn-plus" onclick="ubahTahu(1)">+1</button>
+          <button class="btn-plus" onclick="ubahTahu(5)">+5</button>
+        </div>
+        <div class="counter-buttons two-col">
+          <button class="btn-plus-big" onclick="ubahTahu(10)">+10 Tahu</button>
+          <button class="btn-minus" onclick="resetTahu()">Reset</button>
+        </div>
+        <div class="manual-row">
+          <input type="number" id="manualTahu" placeholder="Set jumlah tahu..." min="0">
+          <button onclick="setManual('tahu')">Set</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PENGELUARAN -->
+    <div class="card">
+      <h2 class="hijau"><i class="fas fa-wallet"></i> Pengeluaran Dagang</h2>
+
+      <div class="expense-form">
+        <input type="text" id="expKeterangan" placeholder="Keterangan (gas, makan, dll)">
+        <input type="number" id="expNominal" placeholder="Rp" min="0">
+        <select id="expTipe">
+          <option value="pemilik">Pemilik</option>
+          <option value="pedagang">Pedagang</option>
+        </select>
+        <button onclick="tambahPengeluaran()">+</button>
+      </div>
+
+      <div class="expense-list" id="expenseList">
+        <div style="text-align:center;color:#4a5260;padding:20px;font-size:.85rem;">Belum ada pengeluaran.</div>
+      </div>
+
+      <div class="expense-totals">
+        <div class="expense-total-box pemilik">
+          <div class="lbl">Total Pemilik</div>
+          <div class="val" id="totalPemilik">Rp 0</div>
+        </div>
+        <div class="expense-total-box pedagang">
+          <div class="lbl">Total Pedagang</div>
+          <div class="val" id="totalPedagang">Rp 0</div>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>Cara tentukan:</b> Kalau pengeluaran itu tanggungan pemilik warung (gas, sewa, bahan) → pilih <b>Pemilik</b>. Kalau tanggungan pedagang (makan, transport pribadi, rokok) → pilih <b>Pedagang</b>.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RINCIAN KALKULASI -->
+  <div class="calc-section">
+    <h2><i class="fas fa-calculator"></i> Rincian Kalkulasi Lengkap</h2>
+    
+    <div class="pemisah">💼 BAGIAN PEMILIK</div>
+    <div class="calc-grid">
+      <div class="calc-item biru">
+        <div class="lbl">Bagian Pemilik (Item × 700)</div>
+        <div class="val" id="calcBagianPemilik">Rp 0</div>
+      </div>
+      <div class="calc-item merah">
+        <div class="lbl">− Pengeluaran Pemilik</div>
+        <div class="val" id="calcPengeluaranPemilik">Rp 0</div>
+      </div>
+      <div class="calc-item hijau">
+        <div class="lbl">= Laba Bersih Pemilik</div>
+        <div class="val" id="calcLabaPemilik">Rp 0</div>
+      </div>
+    </div>
+
+    <div class="pemisah">👨‍🍳 BAGIAN PEDAGANG</div>
+    <div class="calc-grid">
+      <div class="calc-item kuning">
+        <div class="lbl">Bagian Pedagang (Item × 300)</div>
+        <div class="val" id="calcBagianPedagang">Rp 0</div>
+      </div>
+      <div class="calc-item orange">
+        <div class="lbl">− Pengeluaran Pedagang</div>
+        <div class="val" id="calcPengeluaranPedagang">Rp 0</div>
+      </div>
+      <div class="calc-item ungu">
+        <div class="lbl">= Laba Bersih Pedagang</div>
+        <div class="val" id="calcLabaPedagang">Rp 0</div>
+      </div>
+    </div>
+
+    <div class="calc-warning" id="calcWarning">
+      ⚠️ Pengeluaran pedagang melebihi bagian pedagang! Pedagang RUGI.
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-save" onclick="simpanRekap()"><i class="fas fa-save"></i> Simpan Rekap</button>
+    <button class="btn-reset" onclick="resetHariIni()"><i class="fas fa-redo"></i> Reset Hari Ini</button>
+    <button class="btn-export" onclick="exportCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
+  </div>
+
+  <div class="card">
+    <h2><i class="fas fa-history"></i> Riwayat Rekap</h2>
+    <div style="overflow-x:auto;">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Tgl</th>
+            <th>Cilok</th>
+            <th>Tahu</th>
+            <th>Omzet</th>
+            <th>Ops Pemilik</th>
+            <th>Ops Pedagang</th>
+            <th>Laba Pemilik</th>
+            <th>Laba Pedagang</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="8" style="text-align:center;color:#4a5260;padding:20px;">Belum ada rekap.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button onclick="hapusRiwayat()" style="margin-top:14px;padding:10px 16px;border:none;border-radius:10px;background:#3a1d1d;color:#ff6b6b;font-weight:700;cursor:pointer;">
+      <i class="fas fa-trash"></i> Hapus Semua Riwayat
+    </button>
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ================= KONSTANTA =================
+const HARGA_JUAL = 700;
+const BAGIAN_PEMILIK = 700; // 700 - 300
+const BAGIAN_PEDAGANG = 300;
+
+// ================= STATE =================
+let state = {
+  cilok: 0,
+  tahu: 0,
+  pengeluaran: [] // {id, keterangan, nominal, tipe: "pemilik"|"pedagang"}
+};
+let riwayat = [];
+
+// ================= LOAD / SAVE =================
+function loadState() {
+  try {
+    const raw = localStorage.getItem('hitung_jualan_v4');
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p && typeof p === 'object') {
+        state.cilok = Number(p.cilok) || 0;
+        state.tahu = Number(p.tahu) || 0;
+        state.pengeluaran = Array.isArray(p.pengeluaran) ? p.pengeluaran.map(e => ({
+          ...e,
+          tipe: e.tipe === 'pedagang' ? 'pedagang' : 'pemilik'
+        })) : [];
+      }
+    }
+    const r = localStorage.getItem('hitung_jualan_riwayat_v4');
+    if (r) {
+      const p = JSON.parse(r);
+      if (Array.isArray(p)) riwayat = p;
+    }
+  } catch(e) {
+    state = { cilok:0, tahu:0, pengeluaran:[] };
+    riwayat = [];
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('hitung_jualan_v4', JSON.stringify(state));
+    localStorage.setItem('hitung_jualan_riwayat_v4', JSON.stringify(riwayat));
+  } catch(e) {
+    showToast('Gagal menyimpan', 'error');
+  }
+}
+
+// ================= HITUNG =================
+function getTotalItem() { return state.cilok + state.tahu; }
+function getOmzet() { return getTotalItem() * HARGA_JUAL; }
+
+function getPengeluaranByTipe(tipe) {
+  return state.pengeluaran
+    .filter(e => e.tipe === tipe)
+    .reduce((a,b) => a + (Number(b.nominal)||0), 0);
+}
+
+function getBagianPemilik() { return getTotalItem() * BAGIAN_PEMILIK; }
+function getBagianPedagang() { return getTotalItem() * BAGIAN_PEDAGANG; }
+
+function getLabaPemilik() {
+  return getBagianPemilik() - getPengeluaranByTipe('pemilik');
+}
+function getLabaPedagang() {
+  return getBagianPedagang() - getPengeluaranByTipe('pedagang');
+}
+
+// ================= RENDER =================
+function renderAll() {
+  document.getElementById('counterCilok').textContent = state.cilok;
+  document.getElementById('counterTahu').textContent = state.tahu;
+
+  document.getElementById('sumCilok').textContent = state.cilok;
+  document.getElementById('sumTahu').textContent = state.tahu;
+  document.getElementById('sumOmzet').textContent = rupiah(getOmzet());
+  document.getElementById('sumBagianPemilik').textContent = rupiah(getBagianPemilik());
+  document.getElementById('sumBagianPedagang').textContent = rupiah(getBagianPedagang());
+  
+  const labaPem = getLabaPemilik();
+  const labaPed = getLabaPedagang();
+  
+  const elPem = document.getElementById('sumLabaPemilik');
+  elPem.textContent = rupiah(labaPem);
+  elPem.style.color = labaPem < 0 ? '#ff6b6b' : '#4ade80';
+  
+  const elPed = document.getElementById('sumLabaPedagang');
+  elPed.textContent = rupiah(labaPed);
+  elPed.style.color = labaPed < 0 ? '#ff6b6b' : '#fb923c';
+
+  // Rincian
+  document.getElementById('calcBagianPemilik').textContent = rupiah(getBagianPemilik());
+  document.getElementById('calcPengeluaranPemilik').textContent = '− ' + rupiah(getPengeluaranByTipe('pemilik'));
+  document.getElementById('calcLabaPemilik').textContent = rupiah(labaPem);
+  document.getElementById('calcLabaPemilik').style.color = labaPem < 0 ? '#ff6b6b' : '#4ade80';
+
+  document.getElementById('calcBagianPedagang').textContent = rupiah(getBagianPedagang());
+  document.getElementById('calcPengeluaranPedagang').textContent = '− ' + rupiah(getPengeluaranByTipe('pedagang'));
+  document.getElementById('calcLabaPedagang').textContent = rupiah(labaPed);
+  document.getElementById('calcLabaPedagang').style.color = labaPed < 0 ? '#ff6b6b' : '#fb923c';
+
+  // Warning
+  const warning = document.getElementById('calcWarning');
+  if (labaPed < 0) {
+    warning.classList.add('show');
+  } else {
+    warning.classList.remove('show');
+  }
+
+  renderPengeluaran();
+  renderRiwayat();
+}
+
+function renderPengeluaran() {
+  const list = document.getElementById('expenseList');
+  if (state.pengeluaran.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:#4a5260;padding:20px;font-size:.85rem;">Belum ada pengeluaran.</div>';
+  } else {
+    let html = '';
+    state.pengeluaran.forEach(item => {
+      const label = item.tipe === 'pedagang' ? 'Pedagang' : 'Pemilik';
+      html += `
+        <div class="expense-item ${item.tipe}">
+          <span class="ket">${escapeHtml(item.keterangan)}</span>
+          <span class="tag">${label}</span>
+          <span class="nom">${rupiah(item.nominal)}</span>
+          <button onclick="hapusPengeluaran(${item.id})"><i class="fas fa-times"></i></button>
+        </div>
+      `;
+    });
+    list.innerHTML = html;
+  }
+  document.getElementById('totalPemilik').textContent = rupiah(getPengeluaranByTipe('pemilik'));
+  document.getElementById('totalPedagang').textContent = rupiah(getPengeluaranByTipe('pedagang'));
+}
+
+function renderRiwayat() {
+  const tbody = document.getElementById('historyBody');
+  if (riwayat.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#4a5260;padding:20px;">Belum ada rekap.</td></tr>';
+    return;
+  }
+  let html = '';
+  riwayat.slice().reverse().forEach(r => {
+    html += `
+      <tr>
+        <td>${r.tanggal}</td>
+        <td>${r.cilok}</td>
+        <td>${r.tahu}</td>
+        <td>${rupiah(r.omzet)}</td>
+        <td style="color:#38bdf8;">${rupiah(r.opsPemilik)}</td>
+        <td style="color:#fb923c;">${rupiah(r.opsPedagang)}</td>
+        <td style="color:${r.labaPemilik < 0 ? '#ff6b6b' : '#4ade80'};font-weight:700;">${rupiah(r.labaPemilik)}</td>
+        <td style="color:${r.labaPedagang < 0 ? '#ff6b6b' : '#fb923c'};font-weight:700;">${rupiah(r.labaPedagang)}</td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+// ================= AKSI =================
+function ubahCilok(delta) {
+  const baru = state.cilok + delta;
+  if (baru < 0) { showToast('Cilok tidak boleh minus', 'error'); return; }
+  state.cilok = baru;
+  saveState(); renderAll();
+}
+function resetCilok() {
+  if (!confirm('Reset cilok ke 0?')) return;
+  state.cilok = 0; saveState(); renderAll();
+}
+function ubahTahu(delta) {
+  const baru = state.tahu + delta;
+  if (baru < 0) { showToast('Tahu tidak boleh minus', 'error'); return; }
+  state.tahu = baru;
+  saveState(); renderAll();
+}
+function resetTahu() {
+  if (!confirm('Reset tahu ke 0?')) return;
+  state.tahu = 0; saveState(); renderAll();
+}
+function setManual(jenis) {
+  const inputId = jenis === 'cilok' ? 'manualCilok' : 'manualTahu';
+  const input = document.getElementById(inputId);
+  const val = parseInt(input.value);
+  if (isNaN(val) || val < 0) { showToast('Angka tidak valid', 'error'); return; }
+  state[jenis] = val;
+  input.value = '';
+  saveState(); renderAll();
+  showToast(`${jenis.toUpperCase()}: ${val}`);
+}
+
+function tambahPengeluaran() {
+  const ketEl = document.getElementById('expKeterangan');
+  const nomEl = document.getElementById('expNominal');
+  const tipeEl = document.getElementById('expTipe');
+  const keterangan = ketEl.value.trim();
+  const nominal = parseFloat(nomEl.value);
+  const tipe = tipeEl.value;
+
+  if (!keterangan) { showToast('Keterangan wajib diisi', 'error'); ketEl.focus(); return; }
+  if (isNaN(nominal) || nominal <= 0) { showToast('Nominal harus > 0', 'error'); nomEl.focus(); return; }
+
+  state.pengeluaran.push({
+    id: Date.now(),
+    keterangan,
+    nominal: Math.round(nominal),
+    tipe: tipe
+  });
+
+  ketEl.value = '';
+  nomEl.value = '';
+  ketEl.focus();
+  saveState(); renderAll();
+  showToast(`Ditambahkan ke ${tipe}`);
+}
+
+function hapusPengeluaran(id) {
+  state.pengeluaran = state.pengeluaran.filter(x => x.id !== id);
+  saveState(); renderAll();
+}
+
+// ================= REKAP =================
+function simpanRekap() {
+  const tanggal = new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+  
+  riwayat.push({
+    tanggal,
+    cilok: state.cilok,
+    tahu: state.tahu,
+    omzet: getOmzet(),
+    opsPemilik: getPengeluaranByTipe('pemilik'),
+    opsPedagang: getPengeluaranByTipe('pedagang'),
+    labaPemilik: getLabaPemilik(),
+    labaPedagang: getLabaPedagang()
+  });
+
+  saveState(); renderRiwayat();
+  showToast('Rekap tersimpan');
+}
+
+function resetHariIni() {
+  if (!confirm('Reset cilok, tahu & pengeluaran hari ini?')) return;
+  state.cilok = 0;
+  state.tahu = 0;
+  state.pengeluaran = [];
+  saveState(); renderAll();
+  showToast('Hari ini direset');
+}
+
+function hapusRiwayat() {
+  if (!confirm('Hapus semua riwayat?')) return;
+  riwayat = [];
+  saveState(); renderRiwayat();
+}
+
+// ================= EXPORT =================
+function exportCSV() {
+  if (riwayat.length === 0) { showToast('Belum ada riwayat', 'error'); return; }
+  let csv = 'Tanggal,Cilok,Tahu,Omzet,Ops Pemilik,Ops Pedagang,Laba Pemilik,Laba Pedagang\n';
+  riwayat.forEach(r => {
+    csv += `"${r.tanggal}",${r.cilok},${r.tahu},${r.omzet},${r.opsPemilik},${r.opsPedagang},${r.labaPemilik},${r.labaPedagang}\n`;
+  });
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'riwayat_jualan.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV diunduh');
+}
+
+// ================= UTILS =================
+function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m] || m));
+}
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type === 'error' ? ' error' : '');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ================= INIT =================
+window.onload = function() {
+  loadState();
+  renderAll();
+
+  document.getElementById('manualCilok').addEventListener('keypress', e => { if (e.key === 'Enter') setManual('cilok'); });
+  document.getElementById('manualTahu').addEventListener('keypress', e => { if (e.key === 'Enter') setManual('tahu'); });
+  document.getElementById('expNominal').addEventListener('keypress', e => { if (e.key === 'Enter') tambahPengeluaran(); });
+};
+</script>
+</body>
+</html>
