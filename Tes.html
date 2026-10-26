@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catatan Pengeluaran Dagang | ZinXploit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #1a0f0c 0%, #2c1a1a 100%);
+            font-family: 'Quicksand', sans-serif;
+            color: #f9e7c2;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23c9a03d' opacity='0.05' d='M20,20 L30,10 L40,20 L30,30 Z'/%3E%3Ccircle cx='70' cy='70' r='8' fill='%23c9a03d' opacity='0.05'/%3E%3C/svg%3E");
+            background-repeat: repeat; background-size: 60px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+        
+        /* HEADER */
+        .app-header {
+            background: rgba(20, 12, 10, 0.85);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(201, 160, 61, 0.4);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .logo-area h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #f3c682, #d4af37);
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; margin-bottom: 4px;
+        }
+        .logo-area p { color: #cfb284; font-size: 0.8rem; letter-spacing: 1px; }
+        .total-badge {
+            background: rgba(201, 160, 61, 0.15);
+            border: 1px solid #c9a03d;
+            padding: 10px 25px;
+            border-radius: 15px;
+            text-align: right;
+        }
+        .total-badge span {
+            display: block; font-size: 0.7rem; color: #cfb284;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .total-badge h2 { font-size: 1.8rem; color: #ff6b6b; font-weight: 700; }
+        
+        /* LAYOUT */
+        .main-grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+        @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+        
+        .card {
+            background: rgba(30, 20, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 160, 61, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem; color: #f3c682;
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid rgba(201, 160, 61, 0.2);
+            padding-bottom: 12px;
+        }
+        .card-title i { color: #e09d32; font-size: 1.2rem; }
+        
+        /* FORM */
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block; font-size: 0.85rem; color: #cfb284;
+            margin-bottom: 6px; font-weight: 600;
+        }
+        .form-control {
+            width: 100%; padding: 12px 16px;
+            background: #1a0f0c;
+            border: 1px solid #5a3e2a;
+            border-radius: 12px;
+            color: #f9e7c2;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: 0.3s;
+        }
+        .form-control:focus {
+            border-color: #e09d32;
+            box-shadow: 0 0 10px rgba(224, 157, 50, 0.3);
+        }
+        select.form-control { cursor: pointer; }
+        
+        .btn-primary {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, #b87c2e, #e09d32);
+            border: none; border-radius: 12px;
+            color: #1a0f0c; font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(224, 157, 50, 0.4);
+        }
+        .btn-primary:active { transform: translateY(0); }
+        
+        /* FILTER BAR */
+        .filter-bar {
+            display: flex; gap: 10px; margin-bottom: 20px;
+            flex-wrap: wrap; align-items: center;
+        }
+        .filter-bar input, .filter-bar select {
+            flex: 1; min-width: 130px;
+            padding: 10px 14px;
+            background: #1a0f0c;
+            border: 1px solid #5a3e2a;
+            border-radius: 10px;
+            color: #f9e7c2;
+            font-family: inherit; font-size: 0.85rem;
+            outline: none;
+        }
+        .filter-bar button {
+            padding: 10px 18px;
+            background: #5a3e2a;
+            border: none; border-radius: 10px;
+            color: #f9e7c2; font-weight: 600;
+            cursor: pointer; transition: 0.3s;
+            font-size: 0.85rem;
+        }
+        .filter-bar button:hover { background: #6b4d36; }
+        .filter-bar .btn-danger {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff6b6b; border: 1px solid #ff6b6b;
+        }
+        .filter-bar .btn-danger:hover { background: #ff4757; color: white; }
+        
+        /* TABLE */
+        .table-wrapper { overflow-x: auto; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead { background: rgba(201, 160, 61, 0.15); }
+        th {
+            padding: 12px 15px; text-align: left;
+            color: #e09d32; font-weight: 700;
+            font-size: 0.75rem; text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(201, 160, 61, 0.3);
+        }
+        td {
+            padding: 14px 15px;
+            border-bottom: 1px solid rgba(201, 160, 61, 0.1);
+            color: #cfb284;
+        }
+        tr:hover td { background: rgba(201, 160, 61, 0.05); color: #f9e7c2; }
+        
+        .badge-kategori {
+            display: inline-block; padding: 3px 10px;
+            border-radius: 20px; font-size: 0.7rem;
+            font-weight: 600; white-space: nowrap;
+        }
+        .badge-bahan { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid #4ade80; }
+        .badge-ops { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; }
+        .badge-trans { background: rgba(250, 204, 21, 0.15); color: #facc15; border: 1px solid #facc15; }
+        .badge-gaji { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid #a855f7; }
+        .badge-sewa { background: rgba(251, 146, 60, 0.15); color: #fb923c; border: 1px solid #fb923c; }
+        .badge-lain { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid #94a3b8; }
+        
+        .nominal { color: #ff6b6b; font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+        .btn-hapus {
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid #ff4757;
+            color: #ff4757; padding: 6px 10px;
+            border-radius: 8px; cursor: pointer;
+            font-size: 0.75rem; transition: 0.2s;
+        }
+        .btn-hapus:hover { background: #ff4757; color: white; }
+        
+        .empty-state { text-align: center; padding: 40px 20px; color: #8b7355; }
+        .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
+        
+        /* SUMMARY */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px; margin-bottom: 20px;
+        }
+        .summary-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px; padding: 15px;
+            border-left: 4px solid #e09d32;
+        }
+        .summary-item .label {
+            font-size: 0.7rem; color: #cfb284;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .summary-item .value { font-size: 1.3rem; font-weight: 700; color: #f3c682; }
+        
+        /* TOAST NOTIFICATION */
+        .toast {
+            position: fixed; top: 20px; right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white; font-weight: 600;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 350px;
+        }
+        .toast.show { opacity: 1; transform: translateX(0); }
+        .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
+        .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .toast.info { background: linear-gradient(135deg, #38bdf8, #0284c7); }
+        
+        footer {
+            text-align: center; margin-top: 30px;
+            padding: 20px; color: #8b7355; font-size: 0.8rem;
+            border-top: 1px solid rgba(201, 160, 61, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header class="app-header">
+        <div class="logo-area">
+            <h1><i class="fas fa-receipt"></i> Pengeluaran Dagang</h1>
+            <p>Catat semua modal & biaya operasional</p>
+        </div>
+        <div class="total-badge">
+            <span>Total Pengeluaran</span>
+            <h2 id="totalPengeluaran">Rp 0</h2>
+        </div>
+    </header>
+
+    <div class="main-grid">
+
+        <!-- FORM INPUT -->
+        <div class="card">
+            <div class="card-title"><i class="fas fa-plus-circle"></i> Catat Pengeluaran</div>
+
+            <div class="form-group">
+                <label>Tanggal <span style="color:#ff6b6b;">*</span></label>
+                <input type="date" id="inputTanggal" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Keterangan <span style="color:#ff6b6b;">*</span></label>
+                <input type="text" id="inputKeterangan" class="form-control" placeholder="Contoh: Beli daging ayam 2 kg">
+            </div>
+
+            <div class="form-group">
+                <label>Kategori <span style="color:#ff6b6b;">*</span></label>
+                <select id="inputKategori" class="form-control">
+                    <option value="Bahan Baku">Bahan Baku</option>
+                    <option value="Operasional">Operasional</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Gaji">Gaji</option>
+                    <option value="Sewa">Sewa</option>
+                    <option value="Lain-lain">Lain-lain</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nominal (Rp) <span style="color:#ff6b6b;">*</span></label>
+                <input type="number" id="inputNominal" class="form-control" placeholder="Contoh: 50000" min="0">
+            </div>
+
+            <button class="btn-primary" id="btnSimpan" onclick="simpanPengeluaran()">
+                <i class="fas fa-save"></i> Simpan Pengeluaran
+            </button>
+        </div>
+
+        <!-- DAFTAR -->
+        <div class="card">
+            <div class="card-title"><i class="fas fa-list"></i> Daftar Pengeluaran</div>
+
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="label">Hari Ini</div>
+                    <div class="value" id="totalHariIni">Rp 0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Bulan Ini</div>
+                    <div class="value" id="totalBulanIni">Rp 0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Jumlah Catatan</div>
+                    <div class="value" id="totalCatatan">0</div>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <input type="date" id="filterTanggal" onchange="renderTabel()" title="Filter per tanggal">
+                <select id="filterKategori" onchange="renderTabel()">
+                    <option value="">Semua Kategori</option>
+                    <option value="Bahan Baku">Bahan Baku</option>
+                    <option value="Operasional">Operasional</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Gaji">Gaji</option>
+                    <option value="Sewa">Sewa</option>
+                    <option value="Lain-lain">Lain-lain</option>
+                </select>
+                <button onclick="resetFilter()"><i class="fas fa-sync"></i> Reset</button>
+                <button class="btn-danger" onclick="hapusSemua()"><i class="fas fa-trash"></i> Hapus Semua</button>
+                <button onclick="exportCSV()"><i class="fas fa-file-csv"></i> Export</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Keterangan</th>
+                            <th>Kategori</th>
+                            <th>Nominal</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <div>Belum ada pengeluaran tercatat.</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>&copy; 2026 ZinXploit — Aplikasi Pengeluaran Dagang v1.1</footer>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast"></div>
+
+<script>
+    // ==================================================
+    // STATE GLOBAL (Dengan error handling)
+    // ==================================================
+    let dataPengeluaran = [];
+
+    // Load data dari localStorage dengan try-catch
+    function loadData() {
+        try {
+            const raw = localStorage.getItem('pengeluaran_dagang');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) {
+                    dataPengeluaran = parsed;
+                    console.log('[OK] Data berhasil dimuat:', dataPengeluaran.length, 'catatan');
+                } else {
+                    console.warn('[WARN] Format data tidak valid, reset ke array kosong');
+                    dataPengeluaran = [];
+                }
+            } else {
+                console.log('[INFO] Belum ada data tersimpan');
+                dataPengeluaran = [];
+            }
+        } catch (e) {
+            console.error('[ERROR] Gagal parse localStorage:', e);
+            dataPengeluaran = [];
+            // Bersihkan storage yang korup
+            try { localStorage.removeItem('pengeluaran_dagang'); } catch(ex) {}
+            showToast('Data lama korup, otomatis di-reset', 'info');
+        }
+    }
+
+    // Simpan ke localStorage
+    function simpanKeStorage() {
+        try {
+            localStorage.setItem('pengeluaran_dagang', JSON.stringify(dataPengeluaran));
+            console.log('[OK] Data tersimpan. Total:', dataPengeluaran.length);
+            return true;
+        } catch (e) {
+            console.error('[ERROR] Gagal simpan ke localStorage:', e);
+            showToast('Gagal simpan! Storage penuh?', 'error');
+            return false;
+        }
+    }
+
+    // ==================================================
+    // TOAST NOTIFICATION
+    // ==================================================
+    function showToast(message, type) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'toast ' + type + ' show';
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // ==================================================
+    // FUNGSI UTAMA: SIMPAN PENGELUARAN
+    // ==================================================
+    function simpanPengeluaran() {
+        console.log('=== Tombol Simpan Diklik ===');
+        
+        // Ambil elemen
+        const elTanggal = document.getElementById('inputTanggal');
+        const elKeterangan = document.getElementById('inputKeterangan');
+        const elKategori = document.getElementById('inputKategori');
+        const elNominal = document.getElementById('inputNominal');
+        const btnSimpan = document.getElementById('btnSimpan');
+
+        // Cek elemen ada
+        if (!elTanggal || !elKeterangan || !elKategori || !elNominal) {
+            alert('❌ Error: Elemen form tidak ditemukan!');
+            return;
+        }
+
+        // Ambil nilai
+        const tanggal = elTanggal.value;
+        const keterangan = elKeterangan.value.trim();
+        const kategori = elKategori.value;
+        const nominalStr = elNominal.value;
+        const nominal = parseFloat(nominalStr);
+
+        console.log('Data input:', { tanggal, keterangan, kategori, nominalStr, nominal });
+
+        // ===== VALIDASI =====
+        if (!tanggal) {
+            showToast('❌ Tanggal wajib diisi!', 'error');
+            elTanggal.focus();
+            return;
+        }
+
+        if (!keterangan || keterangan.length < 2) {
+            showToast('❌ Keterangan wajib diisi (min 2 karakter)!', 'error');
+            elKeterangan.focus();
+            return;
+        }
+
+        if (!kategori) {
+            showToast('❌ Pilih kategori!', 'error');
+            elKategori.focus();
+            return;
+        }
+
+        if (isNaN(nominal) || nominal <= 0) {
+            showToast('❌ Nominal harus angka lebih dari 0!', 'error');
+            elNominal.focus();
+            return;
+        }
+
+        if (nominal > 1000000000) {
+            showToast('❌ Nominal terlalu besar (max 1 Miliar)!', 'error');
+            elNominal.focus();
+            return;
+        }
+
+        // ===== BUAT DATA BARU =====
+        const dataBaru = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            tanggal: tanggal,
+            keterangan: keterangan,
+            kategori: kategori,
+            nominal: Math.round(nominal)
+        };
+
+        console.log('Menyimpan:', dataBaru);
+
+        // Tambah ke array
+        dataPengeluaran.push(dataBaru);
+
+        // Simpan ke storage
+        if (!simpanKeStorage()) {
+            // Rollback jika gagal
+            dataPengeluaran.pop();
+            return;
+        }
+
+        // Reset form
+        elKeterangan.value = '';
+        elNominal.value = '';
+        elKeterangan.focus();
+
+        // Render ulang
+        renderTabel();
+        hitungTotal();
+
+        // Feedback
+        showToast(`✅ Tersimpan: Rp ${nominal.toLocaleString('id-ID')}`, 'success');
+        console.log('[OK] Data berhasil disimpan. Total data:', dataPengeluaran.length);
+    }
+
+    // ==================================================
+    // RENDER TABEL
+    // ==================================================
+    function renderTabel() {
+        const tbody = document.getElementById('tabelBody');
+        if (!tbody) return;
+
+        const filterTanggal = document.getElementById('filterTanggal').value;
+        const filterKategori = document.getElementById('filterKategori').value;
+
+        let dataFilter = dataPengeluaran.slice();
+
+        if (filterTanggal) {
+            dataFilter = dataFilter.filter(d => d.tanggal === filterTanggal);
+        }
+        if (filterKategori) {
+            dataFilter = dataFilter.filter(d => d.kategori === filterKategori);
+        }
+
+        // Urutkan terbaru
+        dataFilter.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+        if (dataFilter.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <div>Belum ada pengeluaran yang cocok.</div>
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        const classMap = {
+            'Bahan Baku': 'badge-bahan',
+            'Operasional': 'badge-ops',
+            'Transport': 'badge-trans',
+            'Gaji': 'badge-gaji',
+            'Sewa': 'badge-sewa',
+            'Lain-lain': 'badge-lain'
+        };
+
+        let html = '';
+        dataFilter.forEach(d => {
+            const cls = classMap[d.kategori] || 'badge-lain';
+            html += `
+                <tr>
+                    <td>${formatTanggal(d.tanggal)}</td>
+                    <td>${escapeHtml(d.keterangan)}</td>
+                    <td><span class="badge-kategori ${cls}">${d.kategori}</span></td>
+                    <td class="nominal">Rp ${Number(d.nominal).toLocaleString('id-ID')}</td>
+                    <td><button class="btn-hapus" onclick="hapusPengeluaran(${d.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
+    // ==================================================
+    // HITUNG TOTAL
+    // ==================================================
+    function hitungTotal() {
+        const today = new Date().toISOString().split('T')[0];
+        const thisMonth = today.slice(0, 7);
+
+        let totalSemua = 0;
+        let totalHariIni = 0;
+        let totalBulanIni = 0;
+
+        dataPengeluaran.forEach(d => {
+            const n = Number(d.nominal) || 0;
+            totalSemua += n;
+            if (d.tanggal === today) totalHariIni += n;
+            if (d.tanggal && d.tanggal.startsWith(thisMonth)) totalBulanIni += n;
+        });
+
+        document.getElementById('totalPengeluaran').textContent = 'Rp ' + totalSemua.toLocaleString('id-ID');
+        document.getElementById('totalHariIni').textContent = 'Rp ' + totalHariIni.toLocaleString('id-ID');
+        document.getElementById('totalBulanIni').textContent = 'Rp ' + totalBulanIni.toLocaleString('id-ID');
+        document.getElementById('totalCatatan').textContent = dataPengeluaran.length;
+    }
+
+    // ==================================================
+    // HAPUS
+    // ==================================================
+    function hapusPengeluaran(id) {
+        if (!confirm('Yakin ingin menghapus catatan ini?')) return;
+        dataPengeluaran = dataPengeluaran.filter(d => d.id !== id);
+        simpanKeStorage();
+        renderTabel();
+        hitungTotal();
+        showToast('🗑️ Catatan dihapus', 'info');
+    }
+
+    function hapusSemua() {
+        if (dataPengeluaran.length === 0) {
+            showToast('Data sudah kosong', 'info');
+            return;
+        }
+        if (!confirm('⚠️ Hapus SEMUA data pengeluaran?')) return;
+        dataPengeluaran = [];
+        simpanKeStorage();
+        renderTabel();
+        hitungTotal();
+        showToast('🗑️ Semua data dihapus', 'info');
+    }
+
+    // ==================================================
+    // FILTER
+    // ==================================================
+    function resetFilter() {
+        document.getElementById('filterTanggal').value = '';
+        document.getElementById('filterKategori').value = '';
+        renderTabel();
+    }
+
+    // ==================================================
+    // EXPORT CSV
+    // ==================================================
+    function exportCSV() {
+        if (dataPengeluaran.length === 0) {
+            showToast('Tidak ada data untuk diekspor', 'error');
+            return;
+        }
+        let csv = 'Tanggal,Keterangan,Kategori,Nominal\n';
+        dataPengeluaran.slice().sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal)).forEach(d => {
+            const ket = String(d.keterangan).replace(/"/g, '""');
+            csv += `"${d.tanggal}","${ket}","${d.kategori}",${d.nominal}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `pengeluaran_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('✅ File CSV diunduh', 'success');
+    }
+
+    // ==================================================
+    // UTILS
+    // ==================================================
+    function formatTanggal(tgl) {
+        if (!tgl) return '-';
+        try {
+            const d = new Date(tgl);
+            if (isNaN(d)) return tgl;
+            return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        } catch (e) { return tgl; }
+    }
+
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, m => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[m] || m));
+    }
+
+    // ==================================================
+    // INIT — DIPANGGIL SAAT HALAMAN LOAD
+    // ==================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('[INIT] Aplikasi Pengeluaran Dagang v1.1');
+        
+        // Load data dulu (dengan try-catch)
+        loadData();
+
+        // Set tanggal hari ini
+        const today = new Date().toISOString().split('T')[0];
+        const elTanggal = document.getElementById('inputTanggal');
+        if (elTanggal) elTanggal.value = today;
+
+        // Render
+        renderTabel();
+        hitungTotal();
+
+        // Enter key listener untuk submit cepat
+        const elNominal = document.getElementById('inputNominal');
+        if (elNominal) {
+            elNominal.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    simpanPengeluaran();
+                }
+            });
+        }
+
+        console.log('[READY] Semua fungsi siap digunakan!');
+    });
+
+    // Fallback: jika DOMContentLoaded sudah terlewat
+    if (document.readyState === 'loading') {
+        // Biarkan DOMContentLoaded handler jalan
+    } else {
+        // DOM sudah ready, jalankan langsung
+        setTimeout(function() {
+            loadData();
+            const today = new Date().toISOString().split('T')[0];
+            const elTanggal = document.getElementById('inputTanggal');
+            if (elTanggal && !elTanggal.value) elTanggal.value = today;
+            renderTabel();
+            hitungTotal();
+        }, 100);
+    }
+</script>
+
+</body>
+</html>
